@@ -182,7 +182,12 @@ void osdHudDrawPoi(uint32_t poiDistance, int16_t poiDirection, int32_t poiAltitu
         }
 
         if (poiType == 1) { // POI from the ESP radar
-            d = constrain((poiDirection / 30), 0, 12);
+            if (error_x > 0 ) {
+                d = constrain(error_x / 30, 0, 12);
+            }
+            else {
+                d = constrain((360 + error_x) / 30, 0, 12);
+            }
             if (d == 12) {
                 d = 0; // Directly behind
             }
