@@ -226,15 +226,15 @@ void canardSTM32_FDCAN1_Init(FDCAN_HandleTypeDef *hfdcan1, uint32_t bitrate)
         Error_Handler();
     }
     // Activate notifications
-    //  if (HAL_FDCAN_ActivateNotification(hfdcan1, 
+    if (HAL_FDCAN_ActivateNotification(hfdcan1, 
     //     FDCAN_IT_RX_FIFO0_NEW_MESSAGE |
     // //     FDCAN_IT_ERROR_WARNING | 
-    //  //    FDCAN_IT_ERROR_PASSIVE | 
-    //      FDCAN_IT_BUS_OFF, 0) != HAL_OK)
-    //  {
-    //     LOG_ERROR(SYSTEM, "Failed to start interrupts");
+          FDCAN_IT_ERROR_PASSIVE | 
+          FDCAN_IT_BUS_OFF, 0) != HAL_OK)
+      {
+         LOG_ERROR(SYSTEM, "Failed to start interrupts");
     //     //     Error_Handler();
-    //  }
+      }
 }
 
 /**
@@ -390,10 +390,10 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-//   __disable_irq();
-//   while (1)
-//   {
-//   }
+  //   __disable_irq();
+  //   while (1)
+  //   {
+  //   }
   /* USER CODE END Error_Handler_Debug */
 }
 
