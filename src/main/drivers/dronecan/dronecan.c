@@ -589,3 +589,8 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
         }
     
 }
+
+  void FDCAN1_IT0_IRQHandler(void)
+  {
+      HAL_FDCAN_IRQHandler(&hfdcan1);
+  }
