@@ -4521,3 +4521,17 @@ groups:
         field: bitRateKbps
         table: dronecan_bitrate_table
         type: uint8_t
+      - name: dronecan_battery_id
+        description: "Filter BatteryInfo messages by battery_id field (battery slot). 0 = use any battery."
+        default_value: 0
+        field: batteryId
+        min: 0
+        max: 255
+        type: uint8_t
+      - name: dronecan_gps_node_id
+        description: "Filter GPS messages by source Node ID. 0 = use any node."
+        default_value: 0
+        field: gpsNodeId
+        min: 0
+        max: 127
+        type: uint8_t

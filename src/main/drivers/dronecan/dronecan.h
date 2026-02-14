@@ -17,6 +17,8 @@ typedef enum {
 typedef struct dronecanConfig_s {
     uint8_t nodeID;
     dronecanBitrate_e bitRateKbps;
+    uint8_t batteryId;   // Filter by battery_id in BatteryInfo message (0-255, 0 = any)
+    uint8_t gpsNodeId;   // Filter GPS messages by source Node ID (0 = any)
 } dronecanConfig_t;
 
 PG_DECLARE(dronecanConfig_t, dronecanConfig);

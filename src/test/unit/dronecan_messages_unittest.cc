@@ -489,6 +489,87 @@ TEST_F(DroneCANMessageTest, BatteryInfo_BoundaryValues)
 }
 
 // ===========================================================================
+// Battery Filtering Tests (for dronecan_battery_id setting)
+// ===========================================================================
+
+TEST_F(DroneCANMessageTest, BatteryInfo_BatteryId_FilteringValues)
+{
+    // Test all battery_id values that could be used for filtering
+    uint8_t test_ids[] = {0, 1, 2, 127, 128, 254, 255};
+
+    for (uint8_t id : test_ids) {
+        struct uavcan_equipment_power_BatteryInfo tx_msg;
+        memset(&tx_msg, 0, sizeof(tx_msg));
+        tx_msg.voltage = 22.0f;
+        tx_msg.current = 10.0f;
+        tx_msg.battery_id = id;
+
+        memset(buffer, 0, sizeof(buffer));
+        uint32_t encoded_len = uavcan_equipment_power_BatteryInfo_encode(&tx_msg, buffer
+#if CANARD_ENABLE_TAO_OPTION
+            , false
+#endif
+        );
+
+        CanardRxTransfer transfer = makeTransfer(encoded_len);
+        struct uavcan_equipment_power_BatteryInfo rx_msg;
+        memset(&rx_msg, 0, sizeof(rx_msg));
+        EXPECT_FALSE(uavcan_equipment_power_BatteryInfo_decode(&transfer, &rx_msg));
+        EXPECT_EQ(rx_msg.battery_id, id) << "battery_id should be " << (int)id;
+    }
+}
+
+TEST_F(DroneCANMessageTest, BatteryInfo_BatteryId_MultipleBatteries)
+{
+    // Simulate a multi-battery setup where filtering by battery_id is needed
+    // Battery 0 (main)
+    {
+        struct uavcan_equipment_power_BatteryInfo tx_msg;
+        memset(&tx_msg, 0, sizeof(tx_msg));
+        tx_msg.voltage = 25.0f;
+        tx_msg.current = 0.0f;
+        tx_msg.battery_id = 0;
+
+        memset(buffer, 0, sizeof(buffer));
+        uint32_t encoded_len = uavcan_equipment_power_BatteryInfo_encode(&tx_msg, buffer
+#if CANARD_ENABLE_TAO_OPTION
+            , false
+#endif
+        );
+
+        CanardRxTransfer transfer = makeTransfer(encoded_len);
+        struct uavcan_equipment_power_BatteryInfo rx_msg;
+        memset(&rx_msg, 0, sizeof(rx_msg));
+        EXPECT_FALSE(uavcan_equipment_power_BatteryInfo_decode(&transfer, &rx_msg));
+        EXPECT_EQ(rx_msg.battery_id, 0);
+        EXPECT_NEAR(rx_msg.voltage, 25.0f, 0.1f);
+    }
+
+    // Battery 1 (secondary)
+    {
+        struct uavcan_equipment_power_BatteryInfo tx_msg;
+        memset(&tx_msg, 0, sizeof(tx_msg));
+        tx_msg.voltage = 24.5f;
+        tx_msg.current = 5.0f;
+        tx_msg.battery_id = 1;
+
+        memset(buffer, 0, sizeof(buffer));
+        uint32_t encoded_len = uavcan_equipment_power_BatteryInfo_encode(&tx_msg, buffer
+#if CANARD_ENABLE_TAO_OPTION
+            , false
+#endif
+        );
+
+        CanardRxTransfer transfer = makeTransfer(encoded_len);
+        struct uavcan_equipment_power_BatteryInfo rx_msg;
+        memset(&rx_msg, 0, sizeof(rx_msg));
+        EXPECT_FALSE(uavcan_equipment_power_BatteryInfo_decode(&transfer, &rx_msg));
+        EXPECT_EQ(rx_msg.battery_id, 1);
+        EXPECT_NEAR(rx_msg.voltage, 24.5f, 0.1f);
+    }
+}
+
+// ===========================================================================
 // Constants and Data Type Verification Tests
 // ===========================================================================
 
