@@ -37,7 +37,9 @@ PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CO
 PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .nodeID = SETTING_DRONECAN_NODE_ID_DEFAULT,
     .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT,
-    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT
+    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT,
+    .batteryId = SETTING_DRONECAN_BATTERY_ID_DEFAULT,
+    .gpsNodeId = SETTING_DRONECAN_GPS_NODE_ID_DEFAULT
 );
 
 static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
@@ -120,6 +122,12 @@ void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
 void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
     if (gpsConfig()->provider != GPS_DRONECAN) return;
+
+    // Filter by Node ID if configured
+    if (dronecanConfig()->gpsNodeId != 0 && transfer->source_node_id != dronecanConfig()->gpsNodeId) {
+        return;
+    }
+
     struct uavcan_equipment_gnss_Fix gnssFix;
 
 	if (uavcan_equipment_gnss_Fix_decode(transfer, &gnssFix)) {
@@ -132,6 +140,12 @@ void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
 void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
     if (gpsConfig()->provider != GPS_DRONECAN) return;
+
+    // Filter by Node ID if configured
+    if (dronecanConfig()->gpsNodeId != 0 && transfer->source_node_id != dronecanConfig()->gpsNodeId) {
+        return;
+    }
+
     struct uavcan_equipment_gnss_Fix2 gnssFix2;
 
 	if (uavcan_equipment_gnss_Fix2_decode(transfer, &gnssFix2)) {
@@ -160,6 +174,12 @@ void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 		LOG_WARNING(CAN, "BatteryInfo decode failed");
 		return;
 	}
+
+    // Filter by battery_id if configured (0 = any battery)
+    if (dronecanConfig()->batteryId != 0 && batteryInfo.battery_id != dronecanConfig()->batteryId) {
+        return;  // Ignore messages from other battery slots
+    }
+
     dronecanBatterySensorReceiveInfo(&batteryInfo);
 }
 
