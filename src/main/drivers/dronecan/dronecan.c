@@ -35,7 +35,9 @@ PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CO
 
 PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .nodeID = SETTING_DRONECAN_NODE_ID_DEFAULT,
-    .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT
+    .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT,
+    .batteryId = SETTING_DRONECAN_BATTERY_ID_DEFAULT,
+    .gpsNodeId = SETTING_DRONECAN_GPS_NODE_ID_DEFAULT
 );
 
 static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
