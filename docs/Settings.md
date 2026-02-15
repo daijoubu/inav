@@ -782,6 +782,16 @@ Re-purpose the craft name field for messages.
 
 ---
 
+### dronecan_battery_id
+
+Filter BatteryInfo messages by battery_id field (battery slot). 0 = use any battery.
+
+| Default | Min | Max |
+| --- | --- | --- |
+| 0 | 0 | 255 |
+
+---
+
 ### dronecan_bitrate_kbps
 
 The speed of the CANbus network in kbps. Set all devices to the same speed. 
@@ -789,6 +799,16 @@ The speed of the CANbus network in kbps. Set all devices to the same speed.
 | Default | Min | Max |
 | --- | --- | --- |
 | 1000 |  |  |
+
+---
+
+### dronecan_gps_node_id
+
+Filter GPS messages by source Node ID. 0 = use any node.
+
+| Default | Min | Max |
+| --- | --- | --- |
+| 0 | 0 | 127 |
 
 ---
 
