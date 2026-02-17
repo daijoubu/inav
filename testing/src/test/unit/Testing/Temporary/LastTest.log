@@ -1,0 +1,2223 @@
+Start testing: Feb 11 09:19 PST
+----------------------------------------------------------
+1/81 Testing: BitArrayTest.TestGetSet
+1/81 Test: BitArrayTest.TestGetSet
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/bitarray_unittest" "--gtest_filter=BitArrayTest.TestGetSet" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"BitArrayTest.TestGetSet" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = BitArrayTest.TestGetSet
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BitArrayTest
+[ RUN      ] BitArrayTest.TestGetSet
+[       OK ] BitArrayTest.TestGetSet (0 ms)
+[----------] 1 test from BitArrayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BitArrayTest.TestGetSet" end time: Feb 11 09:19 PST
+"BitArrayTest.TestGetSet" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/81 Testing: BitArrayTest.TestClr
+2/81 Test: BitArrayTest.TestClr
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/bitarray_unittest" "--gtest_filter=BitArrayTest.TestClr" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"BitArrayTest.TestClr" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = BitArrayTest.TestClr
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BitArrayTest
+[ RUN      ] BitArrayTest.TestClr
+[       OK ] BitArrayTest.TestClr (0 ms)
+[----------] 1 test from BitArrayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BitArrayTest.TestClr" end time: Feb 11 09:19 PST
+"BitArrayTest.TestClr" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/81 Testing: BitArrayTest.TestFind
+3/81 Test: BitArrayTest.TestFind
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/bitarray_unittest" "--gtest_filter=BitArrayTest.TestFind" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"BitArrayTest.TestFind" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = BitArrayTest.TestFind
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BitArrayTest
+[ RUN      ] BitArrayTest.TestFind
+[       OK ] BitArrayTest.TestFind (0 ms)
+[----------] 1 test from BitArrayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BitArrayTest.TestFind" end time: Feb 11 09:19 PST
+"BitArrayTest.TestFind" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/81 Testing: BitArrayTest.TestSetClrAll
+4/81 Test: BitArrayTest.TestSetClrAll
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/bitarray_unittest" "--gtest_filter=BitArrayTest.TestSetClrAll" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"BitArrayTest.TestSetClrAll" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = BitArrayTest.TestSetClrAll
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BitArrayTest
+[ RUN      ] BitArrayTest.TestSetClrAll
+[       OK ] BitArrayTest.TestSetClrAll (0 ms)
+[----------] 1 test from BitArrayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BitArrayTest.TestSetClrAll" end time: Feb 11 09:19 PST
+"BitArrayTest.TestSetClrAll" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/81 Testing: BitArrayTest.TestOutOfBounds
+5/81 Test: BitArrayTest.TestOutOfBounds
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/bitarray_unittest" "--gtest_filter=BitArrayTest.TestOutOfBounds" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"BitArrayTest.TestOutOfBounds" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = BitArrayTest.TestOutOfBounds
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from BitArrayTest
+[ RUN      ] BitArrayTest.TestOutOfBounds
+[       OK ] BitArrayTest.TestOutOfBounds (0 ms)
+[----------] 1 test from BitArrayTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"BitArrayTest.TestOutOfBounds" end time: Feb 11 09:19 PST
+"BitArrayTest.TestOutOfBounds" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/81 Testing: CanardTest.Init_BasicState
+6/81 Test: CanardTest.Init_BasicState
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.Init_BasicState" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.Init_BasicState" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.Init_BasicState
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.Init_BasicState
+[       OK ] CanardTest.Init_BasicState (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.Init_BasicState" end time: Feb 11 09:19 PST
+"CanardTest.Init_BasicState" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/81 Testing: CanardTest.Init_UserReference
+7/81 Test: CanardTest.Init_UserReference
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.Init_UserReference" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.Init_UserReference" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.Init_UserReference
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.Init_UserReference
+[       OK ] CanardTest.Init_UserReference (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.Init_UserReference" end time: Feb 11 09:19 PST
+"CanardTest.Init_UserReference" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/81 Testing: CanardTest.NodeID_SetAndGet
+8/81 Test: CanardTest.NodeID_SetAndGet
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.NodeID_SetAndGet" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.NodeID_SetAndGet" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.NodeID_SetAndGet
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.NodeID_SetAndGet
+[       OK ] CanardTest.NodeID_SetAndGet (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.NodeID_SetAndGet" end time: Feb 11 09:19 PST
+"CanardTest.NodeID_SetAndGet" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/81 Testing: CanardTest.NodeID_BoundaryValues
+9/81 Test: CanardTest.NodeID_BoundaryValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.NodeID_BoundaryValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.NodeID_BoundaryValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.NodeID_BoundaryValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.NodeID_BoundaryValues
+[       OK ] CanardTest.NodeID_BoundaryValues (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.NodeID_BoundaryValues" end time: Feb 11 09:19 PST
+"CanardTest.NodeID_BoundaryValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/81 Testing: CanardTest.NodeID_ForgetAndReassign
+10/81 Test: CanardTest.NodeID_ForgetAndReassign
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.NodeID_ForgetAndReassign" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.NodeID_ForgetAndReassign" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.NodeID_ForgetAndReassign
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.NodeID_ForgetAndReassign
+[       OK ] CanardTest.NodeID_ForgetAndReassign (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.NodeID_ForgetAndReassign" end time: Feb 11 09:19 PST
+"CanardTest.NodeID_ForgetAndReassign" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/81 Testing: CanardTest.MemPool_AllocFree
+11/81 Test: CanardTest.MemPool_AllocFree
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.MemPool_AllocFree" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.MemPool_AllocFree" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.MemPool_AllocFree
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.MemPool_AllocFree
+[       OK ] CanardTest.MemPool_AllocFree (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.MemPool_AllocFree" end time: Feb 11 09:19 PST
+"CanardTest.MemPool_AllocFree" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/81 Testing: CanardTest.MemPool_Exhaustion
+12/81 Test: CanardTest.MemPool_Exhaustion
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.MemPool_Exhaustion" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.MemPool_Exhaustion" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.MemPool_Exhaustion
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.MemPool_Exhaustion
+[       OK ] CanardTest.MemPool_Exhaustion (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.MemPool_Exhaustion" end time: Feb 11 09:19 PST
+"CanardTest.MemPool_Exhaustion" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/81 Testing: CanardTest.MemPool_PeakTracking
+13/81 Test: CanardTest.MemPool_PeakTracking
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.MemPool_PeakTracking" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.MemPool_PeakTracking" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.MemPool_PeakTracking
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.MemPool_PeakTracking
+[       OK ] CanardTest.MemPool_PeakTracking (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.MemPool_PeakTracking" end time: Feb 11 09:19 PST
+"CanardTest.MemPool_PeakTracking" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/81 Testing: CanardTest.CRC_KnownValues
+14/81 Test: CanardTest.CRC_KnownValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.CRC_KnownValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.CRC_KnownValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.CRC_KnownValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.CRC_KnownValues
+[       OK ] CanardTest.CRC_KnownValues (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.CRC_KnownValues" end time: Feb 11 09:19 PST
+"CanardTest.CRC_KnownValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/81 Testing: CanardTest.CRC_AddString
+15/81 Test: CanardTest.CRC_AddString
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.CRC_AddString" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.CRC_AddString" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.CRC_AddString
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.CRC_AddString
+[       OK ] CanardTest.CRC_AddString (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.CRC_AddString" end time: Feb 11 09:19 PST
+"CanardTest.CRC_AddString" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/81 Testing: CanardTest.CRC_SignatureProcessing
+16/81 Test: CanardTest.CRC_SignatureProcessing
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.CRC_SignatureProcessing" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.CRC_SignatureProcessing" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.CRC_SignatureProcessing
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.CRC_SignatureProcessing
+[       OK ] CanardTest.CRC_SignatureProcessing (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.CRC_SignatureProcessing" end time: Feb 11 09:19 PST
+"CanardTest.CRC_SignatureProcessing" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/81 Testing: CanardTest.Float16_SpecialValues
+17/81 Test: CanardTest.Float16_SpecialValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.Float16_SpecialValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.Float16_SpecialValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.Float16_SpecialValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.Float16_SpecialValues
+[       OK ] CanardTest.Float16_SpecialValues (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.Float16_SpecialValues" end time: Feb 11 09:19 PST
+"CanardTest.Float16_SpecialValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/81 Testing: CanardTest.Float16_BatteryVoltageRange
+18/81 Test: CanardTest.Float16_BatteryVoltageRange
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.Float16_BatteryVoltageRange" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.Float16_BatteryVoltageRange" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.Float16_BatteryVoltageRange
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.Float16_BatteryVoltageRange
+[       OK ] CanardTest.Float16_BatteryVoltageRange (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.Float16_BatteryVoltageRange" end time: Feb 11 09:19 PST
+"CanardTest.Float16_BatteryVoltageRange" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/81 Testing: CanardTest.TransferIDForwardDistance
+19/81 Test: CanardTest.TransferIDForwardDistance
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.TransferIDForwardDistance" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.TransferIDForwardDistance" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.TransferIDForwardDistance
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.TransferIDForwardDistance
+[       OK ] CanardTest.TransferIDForwardDistance (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.TransferIDForwardDistance" end time: Feb 11 09:19 PST
+"CanardTest.TransferIDForwardDistance" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/81 Testing: CanardTest.IncrementTransferID
+20/81 Test: CanardTest.IncrementTransferID
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.IncrementTransferID" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.IncrementTransferID" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.IncrementTransferID
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.IncrementTransferID
+[       OK ] CanardTest.IncrementTransferID (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.IncrementTransferID" end time: Feb 11 09:19 PST
+"CanardTest.IncrementTransferID" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/81 Testing: CanardTest.IsPriorityHigher
+21/81 Test: CanardTest.IsPriorityHigher
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.IsPriorityHigher" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.IsPriorityHigher" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.IsPriorityHigher
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.IsPriorityHigher
+[       OK ] CanardTest.IsPriorityHigher (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.IsPriorityHigher" end time: Feb 11 09:19 PST
+"CanardTest.IsPriorityHigher" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/81 Testing: CanardTest.DlcConversion
+22/81 Test: CanardTest.DlcConversion
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.DlcConversion" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.DlcConversion" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.DlcConversion
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.DlcConversion
+[       OK ] CanardTest.DlcConversion (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.DlcConversion" end time: Feb 11 09:19 PST
+"CanardTest.DlcConversion" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/81 Testing: CanardTest.TX_SingleFrameBroadcast
+23/81 Test: CanardTest.TX_SingleFrameBroadcast
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.TX_SingleFrameBroadcast" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.TX_SingleFrameBroadcast" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.TX_SingleFrameBroadcast
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.TX_SingleFrameBroadcast
+[       OK ] CanardTest.TX_SingleFrameBroadcast (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.TX_SingleFrameBroadcast" end time: Feb 11 09:19 PST
+"CanardTest.TX_SingleFrameBroadcast" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/81 Testing: CanardTest.TX_TransferIDWrap
+24/81 Test: CanardTest.TX_TransferIDWrap
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.TX_TransferIDWrap" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.TX_TransferIDWrap" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.TX_TransferIDWrap
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.TX_TransferIDWrap
+[       OK ] CanardTest.TX_TransferIDWrap (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.TX_TransferIDWrap" end time: Feb 11 09:19 PST
+"CanardTest.TX_TransferIDWrap" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/81 Testing: CanardTest.TX_InvalidArguments
+25/81 Test: CanardTest.TX_InvalidArguments
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.TX_InvalidArguments" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.TX_InvalidArguments" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.TX_InvalidArguments
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.TX_InvalidArguments
+[       OK ] CanardTest.TX_InvalidArguments (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.TX_InvalidArguments" end time: Feb 11 09:19 PST
+"CanardTest.TX_InvalidArguments" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/81 Testing: CanardTest.RX_SingleFrameBroadcast
+26/81 Test: CanardTest.RX_SingleFrameBroadcast
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.RX_SingleFrameBroadcast" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.RX_SingleFrameBroadcast" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.RX_SingleFrameBroadcast
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.RX_SingleFrameBroadcast
+[       OK ] CanardTest.RX_SingleFrameBroadcast (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.RX_SingleFrameBroadcast" end time: Feb 11 09:19 PST
+"CanardTest.RX_SingleFrameBroadcast" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/81 Testing: CanardTest.RX_RejectNonExtended
+27/81 Test: CanardTest.RX_RejectNonExtended
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.RX_RejectNonExtended" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.RX_RejectNonExtended" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.RX_RejectNonExtended
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.RX_RejectNonExtended
+[       OK ] CanardTest.RX_RejectNonExtended (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.RX_RejectNonExtended" end time: Feb 11 09:19 PST
+"CanardTest.RX_RejectNonExtended" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/81 Testing: CanardTest.RX_RejectRTR
+28/81 Test: CanardTest.RX_RejectRTR
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.RX_RejectRTR" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.RX_RejectRTR" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.RX_RejectRTR
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.RX_RejectRTR
+[       OK ] CanardTest.RX_RejectRTR (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.RX_RejectRTR" end time: Feb 11 09:19 PST
+"CanardTest.RX_RejectRTR" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/81 Testing: CanardTest.RX_RejectZeroLength
+29/81 Test: CanardTest.RX_RejectZeroLength
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.RX_RejectZeroLength" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.RX_RejectZeroLength" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.RX_RejectZeroLength
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.RX_RejectZeroLength
+[       OK ] CanardTest.RX_RejectZeroLength (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.RX_RejectZeroLength" end time: Feb 11 09:19 PST
+"CanardTest.RX_RejectZeroLength" time elapsed: 00:00:00
+----------------------------------------------------------
+
+30/81 Testing: CanardTest.TX_MultiFrameBroadcast
+30/81 Test: CanardTest.TX_MultiFrameBroadcast
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.TX_MultiFrameBroadcast" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.TX_MultiFrameBroadcast" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.TX_MultiFrameBroadcast
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.TX_MultiFrameBroadcast
+[       OK ] CanardTest.TX_MultiFrameBroadcast (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.TX_MultiFrameBroadcast" end time: Feb 11 09:19 PST
+"CanardTest.TX_MultiFrameBroadcast" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/81 Testing: CanardTest.TX_MultiFramePoolExhaustion
+31/81 Test: CanardTest.TX_MultiFramePoolExhaustion
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.TX_MultiFramePoolExhaustion" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.TX_MultiFramePoolExhaustion" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.TX_MultiFramePoolExhaustion
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.TX_MultiFramePoolExhaustion
+[       OK ] CanardTest.TX_MultiFramePoolExhaustion (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.TX_MultiFramePoolExhaustion" end time: Feb 11 09:19 PST
+"CanardTest.TX_MultiFramePoolExhaustion" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/81 Testing: CanardTest.ExtractDataType_Broadcast
+32/81 Test: CanardTest.ExtractDataType_Broadcast
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.ExtractDataType_Broadcast" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.ExtractDataType_Broadcast" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.ExtractDataType_Broadcast
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.ExtractDataType_Broadcast
+[       OK ] CanardTest.ExtractDataType_Broadcast (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.ExtractDataType_Broadcast" end time: Feb 11 09:19 PST
+"CanardTest.ExtractDataType_Broadcast" time elapsed: 00:00:00
+----------------------------------------------------------
+
+33/81 Testing: CanardTest.ExtractDataType_Service
+33/81 Test: CanardTest.ExtractDataType_Service
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.ExtractDataType_Service" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.ExtractDataType_Service" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.ExtractDataType_Service
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.ExtractDataType_Service
+[       OK ] CanardTest.ExtractDataType_Service (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.ExtractDataType_Service" end time: Feb 11 09:19 PST
+"CanardTest.ExtractDataType_Service" time elapsed: 00:00:00
+----------------------------------------------------------
+
+34/81 Testing: CanardTest.PoolStats_AfterBroadcast
+34/81 Test: CanardTest.PoolStats_AfterBroadcast
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardTest.PoolStats_AfterBroadcast" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardTest.PoolStats_AfterBroadcast" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardTest.PoolStats_AfterBroadcast
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardTest
+[ RUN      ] CanardTest.PoolStats_AfterBroadcast
+[       OK ] CanardTest.PoolStats_AfterBroadcast (0 ms)
+[----------] 1 test from CanardTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardTest.PoolStats_AfterBroadcast" end time: Feb 11 09:19 PST
+"CanardTest.PoolStats_AfterBroadcast" time elapsed: 00:00:00
+----------------------------------------------------------
+
+35/81 Testing: CanardRejectTest.RX_RejectUnwanted
+35/81 Test: CanardRejectTest.RX_RejectUnwanted
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest" "--gtest_filter=CanardRejectTest.RX_RejectUnwanted" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CanardRejectTest.RX_RejectUnwanted" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CanardRejectTest.RX_RejectUnwanted
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CanardRejectTest
+[ RUN      ] CanardRejectTest.RX_RejectUnwanted
+[       OK ] CanardRejectTest.RX_RejectUnwanted (0 ms)
+[----------] 1 test from CanardRejectTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CanardRejectTest.RX_RejectUnwanted" end time: Feb 11 09:19 PST
+"CanardRejectTest.RX_RejectUnwanted" time elapsed: 00:00:00
+----------------------------------------------------------
+
+36/81 Testing: CircularQueue.ElementsAreCorrect
+36/81 Test: CircularQueue.ElementsAreCorrect
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/circular_queue_unittest" "--gtest_filter=CircularQueue.ElementsAreCorrect" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CircularQueue.ElementsAreCorrect" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CircularQueue.ElementsAreCorrect
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CircularQueue
+[ RUN      ] CircularQueue.ElementsAreCorrect
+[       OK ] CircularQueue.ElementsAreCorrect (0 ms)
+[----------] 1 test from CircularQueue (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CircularQueue.ElementsAreCorrect" end time: Feb 11 09:19 PST
+"CircularQueue.ElementsAreCorrect" time elapsed: 00:00:00
+----------------------------------------------------------
+
+37/81 Testing: CircularQueue.CheckIsEmptyAndIsFull16
+37/81 Test: CircularQueue.CheckIsEmptyAndIsFull16
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/circular_queue_unittest" "--gtest_filter=CircularQueue.CheckIsEmptyAndIsFull16" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CircularQueue.CheckIsEmptyAndIsFull16" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CircularQueue.CheckIsEmptyAndIsFull16
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CircularQueue
+[ RUN      ] CircularQueue.CheckIsEmptyAndIsFull16
+[       OK ] CircularQueue.CheckIsEmptyAndIsFull16 (0 ms)
+[----------] 1 test from CircularQueue (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CircularQueue.CheckIsEmptyAndIsFull16" end time: Feb 11 09:19 PST
+"CircularQueue.CheckIsEmptyAndIsFull16" time elapsed: 00:00:00
+----------------------------------------------------------
+
+38/81 Testing: CircularQueue.CheckIsEmptyAndIsFull32
+38/81 Test: CircularQueue.CheckIsEmptyAndIsFull32
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/circular_queue_unittest" "--gtest_filter=CircularQueue.CheckIsEmptyAndIsFull32" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"CircularQueue.CheckIsEmptyAndIsFull32" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = CircularQueue.CheckIsEmptyAndIsFull32
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CircularQueue
+[ RUN      ] CircularQueue.CheckIsEmptyAndIsFull32
+[       OK ] CircularQueue.CheckIsEmptyAndIsFull32 (0 ms)
+[----------] 1 test from CircularQueue (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"CircularQueue.CheckIsEmptyAndIsFull32" end time: Feb 11 09:19 PST
+"CircularQueue.CheckIsEmptyAndIsFull32" time elapsed: 00:00:00
+----------------------------------------------------------
+
+39/81 Testing: DroneCANMessageTest.GNSSFix2_BasicEncoDecode
+39/81 Test: DroneCANMessageTest.GNSSFix2_BasicEncoDecode
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.GNSSFix2_BasicEncoDecode" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.GNSSFix2_BasicEncoDecode" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.GNSSFix2_BasicEncoDecode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.GNSSFix2_BasicEncoDecode
+[       OK ] DroneCANMessageTest.GNSSFix2_BasicEncoDecode (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.GNSSFix2_BasicEncoDecode" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.GNSSFix2_BasicEncoDecode" time elapsed: 00:00:00
+----------------------------------------------------------
+
+40/81 Testing: DroneCANMessageTest.GNSSFix2_BoundaryValues
+40/81 Test: DroneCANMessageTest.GNSSFix2_BoundaryValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.GNSSFix2_BoundaryValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.GNSSFix2_BoundaryValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.GNSSFix2_BoundaryValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.GNSSFix2_BoundaryValues
+[       OK ] DroneCANMessageTest.GNSSFix2_BoundaryValues (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.GNSSFix2_BoundaryValues" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.GNSSFix2_BoundaryValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+41/81 Testing: DroneCANMessageTest.GNSSFix2_ModeSubModeValues
+41/81 Test: DroneCANMessageTest.GNSSFix2_ModeSubModeValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.GNSSFix2_ModeSubModeValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.GNSSFix2_ModeSubModeValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.GNSSFix2_ModeSubModeValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.GNSSFix2_ModeSubModeValues
+[       OK ] DroneCANMessageTest.GNSSFix2_ModeSubModeValues (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.GNSSFix2_ModeSubModeValues" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.GNSSFix2_ModeSubModeValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+42/81 Testing: DroneCANMessageTest.GNSSFix_BasicEncodeDecode
+42/81 Test: DroneCANMessageTest.GNSSFix_BasicEncodeDecode
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.GNSSFix_BasicEncodeDecode" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.GNSSFix_BasicEncodeDecode" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.GNSSFix_BasicEncodeDecode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.GNSSFix_BasicEncodeDecode
+[       OK ] DroneCANMessageTest.GNSSFix_BasicEncodeDecode (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.GNSSFix_BasicEncodeDecode" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.GNSSFix_BasicEncodeDecode" time elapsed: 00:00:00
+----------------------------------------------------------
+
+43/81 Testing: DroneCANMessageTest.GNSSFix_CovarianceArrays
+43/81 Test: DroneCANMessageTest.GNSSFix_CovarianceArrays
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.GNSSFix_CovarianceArrays" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.GNSSFix_CovarianceArrays" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.GNSSFix_CovarianceArrays
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.GNSSFix_CovarianceArrays
+[       OK ] DroneCANMessageTest.GNSSFix_CovarianceArrays (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.GNSSFix_CovarianceArrays" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.GNSSFix_CovarianceArrays" time elapsed: 00:00:00
+----------------------------------------------------------
+
+44/81 Testing: DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode
+44/81 Test: DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode
+[       OK ] DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.GNSSAuxiliary_BasicEncodeDecode" time elapsed: 00:00:00
+----------------------------------------------------------
+
+45/81 Testing: DroneCANMessageTest.NodeStatus_BasicEncodeDecode
+45/81 Test: DroneCANMessageTest.NodeStatus_BasicEncodeDecode
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.NodeStatus_BasicEncodeDecode" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.NodeStatus_BasicEncodeDecode" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.NodeStatus_BasicEncodeDecode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.NodeStatus_BasicEncodeDecode
+[       OK ] DroneCANMessageTest.NodeStatus_BasicEncodeDecode (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.NodeStatus_BasicEncodeDecode" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.NodeStatus_BasicEncodeDecode" time elapsed: 00:00:00
+----------------------------------------------------------
+
+46/81 Testing: DroneCANMessageTest.NodeStatus_AllHealthModes
+46/81 Test: DroneCANMessageTest.NodeStatus_AllHealthModes
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.NodeStatus_AllHealthModes" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.NodeStatus_AllHealthModes" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.NodeStatus_AllHealthModes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.NodeStatus_AllHealthModes
+[       OK ] DroneCANMessageTest.NodeStatus_AllHealthModes (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.NodeStatus_AllHealthModes" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.NodeStatus_AllHealthModes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+47/81 Testing: DroneCANMessageTest.BatteryInfo_BasicEncodeDecode
+47/81 Test: DroneCANMessageTest.BatteryInfo_BasicEncodeDecode
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.BatteryInfo_BasicEncodeDecode" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.BatteryInfo_BasicEncodeDecode" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.BatteryInfo_BasicEncodeDecode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.BatteryInfo_BasicEncodeDecode
+[       OK ] DroneCANMessageTest.BatteryInfo_BasicEncodeDecode (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.BatteryInfo_BasicEncodeDecode" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.BatteryInfo_BasicEncodeDecode" time elapsed: 00:00:00
+----------------------------------------------------------
+
+48/81 Testing: DroneCANMessageTest.BatteryInfo_BoundaryValues
+48/81 Test: DroneCANMessageTest.BatteryInfo_BoundaryValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANMessageTest.BatteryInfo_BoundaryValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANMessageTest.BatteryInfo_BoundaryValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANMessageTest.BatteryInfo_BoundaryValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANMessageTest
+[ RUN      ] DroneCANMessageTest.BatteryInfo_BoundaryValues
+[       OK ] DroneCANMessageTest.BatteryInfo_BoundaryValues (0 ms)
+[----------] 1 test from DroneCANMessageTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANMessageTest.BatteryInfo_BoundaryValues" end time: Feb 11 09:19 PST
+"DroneCANMessageTest.BatteryInfo_BoundaryValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+49/81 Testing: DroneCANConstants.GNSSFixStatusValues
+49/81 Test: DroneCANConstants.GNSSFixStatusValues
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANConstants.GNSSFixStatusValues" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANConstants.GNSSFixStatusValues" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANConstants.GNSSFixStatusValues
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANConstants
+[ RUN      ] DroneCANConstants.GNSSFixStatusValues
+[       OK ] DroneCANConstants.GNSSFixStatusValues (0 ms)
+[----------] 1 test from DroneCANConstants (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANConstants.GNSSFixStatusValues" end time: Feb 11 09:19 PST
+"DroneCANConstants.GNSSFixStatusValues" time elapsed: 00:00:00
+----------------------------------------------------------
+
+50/81 Testing: DroneCANConstants.MessageSizes
+50/81 Test: DroneCANConstants.MessageSizes
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANConstants.MessageSizes" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANConstants.MessageSizes" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANConstants.MessageSizes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANConstants
+[ RUN      ] DroneCANConstants.MessageSizes
+[       OK ] DroneCANConstants.MessageSizes (0 ms)
+[----------] 1 test from DroneCANConstants (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANConstants.MessageSizes" end time: Feb 11 09:19 PST
+"DroneCANConstants.MessageSizes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+51/81 Testing: DroneCANConstants.DataTypeSignatures
+51/81 Test: DroneCANConstants.DataTypeSignatures
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANConstants.DataTypeSignatures" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANConstants.DataTypeSignatures" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANConstants.DataTypeSignatures
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANConstants
+[ RUN      ] DroneCANConstants.DataTypeSignatures
+[       OK ] DroneCANConstants.DataTypeSignatures (0 ms)
+[----------] 1 test from DroneCANConstants (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANConstants.DataTypeSignatures" end time: Feb 11 09:19 PST
+"DroneCANConstants.DataTypeSignatures" time elapsed: 00:00:00
+----------------------------------------------------------
+
+52/81 Testing: DroneCANConstants.DataTypeIDs
+52/81 Test: DroneCANConstants.DataTypeIDs
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest" "--gtest_filter=DroneCANConstants.DataTypeIDs" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"DroneCANConstants.DataTypeIDs" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = DroneCANConstants.DataTypeIDs
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DroneCANConstants
+[ RUN      ] DroneCANConstants.DataTypeIDs
+[       OK ] DroneCANConstants.DataTypeIDs (0 ms)
+[----------] 1 test from DroneCANConstants (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"DroneCANConstants.DataTypeIDs" end time: Feb 11 09:19 PST
+"DroneCANConstants.DataTypeIDs" time elapsed: 00:00:00
+----------------------------------------------------------
+
+53/81 Testing: GimbalSerialTest.TestGimbalSerialScale
+53/81 Test: GimbalSerialTest.TestGimbalSerialScale
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/gimbal_serial_unittest" "--gtest_filter=GimbalSerialTest.TestGimbalSerialScale" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"GimbalSerialTest.TestGimbalSerialScale" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = GimbalSerialTest.TestGimbalSerialScale
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GimbalSerialTest
+[ RUN      ] GimbalSerialTest.TestGimbalSerialScale
+res16: -2048
+res16: -1
+res16: 3
+[       OK ] GimbalSerialTest.TestGimbalSerialScale (0 ms)
+[----------] 1 test from GimbalSerialTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GimbalSerialTest.TestGimbalSerialScale" end time: Feb 11 09:19 PST
+"GimbalSerialTest.TestGimbalSerialScale" time elapsed: 00:00:00
+----------------------------------------------------------
+
+54/81 Testing: GPSUbloxTest.TestUbloxCfgFillBytes
+54/81 Test: GPSUbloxTest.TestUbloxCfgFillBytes
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/gps_ublox_unittest" "--gtest_filter=GPSUbloxTest.TestUbloxCfgFillBytes" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"GPSUbloxTest.TestUbloxCfgFillBytes" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = GPSUbloxTest.TestUbloxCfgFillBytes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GPSUbloxTest
+[ RUN      ] GPSUbloxTest.TestUbloxCfgFillBytes
+b5 62 06 8a 0040
+01 01 00 00
+1: 10310025 01
+2: 00000042 69
+3: 00000004 20
+4: 00000042 69
+5: 00000004 20
+6: 00000042 69
+7: 00000004 20
+8: 00000042 69
+9: 00000004 20
+10: 00000042 69
+11: 00000004 20
+12: 00000042 69
+ef 3f
+Expected:
+b5 62 06 8a 09 00 01 01 00 00 25 00 31 10 01 02 a7 
+Actual:
+b5 62 06 8a 09 00 01 01 00 00 25 00 31 10 01 02 a7 
+[       OK ] GPSUbloxTest.TestUbloxCfgFillBytes (0 ms)
+[----------] 1 test from GPSUbloxTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GPSUbloxTest.TestUbloxCfgFillBytes" end time: Feb 11 09:19 PST
+"GPSUbloxTest.TestUbloxCfgFillBytes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+55/81 Testing: GPSUbloxTest.navSigStructureSizes
+55/81 Test: GPSUbloxTest.navSigStructureSizes
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/gps_ublox_unittest" "--gtest_filter=GPSUbloxTest.navSigStructureSizes" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"GPSUbloxTest.navSigStructureSizes" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = GPSUbloxTest.navSigStructureSizes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GPSUbloxTest
+[ RUN      ] GPSUbloxTest.navSigStructureSizes
+[       OK ] GPSUbloxTest.navSigStructureSizes (0 ms)
+[----------] 1 test from GPSUbloxTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"GPSUbloxTest.navSigStructureSizes" end time: Feb 11 09:19 PST
+"GPSUbloxTest.navSigStructureSizes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+56/81 Testing: MathsUnittest.TestConstrain
+56/81 Test: MathsUnittest.TestConstrain
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestConstrain" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestConstrain" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestConstrain
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestConstrain
+[       OK ] MathsUnittest.TestConstrain (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestConstrain" end time: Feb 11 09:19 PST
+"MathsUnittest.TestConstrain" time elapsed: 00:00:00
+----------------------------------------------------------
+
+57/81 Testing: MathsUnittest.TestConstrainNegatives
+57/81 Test: MathsUnittest.TestConstrainNegatives
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestConstrainNegatives" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestConstrainNegatives" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestConstrainNegatives
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestConstrainNegatives
+[       OK ] MathsUnittest.TestConstrainNegatives (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestConstrainNegatives" end time: Feb 11 09:19 PST
+"MathsUnittest.TestConstrainNegatives" time elapsed: 00:00:00
+----------------------------------------------------------
+
+58/81 Testing: MathsUnittest.TestConstrainf
+58/81 Test: MathsUnittest.TestConstrainf
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestConstrainf" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestConstrainf" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestConstrainf
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestConstrainf
+[       OK ] MathsUnittest.TestConstrainf (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestConstrainf" end time: Feb 11 09:19 PST
+"MathsUnittest.TestConstrainf" time elapsed: 00:00:00
+----------------------------------------------------------
+
+59/81 Testing: MathsUnittest.TestDegreesToRadians
+59/81 Test: MathsUnittest.TestDegreesToRadians
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestDegreesToRadians" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestDegreesToRadians" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestDegreesToRadians
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestDegreesToRadians
+[       OK ] MathsUnittest.TestDegreesToRadians (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestDegreesToRadians" end time: Feb 11 09:19 PST
+"MathsUnittest.TestDegreesToRadians" time elapsed: 00:00:00
+----------------------------------------------------------
+
+60/81 Testing: MathsUnittest.TestApplyDeadband
+60/81 Test: MathsUnittest.TestApplyDeadband
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestApplyDeadband" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestApplyDeadband" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestApplyDeadband
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestApplyDeadband
+[       OK ] MathsUnittest.TestApplyDeadband (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestApplyDeadband" end time: Feb 11 09:19 PST
+"MathsUnittest.TestApplyDeadband" time elapsed: 00:00:00
+----------------------------------------------------------
+
+61/81 Testing: MathsUnittest.TestRotateVectorWithNoAngle
+61/81 Test: MathsUnittest.TestRotateVectorWithNoAngle
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestRotateVectorWithNoAngle" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestRotateVectorWithNoAngle" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestRotateVectorWithNoAngle
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestRotateVectorWithNoAngle
+[       OK ] MathsUnittest.TestRotateVectorWithNoAngle (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestRotateVectorWithNoAngle" end time: Feb 11 09:19 PST
+"MathsUnittest.TestRotateVectorWithNoAngle" time elapsed: 00:00:00
+----------------------------------------------------------
+
+62/81 Testing: MathsUnittest.TestRotateVectorAroundAxis
+62/81 Test: MathsUnittest.TestRotateVectorAroundAxis
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestRotateVectorAroundAxis" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestRotateVectorAroundAxis" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestRotateVectorAroundAxis
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestRotateVectorAroundAxis
+[       OK ] MathsUnittest.TestRotateVectorAroundAxis (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestRotateVectorAroundAxis" end time: Feb 11 09:19 PST
+"MathsUnittest.TestRotateVectorAroundAxis" time elapsed: 00:00:00
+----------------------------------------------------------
+
+63/81 Testing: MathsUnittest.TestFastTrigonometrySinCos
+63/81 Test: MathsUnittest.TestFastTrigonometrySinCos
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestFastTrigonometrySinCos" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestFastTrigonometrySinCos" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestFastTrigonometrySinCos
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestFastTrigonometrySinCos
+[       OK ] MathsUnittest.TestFastTrigonometrySinCos (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestFastTrigonometrySinCos" end time: Feb 11 09:19 PST
+"MathsUnittest.TestFastTrigonometrySinCos" time elapsed: 00:00:00
+----------------------------------------------------------
+
+64/81 Testing: MathsUnittest.TestFastTrigonometryATan2
+64/81 Test: MathsUnittest.TestFastTrigonometryATan2
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestFastTrigonometryATan2" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestFastTrigonometryATan2" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestFastTrigonometryATan2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestFastTrigonometryATan2
+[       OK ] MathsUnittest.TestFastTrigonometryATan2 (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestFastTrigonometryATan2" end time: Feb 11 09:19 PST
+"MathsUnittest.TestFastTrigonometryATan2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+65/81 Testing: MathsUnittest.TestFastTrigonometryACos
+65/81 Test: MathsUnittest.TestFastTrigonometryACos
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/maths_unittest" "--gtest_filter=MathsUnittest.TestFastTrigonometryACos" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"MathsUnittest.TestFastTrigonometryACos" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = MathsUnittest.TestFastTrigonometryACos
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MathsUnittest
+[ RUN      ] MathsUnittest.TestFastTrigonometryACos
+[       OK ] MathsUnittest.TestFastTrigonometryACos (0 ms)
+[----------] 1 test from MathsUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"MathsUnittest.TestFastTrigonometryACos" end time: Feb 11 09:19 PST
+"MathsUnittest.TestFastTrigonometryACos" time elapsed: 00:00:00
+----------------------------------------------------------
+
+66/81 Testing: OLCTest.TestEncode
+66/81 Test: OLCTest.TestEncode
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/olc_unittest" "--gtest_filter=OLCTest.TestEncode" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"OLCTest.TestEncode" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OLCTest.TestEncode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OLCTest
+[ RUN      ] OLCTest.TestEncode
+[       OK ] OLCTest.TestEncode (0 ms)
+[----------] 1 test from OLCTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"OLCTest.TestEncode" end time: Feb 11 09:19 PST
+"OLCTest.TestEncode" time elapsed: 00:00:00
+----------------------------------------------------------
+
+67/81 Testing: OSDTest.TestCentiNumber
+67/81 Test: OSDTest.TestCentiNumber
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/osd_unittest" "--gtest_filter=OSDTest.TestCentiNumber" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"OSDTest.TestCentiNumber" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = OSDTest.TestCentiNumber
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from OSDTest
+[ RUN      ] OSDTest.TestCentiNumber
+' 123.45'
+'123.45'
+'123.4'
+' 123'
+'123'
+'123'
+' -123.45'
+'-123.45'
+'-123.4'
+' -123'
+'-123'
+[       OK ] OSDTest.TestCentiNumber (0 ms)
+[----------] 1 test from OSDTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"OSDTest.TestCentiNumber" end time: Feb 11 09:19 PST
+"OSDTest.TestCentiNumber" time elapsed: 00:00:00
+----------------------------------------------------------
+
+68/81 Testing: RCDeviceTest.TestRCSplitInitWithoutPortConfigurated
+68/81 Test: RCDeviceTest.TestRCSplitInitWithoutPortConfigurated
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestRCSplitInitWithoutPortConfigurated" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestRCSplitInitWithoutPortConfigurated" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestRCSplitInitWithoutPortConfigurated
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestRCSplitInitWithoutPortConfigurated
+[       OK ] RCDeviceTest.TestRCSplitInitWithoutPortConfigurated (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestRCSplitInitWithoutPortConfigurated" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestRCSplitInitWithoutPortConfigurated" time elapsed: 00:00:00
+----------------------------------------------------------
+
+69/81 Testing: RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated
+69/81 Test: RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated
+[       OK ] RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestRCSplitInitWithoutOpenPortConfigurated" time elapsed: 00:00:00
+----------------------------------------------------------
+
+70/81 Testing: RCDeviceTest.TestInitDevice
+70/81 Test: RCDeviceTest.TestInitDevice
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestInitDevice" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestInitDevice" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestInitDevice
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestInitDevice
+[       OK ] RCDeviceTest.TestInitDevice (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestInitDevice" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestInitDevice" time elapsed: 00:00:00
+----------------------------------------------------------
+
+71/81 Testing: RCDeviceTest.TestInitDeviceWithInvalidResponse
+71/81 Test: RCDeviceTest.TestInitDeviceWithInvalidResponse
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestInitDeviceWithInvalidResponse" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestInitDeviceWithInvalidResponse" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestInitDeviceWithInvalidResponse
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestInitDeviceWithInvalidResponse
+[       OK ] RCDeviceTest.TestInitDeviceWithInvalidResponse (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestInitDeviceWithInvalidResponse" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestInitDeviceWithInvalidResponse" time elapsed: 00:00:00
+----------------------------------------------------------
+
+72/81 Testing: RCDeviceTest.TestWifiModeChangeWithDeviceUnready
+72/81 Test: RCDeviceTest.TestWifiModeChangeWithDeviceUnready
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestWifiModeChangeWithDeviceUnready" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestWifiModeChangeWithDeviceUnready" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestWifiModeChangeWithDeviceUnready
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestWifiModeChangeWithDeviceUnready
+[       OK ] RCDeviceTest.TestWifiModeChangeWithDeviceUnready (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestWifiModeChangeWithDeviceUnready" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestWifiModeChangeWithDeviceUnready" time elapsed: 00:00:00
+----------------------------------------------------------
+
+73/81 Testing: RCDeviceTest.TestWifiModeChangeWithDeviceReady
+73/81 Test: RCDeviceTest.TestWifiModeChangeWithDeviceReady
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestWifiModeChangeWithDeviceReady" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestWifiModeChangeWithDeviceReady" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestWifiModeChangeWithDeviceReady
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestWifiModeChangeWithDeviceReady
+[       OK ] RCDeviceTest.TestWifiModeChangeWithDeviceReady (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestWifiModeChangeWithDeviceReady" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestWifiModeChangeWithDeviceReady" time elapsed: 00:00:00
+----------------------------------------------------------
+
+74/81 Testing: RCDeviceTest.TestWifiModeChangeCombine
+74/81 Test: RCDeviceTest.TestWifiModeChangeCombine
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.TestWifiModeChangeCombine" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.TestWifiModeChangeCombine" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.TestWifiModeChangeCombine
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.TestWifiModeChangeCombine
+[       OK ] RCDeviceTest.TestWifiModeChangeCombine (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.TestWifiModeChangeCombine" end time: Feb 11 09:19 PST
+"RCDeviceTest.TestWifiModeChangeCombine" time elapsed: 00:00:00
+----------------------------------------------------------
+
+75/81 Testing: RCDeviceTest.Test5KeyOSDCableSimulationProtocol
+75/81 Test: RCDeviceTest.Test5KeyOSDCableSimulationProtocol
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.Test5KeyOSDCableSimulationProtocol" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.Test5KeyOSDCableSimulationProtocol" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.Test5KeyOSDCableSimulationProtocol
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.Test5KeyOSDCableSimulationProtocol
+[       OK ] RCDeviceTest.Test5KeyOSDCableSimulationProtocol (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.Test5KeyOSDCableSimulationProtocol" end time: Feb 11 09:19 PST
+"RCDeviceTest.Test5KeyOSDCableSimulationProtocol" time elapsed: 00:00:00
+----------------------------------------------------------
+
+76/81 Testing: RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport
+76/81 Test: RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest" "--gtest_filter=RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from RCDeviceTest
+[ RUN      ] RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport
+[       OK ] RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport (0 ms)
+[----------] 1 test from RCDeviceTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport" end time: Feb 11 09:19 PST
+"RCDeviceTest.Test5KeyOSDCableSimulationWithout5KeyFeatureSupport" time elapsed: 00:00:00
+----------------------------------------------------------
+
+77/81 Testing: TelemetryHottTest.UpdateGPSCoordinates1
+77/81 Test: TelemetryHottTest.UpdateGPSCoordinates1
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/telemetry_hott_unittest" "--gtest_filter=TelemetryHottTest.UpdateGPSCoordinates1" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"TelemetryHottTest.UpdateGPSCoordinates1" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = TelemetryHottTest.UpdateGPSCoordinates1
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from TelemetryHottTest
+[ RUN      ] TelemetryHottTest.UpdateGPSCoordinates1
+[       OK ] TelemetryHottTest.UpdateGPSCoordinates1 (0 ms)
+[----------] 1 test from TelemetryHottTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"TelemetryHottTest.UpdateGPSCoordinates1" end time: Feb 11 09:19 PST
+"TelemetryHottTest.UpdateGPSCoordinates1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+78/81 Testing: TelemetryHottTest.UpdateGPSCoordinates2
+78/81 Test: TelemetryHottTest.UpdateGPSCoordinates2
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/telemetry_hott_unittest" "--gtest_filter=TelemetryHottTest.UpdateGPSCoordinates2" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"TelemetryHottTest.UpdateGPSCoordinates2" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = TelemetryHottTest.UpdateGPSCoordinates2
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from TelemetryHottTest
+[ RUN      ] TelemetryHottTest.UpdateGPSCoordinates2
+[       OK ] TelemetryHottTest.UpdateGPSCoordinates2 (0 ms)
+[----------] 1 test from TelemetryHottTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"TelemetryHottTest.UpdateGPSCoordinates2" end time: Feb 11 09:19 PST
+"TelemetryHottTest.UpdateGPSCoordinates2" time elapsed: 00:00:00
+----------------------------------------------------------
+
+79/81 Testing: TelemetryHottTest.UpdateGPSCoordinates3
+79/81 Test: TelemetryHottTest.UpdateGPSCoordinates3
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/telemetry_hott_unittest" "--gtest_filter=TelemetryHottTest.UpdateGPSCoordinates3" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"TelemetryHottTest.UpdateGPSCoordinates3" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = TelemetryHottTest.UpdateGPSCoordinates3
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from TelemetryHottTest
+[ RUN      ] TelemetryHottTest.UpdateGPSCoordinates3
+[       OK ] TelemetryHottTest.UpdateGPSCoordinates3 (0 ms)
+[----------] 1 test from TelemetryHottTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"TelemetryHottTest.UpdateGPSCoordinates3" end time: Feb 11 09:19 PST
+"TelemetryHottTest.UpdateGPSCoordinates3" time elapsed: 00:00:00
+----------------------------------------------------------
+
+80/81 Testing: TimeUnittest.TestMillis
+80/81 Test: TimeUnittest.TestMillis
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/time_unittest" "--gtest_filter=TimeUnittest.TestMillis" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"TimeUnittest.TestMillis" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = TimeUnittest.TestMillis
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from TimeUnittest
+[ RUN      ] TimeUnittest.TestMillis
+[       OK ] TimeUnittest.TestMillis (0 ms)
+[----------] 1 test from TimeUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"TimeUnittest.TestMillis" end time: Feb 11 09:19 PST
+"TimeUnittest.TestMillis" time elapsed: 00:00:00
+----------------------------------------------------------
+
+81/81 Testing: TimeUnittest.TestMicros
+81/81 Test: TimeUnittest.TestMicros
+Command: "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/time_unittest" "--gtest_filter=TimeUnittest.TestMicros" "--gtest_also_run_disabled_tests"
+Directory: /home/robs/Projects/inav-claude/inav/testing/src/test/unit
+"TimeUnittest.TestMicros" start time: Feb 11 09:19 PST
+Output:
+----------------------------------------------------------
+Running main() from /home/robs/Projects/inav-claude/inav/testing/src/test/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = TimeUnittest.TestMicros
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from TimeUnittest
+[ RUN      ] TimeUnittest.TestMicros
+[       OK ] TimeUnittest.TestMicros (0 ms)
+[----------] 1 test from TimeUnittest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"TimeUnittest.TestMicros" end time: Feb 11 09:19 PST
+"TimeUnittest.TestMicros" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 11 09:19 PST

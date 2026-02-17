@@ -1,0 +1,27 @@
+{
+  "tests": 3,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "CircularQueue",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "ElementsAreCorrect",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/circular_queue_unittest.cc",
+          "line": 15
+        },
+        {
+          "name": "CheckIsEmptyAndIsFull16",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/circular_queue_unittest.cc",
+          "line": 54
+        },
+        {
+          "name": "CheckIsEmptyAndIsFull32",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/circular_queue_unittest.cc",
+          "line": 111
+        }
+      ]
+    }
+  ]
+}

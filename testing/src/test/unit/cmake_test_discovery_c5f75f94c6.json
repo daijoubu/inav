@@ -1,0 +1,22 @@
+{
+  "tests": 2,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "GPSUbloxTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "TestUbloxCfgFillBytes",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/gps_ublox_unittest.cc",
+          "line": 51
+        },
+        {
+          "name": "navSigStructureSizes",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/gps_ublox_unittest.cc",
+          "line": 92
+        }
+      ]
+    }
+  ]
+}

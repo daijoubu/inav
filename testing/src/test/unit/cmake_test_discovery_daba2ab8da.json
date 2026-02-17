@@ -1,0 +1,168 @@
+{
+  "tests": 30,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "CanardTest",
+      "tests": 29,
+      "testsuite": [
+        {
+          "name": "Init_BasicState",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 132
+        },
+        {
+          "name": "Init_UserReference",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 139
+        },
+        {
+          "name": "NodeID_SetAndGet",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 144
+        },
+        {
+          "name": "NodeID_BoundaryValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 150
+        },
+        {
+          "name": "NodeID_ForgetAndReassign",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 169
+        },
+        {
+          "name": "MemPool_AllocFree",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 185
+        },
+        {
+          "name": "MemPool_Exhaustion",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 204
+        },
+        {
+          "name": "MemPool_PeakTracking",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 235
+        },
+        {
+          "name": "CRC_KnownValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 264
+        },
+        {
+          "name": "CRC_AddString",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 276
+        },
+        {
+          "name": "CRC_SignatureProcessing",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 285
+        },
+        {
+          "name": "Float16_SpecialValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 304
+        },
+        {
+          "name": "Float16_BatteryVoltageRange",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 339
+        },
+        {
+          "name": "TransferIDForwardDistance",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 356
+        },
+        {
+          "name": "IncrementTransferID",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 377
+        },
+        {
+          "name": "IsPriorityHigher",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 393
+        },
+        {
+          "name": "DlcConversion",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 408
+        },
+        {
+          "name": "TX_SingleFrameBroadcast",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 446
+        },
+        {
+          "name": "TX_TransferIDWrap",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 496
+        },
+        {
+          "name": "TX_InvalidArguments",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 520
+        },
+        {
+          "name": "RX_SingleFrameBroadcast",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 543
+        },
+        {
+          "name": "RX_RejectNonExtended",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 597
+        },
+        {
+          "name": "RX_RejectRTR",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 612
+        },
+        {
+          "name": "RX_RejectZeroLength",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 626
+        },
+        {
+          "name": "TX_MultiFrameBroadcast",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 643
+        },
+        {
+          "name": "TX_MultiFramePoolExhaustion",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 683
+        },
+        {
+          "name": "ExtractDataType_Broadcast",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 713
+        },
+        {
+          "name": "ExtractDataType_Service",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 724
+        },
+        {
+          "name": "PoolStats_AfterBroadcast",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 743
+        }
+      ]
+    },
+    {
+      "name": "CanardRejectTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "RX_RejectUnwanted",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/canard_unittest.cc",
+          "line": 578
+        }
+      ]
+    }
+  ]
+}

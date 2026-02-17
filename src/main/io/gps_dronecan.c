@@ -65,6 +65,11 @@ void gpsRestartDronecan(void)
 
 void gpsHandleDronecan(void)
 {
+    // Check if DroneCAN is operational before processing GPS data
+    if (dronecanGetInitStatus() != DRONECAN_INIT_SUCCESSFUL) {
+        return;  // DroneCAN not available, skip GPS processing
+    }
+
     if (newDataReady) {
         gpsProcessNewSolutionData(false);
         newDataReady = false;

@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/canard_unittest.dir/link.d CMakeFiles/canard_unittest.dir/canard_unittest.cc.o CMakeFiles/canard_unittest.dir/__/__/main/drivers/dronecan/libcanard/canard.c.o CMakeFiles/canard_unittest.dir/canard_unittest_gen/settings_generated.c.o -o canard_unittest  ../../../lib/libgtest_main.a ../../../lib/libgtest.a

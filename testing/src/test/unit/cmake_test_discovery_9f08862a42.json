@@ -1,0 +1,57 @@
+{
+  "tests": 9,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "RCDeviceTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "TestRCSplitInitWithoutPortConfigurated",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 135
+        },
+        {
+          "name": "TestRCSplitInitWithoutOpenPortConfigurated",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 149
+        },
+        {
+          "name": "TestInitDevice",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 166
+        },
+        {
+          "name": "TestInitDeviceWithInvalidResponse",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 193
+        },
+        {
+          "name": "TestWifiModeChangeWithDeviceUnready",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 263
+        },
+        {
+          "name": "TestWifiModeChangeWithDeviceReady",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 328
+        },
+        {
+          "name": "TestWifiModeChangeCombine",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 392
+        },
+        {
+          "name": "Test5KeyOSDCableSimulationProtocol",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 478
+        },
+        {
+          "name": "Test5KeyOSDCableSimulationWithout5KeyFeatureSupport",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/rcdevice_unittest.cc",
+          "line": 670
+        }
+      ]
+    }
+  ]
+}

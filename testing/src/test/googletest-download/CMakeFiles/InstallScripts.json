@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/robs/Projects/inav-claude/inav/testing/src/test/googletest-download/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

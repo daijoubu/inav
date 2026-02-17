@@ -32,17 +32,26 @@
 
 #include "common/utils.h"
 #include "sensors/battery_sensor_dronecan.h"
+#include "drivers/dronecan/dronecan.h"
 
 static uint16_t dronecanVbat;
 static uint16_t dronecanAmperage;
 
 uint16_t dronecanBattSensorGetVBat(void)
 {
+    // Return 0 if DroneCAN is not operational
+    if (dronecanGetInitStatus() != DRONECAN_INIT_SUCCESSFUL) {
+        return 0;
+    }
     return dronecanVbat;
 }
 
 uint16_t dronecanBattSensorGetAmperage(void)
 {
+    // Return 0 if DroneCAN is not operational
+    if (dronecanGetInitStatus() != DRONECAN_INIT_SUCCESSFUL) {
+        return 0;
+    }
     return dronecanAmperage;
 }
 

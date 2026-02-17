@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/bitarray_unittest.dir/link.d CMakeFiles/bitarray_unittest.dir/bitarray_unittest.cc.o CMakeFiles/bitarray_unittest.dir/__/__/main/common/bitarray.c.o CMakeFiles/bitarray_unittest.dir/bitarray_unittest_gen/settings_generated.c.o -o bitarray_unittest  ../../../lib/libgtest_main.a ../../../lib/libgtest.a

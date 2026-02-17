@@ -1,0 +1,62 @@
+{
+  "tests": 10,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MathsUnittest",
+      "tests": 10,
+      "testsuite": [
+        {
+          "name": "TestConstrain",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 35
+        },
+        {
+          "name": "TestConstrainNegatives",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 56
+        },
+        {
+          "name": "TestConstrainf",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 76
+        },
+        {
+          "name": "TestDegreesToRadians",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 100
+        },
+        {
+          "name": "TestApplyDeadband",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 108
+        },
+        {
+          "name": "TestRotateVectorWithNoAngle",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 129
+        },
+        {
+          "name": "TestRotateVectorAroundAxis",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 142
+        },
+        {
+          "name": "TestFastTrigonometrySinCos",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 157
+        },
+        {
+          "name": "TestFastTrigonometryATan2",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 188
+        },
+        {
+          "name": "TestFastTrigonometryACos",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/maths_unittest.cc",
+          "line": 200
+        }
+      ]
+    }
+  ]
+}

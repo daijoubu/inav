@@ -1,0 +1,17 @@
+{
+  "tests": 1,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "OSDTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "TestCentiNumber",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/osd_unittest.cc",
+          "line": 12
+        }
+      ]
+    }
+  ]
+}

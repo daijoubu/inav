@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/gps_ublox_unittest.dir/link.d CMakeFiles/gps_ublox_unittest.dir/gps_ublox_unittest.cc.o CMakeFiles/gps_ublox_unittest.dir/__/__/main/io/gps_ublox_utils.c.o CMakeFiles/gps_ublox_unittest.dir/gps_ublox_unittest_gen/settings_generated.c.o -o gps_ublox_unittest  ../../../lib/libgtest_main.a ../../../lib/libgtest.a

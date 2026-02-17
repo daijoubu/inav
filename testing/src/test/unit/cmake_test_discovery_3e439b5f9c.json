@@ -1,0 +1,17 @@
+{
+  "tests": 1,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "GimbalSerialTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "TestGimbalSerialScale",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/gimbal_serial_unittest.cc",
+          "line": 43
+        }
+      ]
+    }
+  ]
+}

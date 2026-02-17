@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/olc_unittest.dir/link.d CMakeFiles/olc_unittest.dir/olc_unittest.cc.o CMakeFiles/olc_unittest.dir/__/__/main/common/olc.c.o CMakeFiles/olc_unittest.dir/olc_unittest_gen/settings_generated.c.o -o olc_unittest  ../../../lib/libgtest_main.a ../../../lib/libgtest.a

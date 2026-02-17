@@ -1,0 +1,5 @@
+if(EXISTS "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest[1]_tests.cmake")
+  include("/home/robs/Projects/inav-claude/inav/testing/src/test/unit/dronecan_messages_unittest[1]_tests.cmake")
+else()
+  add_test(dronecan_messages_unittest_NOT_BUILT dronecan_messages_unittest_NOT_BUILT)
+endif()

@@ -1,0 +1,3 @@
+add_test([=[GimbalSerialTest.TestGimbalSerialScale]=]  /home/robs/Projects/inav-claude/inav/testing/src/test/unit/gimbal_serial_unittest [==[--gtest_filter=GimbalSerialTest.TestGimbalSerialScale]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[GimbalSerialTest.TestGimbalSerialScale]=]  PROPERTIES DEF_SOURCE_LINE /home/robs/Projects/inav-claude/inav/src/test/unit/gimbal_serial_unittest.cc:43 WORKING_DIRECTORY /home/robs/Projects/inav-claude/inav/testing/src/test/unit SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set(  gimbal_serial_unittest_TESTS GimbalSerialTest.TestGimbalSerialScale)

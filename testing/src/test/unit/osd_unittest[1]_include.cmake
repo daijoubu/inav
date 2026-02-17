@@ -1,0 +1,5 @@
+if(EXISTS "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/osd_unittest[1]_tests.cmake")
+  include("/home/robs/Projects/inav-claude/inav/testing/src/test/unit/osd_unittest[1]_tests.cmake")
+else()
+  add_test(osd_unittest_NOT_BUILT osd_unittest_NOT_BUILT)
+endif()

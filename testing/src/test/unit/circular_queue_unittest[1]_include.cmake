@@ -1,0 +1,5 @@
+if(EXISTS "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/circular_queue_unittest[1]_tests.cmake")
+  include("/home/robs/Projects/inav-claude/inav/testing/src/test/unit/circular_queue_unittest[1]_tests.cmake")
+else()
+  add_test(circular_queue_unittest_NOT_BUILT circular_queue_unittest_NOT_BUILT)
+endif()

@@ -1,0 +1,37 @@
+{
+  "tests": 5,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "BitArrayTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "TestGetSet",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/bitarray_unittest.cc",
+          "line": 11
+        },
+        {
+          "name": "TestClr",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/bitarray_unittest.cc",
+          "line": 26
+        },
+        {
+          "name": "TestFind",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/bitarray_unittest.cc",
+          "line": 39
+        },
+        {
+          "name": "TestSetClrAll",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/bitarray_unittest.cc",
+          "line": 72
+        },
+        {
+          "name": "TestOutOfBounds",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/bitarray_unittest.cc",
+          "line": 88
+        }
+      ]
+    }
+  ]
+}

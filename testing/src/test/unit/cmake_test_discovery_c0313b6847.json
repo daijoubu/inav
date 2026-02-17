@@ -1,0 +1,22 @@
+{
+  "tests": 2,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TimeUnittest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "TestMillis",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/time_unittest.cc",
+          "line": 37
+        },
+        {
+          "name": "TestMicros",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/time_unittest.cc",
+          "line": 45
+        }
+      ]
+    }
+  ]
+}

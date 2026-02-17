@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/time_unittest.dir/link.d CMakeFiles/time_unittest.dir/time_unittest.cc.o CMakeFiles/time_unittest.dir/__/__/main/drivers/time.c.o CMakeFiles/time_unittest.dir/time_unittest_gen/settings_generated.c.o -o time_unittest  ../../../lib/libgtest_main.a ../../../lib/libgtest.a

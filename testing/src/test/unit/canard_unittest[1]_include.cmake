@@ -1,0 +1,5 @@
+if(EXISTS "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest[1]_tests.cmake")
+  include("/home/robs/Projects/inav-claude/inav/testing/src/test/unit/canard_unittest[1]_tests.cmake")
+else()
+  add_test(canard_unittest_NOT_BUILT canard_unittest_NOT_BUILT)
+endif()

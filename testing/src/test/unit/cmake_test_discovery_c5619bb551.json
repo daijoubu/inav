@@ -1,0 +1,27 @@
+{
+  "tests": 3,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "TelemetryHottTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "UpdateGPSCoordinates1",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/telemetry_hott_unittest.cc",
+          "line": 77
+        },
+        {
+          "name": "UpdateGPSCoordinates2",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/telemetry_hott_unittest.cc",
+          "line": 99
+        },
+        {
+          "name": "UpdateGPSCoordinates3",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/telemetry_hott_unittest.cc",
+          "line": 123
+        }
+      ]
+    }
+  ]
+}

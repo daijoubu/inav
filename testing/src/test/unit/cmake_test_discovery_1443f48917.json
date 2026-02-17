@@ -1,0 +1,98 @@
+{
+  "tests": 16,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "DroneCANMessageTest",
+      "tests": 12,
+      "testsuite": [
+        {
+          "name": "GNSSFix2_BasicEncoDecode",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 53
+        },
+        {
+          "name": "GNSSFix2_BoundaryValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 100
+        },
+        {
+          "name": "GNSSFix2_ModeSubModeValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 128
+        },
+        {
+          "name": "GNSSFix_BasicEncodeDecode",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 170
+        },
+        {
+          "name": "GNSSFix_CovarianceArrays",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 214
+        },
+        {
+          "name": "GNSSAuxiliary_BasicEncodeDecode",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 277
+        },
+        {
+          "name": "NodeStatus_BasicEncodeDecode",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 323
+        },
+        {
+          "name": "NodeStatus_AllHealthModes",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 357
+        },
+        {
+          "name": "BatteryInfo_BasicEncodeDecode",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 403
+        },
+        {
+          "name": "BatteryInfo_BoundaryValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 440
+        },
+        {
+          "name": "BatteryInfo_BatteryId_FilteringValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 495
+        },
+        {
+          "name": "BatteryInfo_BatteryId_MultipleBatteries",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 522
+        }
+      ]
+    },
+    {
+      "name": "DroneCANConstants",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "GNSSFixStatusValues",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 576
+        },
+        {
+          "name": "MessageSizes",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 584
+        },
+        {
+          "name": "DataTypeSignatures",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 597
+        },
+        {
+          "name": "DataTypeIDs",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/dronecan_messages_unittest.cc",
+          "line": 607
+        }
+      ]
+    }
+  ]
+}

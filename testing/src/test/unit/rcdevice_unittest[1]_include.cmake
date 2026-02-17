@@ -1,0 +1,5 @@
+if(EXISTS "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest[1]_tests.cmake")
+  include("/home/robs/Projects/inav-claude/inav/testing/src/test/unit/rcdevice_unittest[1]_tests.cmake")
+else()
+  add_test(rcdevice_unittest_NOT_BUILT rcdevice_unittest_NOT_BUILT)
+endif()

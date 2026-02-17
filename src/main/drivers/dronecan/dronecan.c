@@ -27,6 +27,10 @@
 CanardInstance canard;
 uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
+
+// DroneCAN initialization status tracking for graceful degradation
+static dronecanInitStatus_e dronecanInitStatus = DRONECAN_INIT_UNINITIALIZED;
+
 enum dronecanState_e {
     STATE_DRONECAN_INIT,
     STATE_DRONECAN_NORMAL,
@@ -402,6 +406,8 @@ void process1HzTasks(timeUs_t timestamp_usec)
 void dronecanInit(void)
 {
     LOG_DEBUG(CAN, "dronecan Init");
+    dronecanInitStatus = DRONECAN_INIT_UNINITIALIZED;
+
     uint32_t bitrate = 500000; // At least define 500000
 
     switch (dronecanConfig()->bitRateKbps){
@@ -412,7 +418,7 @@ void dronecanInit(void)
         case DRONECAN_BITRATE_250KBPS:
             bitrate = 250000;
             break;
-        
+
         case DRONECAN_BITRATE_500KBPS:
             bitrate = 500000;
             break;
@@ -426,12 +432,16 @@ void dronecanInit(void)
             bitrate = 500000;
             break;
     }
+
+    // Attempt to initialize CAN hardware
     if(canardSTM32CAN1_Init(bitrate) != CANARD_OK)
     {
-        LOG_ERROR(CAN, "Unable to initialize the CAN peripheral");
-        // TODO: Notify the user that CAN does not work and disable the peripheral
-        return;
-    }  
+        LOG_ERROR(CAN, "CAN peripheral initialization failed - DroneCAN disabled");
+        LOG_ERROR(CAN, "Check: CAN bus connection, transceiver power, pin configuration");
+        dronecanInitStatus = DRONECAN_INIT_FAILED;
+        return;  // Gracefully exit - do not attempt libcanard init
+    }
+
     /*
     Initializing the Libcanard instance.
     */
@@ -449,10 +459,27 @@ void dronecanInit(void)
     } else {
 	      LOG_DEBUG(CAN, "Node ID is 0, this node is anonymous and can't transmit most messages. Please update this in config");
     }
+
+    // Initialization successful
+    dronecanInitStatus = DRONECAN_INIT_SUCCESSFUL;
+    LOG_INFO(CAN, "DroneCAN initialized successfully (Node ID: %u, Bitrate: %u kbps)",
+             dronecanConfig()->nodeID, (unsigned int)(bitrate / 1000));
 }
 
 void dronecanUpdate(timeUs_t currentTimeUs)
 {
+    // Check if DroneCAN hardware initialization failed
+    if (dronecanInitStatus == DRONECAN_INIT_FAILED) {
+        // CAN hardware unavailable - gracefully degrade
+        // Return early to prevent any CAN operations on non-functional hardware
+        return;
+    }
+
+    // If not yet initialized, don't process anything
+    if (dronecanInitStatus == DRONECAN_INIT_UNINITIALIZED) {
+        return;
+    }
+
     static timeUs_t next_1hz_service_at = 0;
     static timeUs_t busoffTimeUs = 0;
     CanardCANFrame rx_frame;
@@ -510,8 +537,18 @@ void dronecanUpdate(timeUs_t currentTimeUs)
                 dronecanState = STATE_DRONECAN_NORMAL;
             }
             break;
-    
+
     }
-    
+
 }
+
+/**
+ * @brief Get the current initialization status of DroneCAN
+ * @return dronecanInitStatus_e - Current status (UNINITIALIZED, FAILED, or SUCCESSFUL)
+ */
+dronecanInitStatus_e dronecanGetInitStatus(void)
+{
+    return dronecanInitStatus;
+}
+
 #endif

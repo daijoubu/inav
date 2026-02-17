@@ -1,0 +1,5 @@
+if(EXISTS "/home/robs/Projects/inav-claude/inav/testing/src/test/unit/gimbal_serial_unittest[1]_tests.cmake")
+  include("/home/robs/Projects/inav-claude/inav/testing/src/test/unit/gimbal_serial_unittest[1]_tests.cmake")
+else()
+  add_test(gimbal_serial_unittest_NOT_BUILT gimbal_serial_unittest_NOT_BUILT)
+endif()

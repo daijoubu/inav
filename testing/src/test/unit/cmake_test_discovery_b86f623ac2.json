@@ -1,0 +1,17 @@
+{
+  "tests": 1,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "OLCTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "TestEncode",
+          "file": "\/home\/robs\/Projects\/inav-claude\/inav\/src\/test\/unit\/olc_unittest.cc",
+          "line": 58
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1411 @@
+../../../../bin/SITL.elf: \
+  /home/robs/Projects/inav-claude/inav/src/main/target/link/sitl.ld \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o \
+  CMakeFiles/SITL.elf.dir/__/__/config/config_streamer_file.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/dronecan/libcanard/canard_sitl_driver.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/serial_tcp.c.o \
+  CMakeFiles/SITL.elf.dir/sim/realFlight.c.o \
+  CMakeFiles/SITL.elf.dir/sim/simHelper.c.o \
+  CMakeFiles/SITL.elf.dir/sim/simple_soap_client.c.o \
+  CMakeFiles/SITL.elf.dir/sim/xplane.c.o \
+  CMakeFiles/SITL.elf.dir/config.c.o \
+  CMakeFiles/SITL.elf.dir/serial_proxy.c.o \
+  CMakeFiles/SITL.elf.dir/target.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/main.c.o \
+  CMakeFiles/SITL.elf.dir/__/common_hardware.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/build/assert.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/build/build_config.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/build/debug.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/build/version.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/bitarray.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/calibration.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/colorconversion.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/crc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/encoding.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/filter.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/fp_pid.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/gps_conversion.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/log.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/lulu.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/maths.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/memory.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/olc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/printf.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/streambuf.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/string_light.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/time.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/typeconversion.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/uvarint.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/common/circular_queue.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/config/config_eeprom.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/config/config_streamer.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/config/feature.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/config/parameter_group.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/config/general_settings.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/1-wire.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/1-wire/ds_crc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/1-wire/ds2482.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi088.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi160.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi270.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi270_maximum_fifo.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_icm20689.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_icm42605.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_mpu6000.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_mpu6500.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_mpu9250.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_lsm6dxx.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/adc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_bmp085.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_bmp280.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_bmp388.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_dps310.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_lps25h.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_ms56xx.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_spl06.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_2smpb_02b.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/buf_writer.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/bus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/bus_busdev_i2c.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/bus_busdev_spi.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/bus_i2c_soft.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ak8963.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ak8975.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_hmc5883l.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ist8308.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ist8310.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_lis3mdl.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_mag3110.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_mpu9250.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_qmc5883l.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_qmc5883p.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_rm3100.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_vcm5883.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_mlx90393.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/dronecan/libcanard/canard.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/dronecan/dronecan.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/display.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/display_canvas.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/display_font_metadata.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/display_widgets.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/exti.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/flash.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/flash_m25p16.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/flash_w25n.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/gimbal_common.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/headtracker_common.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/io.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/io_pcf8574.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/io_port_expander.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/irlock.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/light_led.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/light_ws2811strip.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/lights_io.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/max7456.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/serial_softserial.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/opflow/opflow_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/opflow/opflow_virtual.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/osd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_adc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_ms4525.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_dlvr_l10d.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_virtual.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pwm_esc_detect.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pwm_mapping.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pwm_output.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/pinio.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_srf10.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_vl53l0x.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_vl53l1x.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_virtual.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_us42.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_tof10120_i2c.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_teraranger_evo.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/resource.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/serial.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/sound_beeper.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/stack_check.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/temperature/ds18b20.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/temperature/lm75.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/usb_msc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/drivers/vtx_common.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/cli.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/config.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/control_profile.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/fc_core.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/fc_init.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/fc_tasks.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/fc_hardfaults.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/fc_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/fc_msp_box.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/firmware_update.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/firmware_update_common.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/multifunction.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/rc_smoothing.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/rc_adjustments.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/rc_controls.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/rc_curves.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/rc_modes.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/runtime_config.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/settings.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/fc/stats.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/failsafe.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/imu.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/kalman.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/smith_predictor.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/rate_dynamics.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/mixer.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/pid.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/pid_autotune.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/power_limits.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/rth_estimator.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/servos.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/mixer_profile.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/wind_estimator.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/gyroanalyse.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/rpm_filter.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/dynamic_gyro_notch.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/secondary_dynamic_gyro_notch.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/dynamic_lpf.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/ez_tune.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/flight/adaptive_filter.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/adsb.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/beeper.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/servo_sbus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/frsky_osd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gimbal_serial.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/headtracker_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_dji_hd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/lights.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/piniobox.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/serial.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/serial_4way.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/serial_4way_avrootloader.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/serial_4way_stk500v2.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/statusindicator.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rcdevice.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rcdevice_cam.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd/custom_elements.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/msp/msp_serial.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/programming/logic_condition.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/programming/global_variables.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/programming/programming_task.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/programming/pid.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/crsf.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/fport.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/fport2.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/ghst.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/ibus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/jetiexbus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/mavlink.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/msp_override.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/frsky_crc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/rx.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/sbus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/sbus_channels.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/spektrum.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/srxl2.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/sumd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/rx/sim.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/scheduler/scheduler.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/acceleration.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/battery.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/battery_sensor_dronecan.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/boardalignment.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/compass.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/diagnostics.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/gyro.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/initialisation.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/esc_sensor.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/irlock.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/sensors.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/temperature.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/blackbox/blackbox.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/blackbox/blackbox_encoding.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/blackbox/blackbox_io.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_battery.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_blackbox.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_builtin.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_imu.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_ledstrip.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_misc.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_mixer_servo.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_navigation.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_osd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_saveexit.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_vtx.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_benewake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_usd1_v0.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_nanoradar.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/opflow_cxof.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/opflow_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/dashboard.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_frsky_osd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_max7456.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_msp_dji_compat.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_msp_osd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_srxl.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/displayport_hott.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/flashfs.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gps.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gps_ublox.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gps_ublox_utils.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gps_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gps_dronecan.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/gps_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/ledstrip.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_utils.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_canvas.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_common.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_grid.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_hud.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/osd_joystick.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/smartport_master.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx_string.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx_smartaudio.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx_tramp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx_ffpv24g.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx_control.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/io/vtx_msp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_fixedwing.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_fw_launch.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_geo.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_multicopter.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_pos_estimator.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_pos_estimator_agl.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_pos_estimator_flow.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_rover_boat.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_geozone.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/sqrt_controller.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/navigation/rth_trackback.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/barometer.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/pitotmeter.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/rangefinder.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/opflow.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/sensors/battery_sensor_fake.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/crsf.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/srxl.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/ghst.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/hott.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/jetiexbus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/ibus_shared.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/ibus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/ltm.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/mavlink.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/msp_shared.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/sbus2.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/sbus2_sensors.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/smartport.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/sim.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/telemetry/telemetry.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.CanStats.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.FlexDebug.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.GlobalTime.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.Stats.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.ArmStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.BasicID.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.Location.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.OperatorID.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.SecureCommand_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.SecureCommand_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.SelfID.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.System.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.hygrometer.Hygrometer.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.magnetometer.MagneticFieldStrengthHiRes.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.rc.RCInput.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.rpm.RPM.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.CoarseOrientation.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.ArrayCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.Command.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.Status.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.MagneticFieldStrength2.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.MagneticFieldStrength.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.RawIMU.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.Solution.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.AngleOfAttack.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.IndicatedAirspeed.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.RawAirData.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.Sideslip.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.StaticPressure.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.StaticTemperature.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.TrueAirspeed.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.AngularCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.GEOPOICommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.Mode.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.Status.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.device.Temperature.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.RawCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.RPMCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.Status.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.StatusExtended.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Auxiliary.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.ECEFPositionVelocity.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Fix2.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Fix.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.RTCMStream.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.hardpoint.Command.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.hardpoint.Status.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ice.FuelTankStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ice.reciprocating.CylinderStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ice.reciprocating.Status.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.BeepCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.LightsCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.RGB565.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.SingleLightCommand.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.BatteryInfo.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.CircuitStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.PrimaryPowerSupplyStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.range_sensor.Measurement.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.safety.ArmingStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.navigation.GlobalNavigationSolution.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.AccessCommandShell_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.AccessCommandShell_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.CANIfaceStats.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.DataTypeKind.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.debug.KeyValue.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.debug.LogLevel.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.debug.LogMessage.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.AppendEntries_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.AppendEntries_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.Discovery.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.Entry.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.RequestVote_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.RequestVote_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.enumeration.Begin_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.enumeration.Begin_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.enumeration.Indication.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.BeginFirmwareUpdate_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.BeginFirmwareUpdate_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Delete_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Delete_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.EntryType.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Error.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetDirectoryEntryInfo_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetDirectoryEntryInfo_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetInfo_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetInfo_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Path.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Read_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Read_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Write_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Write_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetDataTypeInfo_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetDataTypeInfo_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetTransportStats_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetTransportStats_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GlobalTimeSync.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.HardwareVersion.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.NodeStatus.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.Panic.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Empty.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.ExecuteOpcode_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.ExecuteOpcode_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.GetSet_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.GetSet_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.NumericValue.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Value.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.SoftwareVersion.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.Timestamp.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Broadcast.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Call_req.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Call_res.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Protocol.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.SerialConfig.c.o \
+  CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Targetted.c.o \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libpthread.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so \
+  /usr/lib/libm.so.6 \
+  /usr/lib/libmvec.so.1 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so \
+  /usr/lib/libc.so.6 \
+  /usr/lib/libc_nonshared.a \
+  /usr/lib/ld-linux-x86-64.so.2 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/librt.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so.1 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so \
+  /usr/lib/libc.so.6 \
+  /usr/lib/libc_nonshared.a \
+  /usr/lib/ld-linux-x86-64.so.2 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so.1 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o \
+  /usr/lib/ld-linux-x86-64.so.2
+
+/home/robs/Projects/inav-claude/inav/src/main/target/link/sitl.ld:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o:
+
+CMakeFiles/SITL.elf.dir/__/__/config/config_streamer_file.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/dronecan/libcanard/canard_sitl_driver.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/serial_tcp.c.o:
+
+CMakeFiles/SITL.elf.dir/sim/realFlight.c.o:
+
+CMakeFiles/SITL.elf.dir/sim/simHelper.c.o:
+
+CMakeFiles/SITL.elf.dir/sim/simple_soap_client.c.o:
+
+CMakeFiles/SITL.elf.dir/sim/xplane.c.o:
+
+CMakeFiles/SITL.elf.dir/config.c.o:
+
+CMakeFiles/SITL.elf.dir/serial_proxy.c.o:
+
+CMakeFiles/SITL.elf.dir/target.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/main.c.o:
+
+CMakeFiles/SITL.elf.dir/__/common_hardware.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/build/assert.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/build/build_config.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/build/debug.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/build/version.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/bitarray.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/calibration.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/colorconversion.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/crc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/encoding.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/filter.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/fp_pid.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/gps_conversion.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/log.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/lulu.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/maths.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/memory.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/olc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/printf.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/streambuf.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/string_light.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/time.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/typeconversion.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/uvarint.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/common/circular_queue.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/config/config_eeprom.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/config/config_streamer.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/config/feature.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/config/parameter_group.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/config/general_settings.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/1-wire.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/1-wire/ds_crc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/1-wire/ds2482.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi088.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi160.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi270.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_bmi270_maximum_fifo.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_icm20689.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_icm42605.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_mpu6000.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_mpu6500.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_mpu9250.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/accgyro/accgyro_lsm6dxx.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/adc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_bmp085.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_bmp280.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_bmp388.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_dps310.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_lps25h.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_ms56xx.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_spl06.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/barometer/barometer_2smpb_02b.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/buf_writer.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/bus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/bus_busdev_i2c.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/bus_busdev_spi.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/bus_i2c_soft.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ak8963.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ak8975.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_hmc5883l.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ist8308.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_ist8310.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_lis3mdl.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_mag3110.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_mpu9250.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_qmc5883l.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_qmc5883p.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_rm3100.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_vcm5883.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_mlx90393.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/compass/compass_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/dronecan/libcanard/canard.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/dronecan/dronecan.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/display.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/display_canvas.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/display_font_metadata.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/display_widgets.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/exti.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/flash.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/flash_m25p16.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/flash_w25n.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/gimbal_common.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/headtracker_common.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/io.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/io_pcf8574.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/io_port_expander.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/irlock.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/light_led.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/light_ws2811strip.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/lights_io.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/max7456.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/serial_softserial.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/opflow/opflow_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/opflow/opflow_virtual.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/osd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_adc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_ms4525.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_dlvr_l10d.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_virtual.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pitotmeter/pitotmeter_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pwm_esc_detect.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pwm_mapping.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pwm_output.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/pinio.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_srf10.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_vl53l0x.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_vl53l1x.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_virtual.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_us42.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_tof10120_i2c.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/rangefinder/rangefinder_teraranger_evo.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/resource.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/serial.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/sound_beeper.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/stack_check.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/temperature/ds18b20.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/temperature/lm75.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/usb_msc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/drivers/vtx_common.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/cli.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/config.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/control_profile.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/fc_core.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/fc_init.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/fc_tasks.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/fc_hardfaults.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/fc_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/fc_msp_box.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/firmware_update.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/firmware_update_common.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/multifunction.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/rc_smoothing.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/rc_adjustments.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/rc_controls.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/rc_curves.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/rc_modes.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/runtime_config.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/settings.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/fc/stats.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/failsafe.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/imu.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/kalman.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/smith_predictor.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/rate_dynamics.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/mixer.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/pid.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/pid_autotune.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/power_limits.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/rth_estimator.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/servos.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/mixer_profile.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/wind_estimator.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/gyroanalyse.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/rpm_filter.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/dynamic_gyro_notch.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/secondary_dynamic_gyro_notch.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/dynamic_lpf.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/ez_tune.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/flight/adaptive_filter.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/adsb.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/beeper.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/servo_sbus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/frsky_osd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gimbal_serial.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/headtracker_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_dji_hd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/lights.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/piniobox.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/serial.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/serial_4way.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/serial_4way_avrootloader.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/serial_4way_stk500v2.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/statusindicator.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rcdevice.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rcdevice_cam.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd/custom_elements.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/msp/msp_serial.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/programming/logic_condition.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/programming/global_variables.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/programming/programming_task.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/programming/pid.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/crsf.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/fport.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/fport2.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/ghst.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/ibus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/jetiexbus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/mavlink.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/msp_override.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/frsky_crc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/rx.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/sbus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/sbus_channels.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/spektrum.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/srxl2.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/sumd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/rx/sim.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/scheduler/scheduler.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/acceleration.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/battery.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/battery_sensor_dronecan.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/boardalignment.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/compass.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/diagnostics.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/gyro.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/initialisation.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/esc_sensor.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/irlock.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/sensors.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/temperature.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/blackbox/blackbox.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/blackbox/blackbox_encoding.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/blackbox/blackbox_io.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_battery.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_blackbox.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_builtin.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_imu.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_ledstrip.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_misc.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_mixer_servo.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_navigation.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_osd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_saveexit.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/cms/cms_menu_vtx.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_benewake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_usd1_v0.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_nanoradar.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/rangefinder_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/opflow_cxof.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/opflow_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/dashboard.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_frsky_osd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_max7456.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_msp_dji_compat.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_msp_osd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_srxl.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/displayport_hott.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/flashfs.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gps.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gps_ublox.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gps_ublox_utils.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gps_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gps_dronecan.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/gps_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/ledstrip.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_utils.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_canvas.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_common.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_grid.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_hud.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/osd_joystick.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/smartport_master.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx_string.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx_smartaudio.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx_tramp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx_ffpv24g.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx_control.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/io/vtx_msp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_fixedwing.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_fw_launch.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_geo.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_multicopter.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_pos_estimator.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_pos_estimator_agl.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_pos_estimator_flow.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_rover_boat.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/navigation_geozone.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/sqrt_controller.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/navigation/rth_trackback.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/barometer.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/pitotmeter.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/rangefinder.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/opflow.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/sensors/battery_sensor_fake.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/crsf.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/srxl.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/ghst.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/hott.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/jetiexbus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/ibus_shared.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/ibus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/ltm.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/mavlink.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/msp_shared.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/sbus2.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/sbus2_sensors.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/smartport.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/sim.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/telemetry/telemetry.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.CanStats.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.FlexDebug.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.GlobalTime.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.protocol.Stats.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.ArmStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.BasicID.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.Location.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.OperatorID.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.SecureCommand_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.SecureCommand_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.SelfID.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.remoteid.System.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.hygrometer.Hygrometer.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.magnetometer.MagneticFieldStrengthHiRes.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.rc.RCInput.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/dronecan.sensors.rpm.RPM.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.CoarseOrientation.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.ArrayCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.Command.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.Status.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.MagneticFieldStrength2.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.MagneticFieldStrength.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.RawIMU.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ahrs.Solution.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.AngleOfAttack.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.IndicatedAirspeed.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.RawAirData.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.Sideslip.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.StaticPressure.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.StaticTemperature.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.air_data.TrueAirspeed.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.AngularCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.GEOPOICommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.Mode.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.camera_gimbal.Status.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.device.Temperature.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.RawCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.RPMCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.Status.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.esc.StatusExtended.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Auxiliary.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.ECEFPositionVelocity.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Fix2.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Fix.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.RTCMStream.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.hardpoint.Command.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.hardpoint.Status.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ice.FuelTankStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ice.reciprocating.CylinderStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.ice.reciprocating.Status.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.BeepCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.LightsCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.RGB565.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.indication.SingleLightCommand.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.BatteryInfo.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.CircuitStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.PrimaryPowerSupplyStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.range_sensor.Measurement.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.safety.ArmingStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.navigation.GlobalNavigationSolution.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.AccessCommandShell_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.AccessCommandShell_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.CANIfaceStats.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.DataTypeKind.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.debug.KeyValue.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.debug.LogLevel.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.debug.LogMessage.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.AppendEntries_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.AppendEntries_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.Discovery.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.Entry.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.RequestVote_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.server.RequestVote_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.enumeration.Begin_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.enumeration.Begin_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.enumeration.Indication.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.BeginFirmwareUpdate_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.BeginFirmwareUpdate_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Delete_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Delete_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.EntryType.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Error.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetDirectoryEntryInfo_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetDirectoryEntryInfo_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetInfo_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.GetInfo_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Path.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Read_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Read_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Write_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.file.Write_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetDataTypeInfo_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetDataTypeInfo_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetTransportStats_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetTransportStats_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GlobalTimeSync.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.HardwareVersion.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.NodeStatus.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.Panic.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Empty.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.ExecuteOpcode_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.ExecuteOpcode_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.GetSet_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.GetSet_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.NumericValue.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Value.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.SoftwareVersion.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.Timestamp.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Broadcast.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Call_req.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Call_res.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Protocol.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.SerialConfig.c.o:
+
+CMakeFiles/SITL.elf.dir/__/__/__/__/lib/main/Dronecan/dsdlc_generated/src/uavcan.tunnel.Targetted.c.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libpthread.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libm.so:
+
+/usr/lib/libm.so.6:
+
+/usr/lib/libmvec.so.1:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so:
+
+/usr/lib/libc.so.6:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/lib/ld-linux-x86-64.so.2:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/librt.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so.1:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libc.so:
+
+/usr/lib/libc.so.6:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/lib/ld-linux-x86-64.so.2:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/libgcc_s.so.1:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o:
+
+/usr/lib/ld-linux-x86-64.so.2:

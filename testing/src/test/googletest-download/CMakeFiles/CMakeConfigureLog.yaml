@@ -1,0 +1,220 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:12 (find_program)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_UNAME"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "uname"
+    candidate_directories:
+      - "/home/linuxbrew/.linuxbrew/bin/"
+      - "/home/linuxbrew/.linuxbrew/sbin/"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+    searched_directories:
+      - "/home/linuxbrew/.linuxbrew/bin/uname"
+      - "/home/linuxbrew/.linuxbrew/sbin/uname"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/uname"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/uname"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/uname"
+      - "/usr/local/bin/uname"
+    found: "/usr/bin/uname"
+    search_context:
+      ENV{PATH}:
+        - "/home/linuxbrew/.linuxbrew/bin"
+        - "/home/linuxbrew/.linuxbrew/sbin"
+        - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest"
+        - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest"
+        - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/usr/local/sbin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Linux - 6.18.7-arch1-1 - x86_64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeUnixFindMake.cmake:5 (find_program)"
+      - "CMakeLists.txt:3 (project)"
+    mode: "program"
+    variable: "CMAKE_MAKE_PROGRAM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "gmake"
+      - "make"
+      - "smake"
+    candidate_directories:
+      - "/home/linuxbrew/.linuxbrew/bin/"
+      - "/home/linuxbrew/.linuxbrew/sbin/"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+    searched_directories:
+      - "/home/linuxbrew/.linuxbrew/bin/gmake"
+      - "/home/linuxbrew/.linuxbrew/sbin/gmake"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/gmake"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/gmake"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/gmake"
+      - "/usr/local/bin/gmake"
+      - "/usr/bin/gmake"
+      - "/bin/gmake"
+      - "/usr/local/sbin/gmake"
+      - "/usr/lib/jvm/default/bin/gmake"
+      - "/usr/bin/site_perl/gmake"
+      - "/usr/bin/vendor_perl/gmake"
+      - "/usr/bin/core_perl/gmake"
+      - "/home/linuxbrew/.linuxbrew/bin/make"
+      - "/home/linuxbrew/.linuxbrew/sbin/make"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/make"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/make"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/make"
+      - "/usr/local/bin/make"
+    found: "/usr/bin/make"
+    search_context:
+      ENV{PATH}:
+        - "/home/linuxbrew/.linuxbrew/bin"
+        - "/home/linuxbrew/.linuxbrew/sbin"
+        - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest"
+        - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest"
+        - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/usr/local/sbin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/FindGit.cmake:111 (find_program)"
+      - "/usr/share/cmake/Modules/ExternalProject/shared_internal_commands.cmake:926 (find_package)"
+      - "/usr/share/cmake/Modules/ExternalProject.cmake:3258 (_ep_add_download_command)"
+      - "CMakeLists.txt:6 (ExternalProject_Add)"
+    mode: "program"
+    variable: "GIT_EXECUTABLE"
+    description: "Git command line client"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "git"
+    candidate_directories:
+      - "/home/linuxbrew/.linuxbrew/bin/"
+      - "/home/linuxbrew/.linuxbrew/sbin/"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/"
+      - "/usr/local/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/lib/jvm/default/bin/"
+      - "/usr/bin/site_perl/"
+      - "/usr/bin/vendor_perl/"
+      - "/usr/bin/core_perl/"
+      - "/usr/local/bin/"
+      - "/usr/local/sbin/"
+      - "/usr/local/"
+      - "/usr/bin/"
+      - "/usr/sbin/"
+      - "/usr/"
+      - "/bin/"
+      - "/sbin/"
+      - "/usr/X11R6/bin/"
+      - "/usr/X11R6/sbin/"
+      - "/usr/X11R6/"
+      - "/usr/pkg/bin/"
+      - "/usr/pkg/sbin/"
+      - "/usr/pkg/"
+      - "/opt/bin/"
+      - "/opt/sbin/"
+      - "/opt/"
+    searched_directories:
+      - "/home/linuxbrew/.linuxbrew/bin/git"
+      - "/home/linuxbrew/.linuxbrew/sbin/git"
+      - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest/git"
+      - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest/git"
+      - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/git"
+      - "/usr/local/bin/git"
+    found: "/usr/bin/git"
+    search_context:
+      ENV{PATH}:
+        - "/home/linuxbrew/.linuxbrew/bin"
+        - "/home/linuxbrew/.linuxbrew/sbin"
+        - "/home/robs/Projects/ardupilot/ardupilot/ardupilot/Tools/autotest"
+        - "/home/robs/Projects/ardupilot/ardupilot/Tools/environment_install/ardupilot/Tools/autotest"
+        - "/opt/gcc-arm-none-eabi-10-2020-q4-major/bin"
+        - "/usr/local/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/usr/local/sbin"
+        - "/usr/lib/jvm/default/bin"
+        - "/usr/bin/site_perl"
+        - "/usr/bin/vendor_perl"
+        - "/usr/bin/core_perl"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/usr"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+...

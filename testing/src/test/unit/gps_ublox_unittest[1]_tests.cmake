@@ -1,0 +1,5 @@
+add_test([=[GPSUbloxTest.TestUbloxCfgFillBytes]=]  /home/robs/Projects/inav-claude/inav/testing/src/test/unit/gps_ublox_unittest [==[--gtest_filter=GPSUbloxTest.TestUbloxCfgFillBytes]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[GPSUbloxTest.TestUbloxCfgFillBytes]=]  PROPERTIES DEF_SOURCE_LINE /home/robs/Projects/inav-claude/inav/src/test/unit/gps_ublox_unittest.cc:51 WORKING_DIRECTORY /home/robs/Projects/inav-claude/inav/testing/src/test/unit SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+add_test([=[GPSUbloxTest.navSigStructureSizes]=]  /home/robs/Projects/inav-claude/inav/testing/src/test/unit/gps_ublox_unittest [==[--gtest_filter=GPSUbloxTest.navSigStructureSizes]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[GPSUbloxTest.navSigStructureSizes]=]  PROPERTIES DEF_SOURCE_LINE /home/robs/Projects/inav-claude/inav/src/test/unit/gps_ublox_unittest.cc:92 WORKING_DIRECTORY /home/robs/Projects/inav-claude/inav/testing/src/test/unit SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set(  gps_ublox_unittest_TESTS GPSUbloxTest.TestUbloxCfgFillBytes GPSUbloxTest.navSigStructureSizes)

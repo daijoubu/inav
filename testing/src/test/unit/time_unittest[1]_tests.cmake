@@ -1,0 +1,5 @@
+add_test([=[TimeUnittest.TestMillis]=]  /home/robs/Projects/inav-claude/inav/testing/src/test/unit/time_unittest [==[--gtest_filter=TimeUnittest.TestMillis]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[TimeUnittest.TestMillis]=]  PROPERTIES DEF_SOURCE_LINE /home/robs/Projects/inav-claude/inav/src/test/unit/time_unittest.cc:37 WORKING_DIRECTORY /home/robs/Projects/inav-claude/inav/testing/src/test/unit SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+add_test([=[TimeUnittest.TestMicros]=]  /home/robs/Projects/inav-claude/inav/testing/src/test/unit/time_unittest [==[--gtest_filter=TimeUnittest.TestMicros]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[TimeUnittest.TestMicros]=]  PROPERTIES DEF_SOURCE_LINE /home/robs/Projects/inav-claude/inav/src/test/unit/time_unittest.cc:45 WORKING_DIRECTORY /home/robs/Projects/inav-claude/inav/testing/src/test/unit SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set(  time_unittest_TESTS TimeUnittest.TestMillis TimeUnittest.TestMicros)
