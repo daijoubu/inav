@@ -530,6 +530,12 @@ void init(void)
 
 #ifdef USE_DRONECAN
     dronecanInit();
+    // Log DroneCAN initialization status for diagnostics
+    if (dronecanGetInitStatus() == DRONECAN_INIT_SUCCESSFUL) {
+        LOG_INFO(SYSTEM, "DroneCAN: Operational");
+    } else if (dronecanGetInitStatus() == DRONECAN_INIT_FAILED) {
+        LOG_WARNING(SYSTEM, "DroneCAN: Initialization failed - system will operate without DroneCAN");
+    }
 #endif
 
 #ifndef USE_GEOZONE
