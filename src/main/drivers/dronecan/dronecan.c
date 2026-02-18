@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "fc/settings.h"
 #include "build/version.h"
+#include "sensors/diagnostics.h"
 #if defined(USE_DRONECAN)
 
 #include "io/gps.h"
@@ -213,7 +214,12 @@ void send_NodeStatus(void) {
 
     // LOG_DEBUG(CAN, "Sending Node Status");
     node_status.uptime_sec = millis() / 1000UL;
-    node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
+    if(isHardwareHealthy()){
+        node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
+    }
+    else {
+        node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL;
+    }
     node_status.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;
     node_status.sub_mode = 0;
 
