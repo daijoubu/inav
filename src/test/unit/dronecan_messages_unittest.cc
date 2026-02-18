@@ -616,8 +616,8 @@ TEST_F(DroneCANMessageTest, BatteryInfo_NegativeCurrentAndTemperature)
 
 TEST_F(DroneCANMessageTest, BatteryInfo_StateOfChargePercentBoundaries)
 {
-    // Test SOC percentage boundaries (0%, 50%, 100%, 127%, 255%)
-    uint8_t soc_values[] = {0, 1, 50, 100, 127, 255};
+    // Test SOC percentage boundaries (0%, 50%, 100%, max 127 for 7-bit field)
+    uint8_t soc_values[] = {0, 1, 50, 100, 127};
 
     for (uint8_t soc : soc_values) {
         struct uavcan_equipment_power_BatteryInfo tx_msg;
@@ -736,13 +736,13 @@ TEST_F(DroneCANMessageTest, GNSSAuxiliary_ZeroDOPValues)
 
 TEST_F(DroneCANMessageTest, GNSSFix2_MaxSatellites)
 {
-    // Test with maximum satellites count (255)
+    // Test with maximum satellites count (63 for 6-bit field)
     struct uavcan_equipment_gnss_Fix2 tx_msg;
     memset(&tx_msg, 0, sizeof(tx_msg));
 
     tx_msg.latitude_deg_1e8 = 0;
     tx_msg.longitude_deg_1e8 = 0;
-    tx_msg.sats_used = 255;  // Maximum uint8 value
+    tx_msg.sats_used = 63;  // Maximum for 6-bit field
     tx_msg.status = UAVCAN_EQUIPMENT_GNSS_FIX2_STATUS_3D_FIX;
 
     uint32_t encoded_len = uavcan_equipment_gnss_Fix2_encode(&tx_msg, buffer
@@ -756,7 +756,7 @@ TEST_F(DroneCANMessageTest, GNSSFix2_MaxSatellites)
     memset(&rx_msg, 0, sizeof(rx_msg));
 
     EXPECT_FALSE(uavcan_equipment_gnss_Fix2_decode(&transfer, &rx_msg));
-    EXPECT_EQ(rx_msg.sats_used, 255);
+    EXPECT_EQ(rx_msg.sats_used, 63);
 }
 
 TEST_F(DroneCANMessageTest, TransferBufferRoundtrip)
