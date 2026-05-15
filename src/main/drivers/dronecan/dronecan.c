@@ -25,7 +25,7 @@
 #include <inttypes.h>
 #include <dronecan_msgs.h>
 
-/* ── Private state ─────────────────────────────────────────────────────────── */
+/* --- Private state --- */
 
 CanardInstance canard;
 uint8_t memory_pool[1024];
@@ -46,7 +46,7 @@ PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
 
-/* ── Forward declarations ──────────────────────────────────────────────────── */
+/* --- Forward declarations --- */
 
 static void process1HzTasks(timeUs_t timestamp_usec);
 static void processCanardTxQueue(void);
@@ -63,7 +63,7 @@ static void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfe
 static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer);
 static void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer);
 
-/* ── Public API ────────────────────────────────────────────────────────────── */
+/* --- Public API --- */
 
 void dronecanInit(void)
 {
@@ -185,7 +185,7 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 
 }
 
-/* ── TX and periodic task processing ───────────────────────────────────────── */
+/* --- TX and periodic task processing --- */
 
 static void processCanardTxQueue(void) {
 	// Transmitting
@@ -222,7 +222,7 @@ static void process1HzTasks(timeUs_t timestamp_usec)
     send_NodeStatus();
 }
 
-/* ── Message senders (outgoing) ────────────────────────────────────────────── */
+/* --- Message senders (outgoing) --- */
 
 // Canard Senders
 
@@ -265,7 +265,7 @@ static void send_NodeStatus(void) {
     // PrintCanStatus();
 }
 
-/* ── Libcanard protocol callbacks ───────────────────────────────────────────── */
+/* --- Libcanard protocol callbacks --- */
 
 // Canard Util
 /*
@@ -383,7 +383,7 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
 	}
 }
 
-/* ── Message handlers (incoming) ───────────────────────────────────────────── */
+/* --- Message handlers (incoming) --- */
 
 // Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
 
