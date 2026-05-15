@@ -25,7 +25,7 @@
 #include <inttypes.h>
 #include <dronecan_msgs.h>
 
-/* Private variables ---------------------------------------------------------*/
+/* ── Private state ─────────────────────────────────────────────────────────── */
 
 CanardInstance canard;
 uint8_t memory_pool[1024];
@@ -45,6 +45,8 @@ PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
 
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
+
+/* ── Message handlers (incoming) ───────────────────────────────────────────── */
 
 // Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
 
@@ -200,46 +202,7 @@ void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 						   total_size);
 }
 
-// Canard Senders
-
-/*
-  send the 1Hz NodeStatus message. This is what allows a node to show
-  up in the DroneCAN GUI tool and in the flight controller logs
- */
-void send_NodeStatus(void) {
-    uint8_t buffer[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE];
-
-    // LOG_DEBUG(CAN, "Sending Node Status");
-    node_status.uptime_sec = millis() / 1000UL;
-    if(isHardwareHealthy()){
-        node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
-    }
-    else {
-        node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL;
-    }
-    
-    node_status.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;  // Indicates that node is able to communicate over CAN, not that it is in flight.
-    node_status.sub_mode = 0; // Not currently used in dronecan
-
-    // put whatever you like in here for display in GUI
-    node_status.vendor_specific_status_code = armingFlags;
-
-    uint32_t len = uavcan_protocol_NodeStatus_encode(&node_status, buffer);
-
-    // we need a static variable for the transfer ID. This is
-    // incremeneted on each transfer, allowing for detection of packet
-    // loss
-    static uint8_t transfer_id;
-
-    canardBroadcast(&canard,
-                    UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE,
-                    UAVCAN_PROTOCOL_NODESTATUS_ID,
-                    &transfer_id,
-                    CANARD_TRANSFER_PRIORITY_LOW,
-                    buffer,
-                    len);
-    // PrintCanStatus();
-}
+/* ── Libcanard protocol callbacks ───────────────────────────────────────────── */
 
 // Canard Util
 /*
@@ -330,27 +293,27 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
 		// check if we want to handle a specific broadcast message
 		switch (transfer->data_type_id) {
 
-            case UAVCAN_PROTOCOL_NODESTATUS_ID: 
+            case UAVCAN_PROTOCOL_NODESTATUS_ID:
                 handle_NodeStatus(ins, transfer);
                 break;
-            
 
-            case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
                 handle_GNSSAuxiliary(ins, transfer);
                 break;
-            
-            case UAVCAN_EQUIPMENT_GNSS_FIX_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_FIX_ID:
                 handle_GNSSFix(ins, transfer);
                 break;
-            
-            case UAVCAN_EQUIPMENT_GNSS_FIX2_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
                 handle_GNSSFix2(ins, transfer);
                 break;
-            
-            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
                 handle_GNSSRCTMStream(ins, transfer);
                 break;
-            
+
             case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
                 LOG_DEBUG(CAN, "Battery Info");
                 handle_BatteryInfo(ins, transfer);
@@ -359,6 +322,50 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
 	}
 }
 
+/* ── Message senders (outgoing) ────────────────────────────────────────────── */
+
+// Canard Senders
+
+/*
+  send the 1Hz NodeStatus message. This is what allows a node to show
+  up in the DroneCAN GUI tool and in the flight controller logs
+ */
+void send_NodeStatus(void) {
+    uint8_t buffer[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE];
+
+    // LOG_DEBUG(CAN, "Sending Node Status");
+    node_status.uptime_sec = millis() / 1000UL;
+    if(isHardwareHealthy()){
+        node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
+    }
+    else {
+        node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL;
+    }
+
+    node_status.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;  // Indicates that node is able to communicate over CAN, not that it is in flight.
+    node_status.sub_mode = 0; // Not currently used in dronecan
+
+    // put whatever you like in here for display in GUI
+    node_status.vendor_specific_status_code = armingFlags;
+
+    uint32_t len = uavcan_protocol_NodeStatus_encode(&node_status, buffer);
+
+    // we need a static variable for the transfer ID. This is
+    // incremeneted on each transfer, allowing for detection of packet
+    // loss
+    static uint8_t transfer_id;
+
+    canardBroadcast(&canard,
+                    UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE,
+                    UAVCAN_PROTOCOL_NODESTATUS_ID,
+                    &transfer_id,
+                    CANARD_TRANSFER_PRIORITY_LOW,
+                    buffer,
+                    len);
+    // PrintCanStatus();
+}
+
+/* ── TX and periodic task processing ───────────────────────────────────────── */
 
 void processCanardTxQueue(void) {
 	// Transmitting
@@ -396,6 +403,8 @@ void process1HzTasks(timeUs_t timestamp_usec)
     send_NodeStatus();
 }
 
+/* ── Public API ────────────────────────────────────────────────────────────── */
+
 void dronecanInit(void)
 {
     LOG_DEBUG(CAN, "dronecan Init");
@@ -409,7 +418,7 @@ void dronecanInit(void)
         case DRONECAN_BITRATE_250KBPS:
             bitrate = 250000;
             break;
-        
+
         case DRONECAN_BITRATE_500KBPS:
             bitrate = 500000;
             break;
@@ -428,7 +437,7 @@ void dronecanInit(void)
         LOG_ERROR(CAN, "Unable to initialize the CAN peripheral");
         // TODO: Notify the user that CAN does not work and disable the peripheral
         return;
-    }  
+    }
     /*
     Initializing the Libcanard instance.
     */
@@ -511,8 +520,8 @@ void dronecanUpdate(timeUs_t currentTimeUs)
                 dronecanState = STATE_DRONECAN_NORMAL;
             }
             break;
-    
+
     }
-    
+
 }
 #endif
