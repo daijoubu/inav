@@ -29,6 +29,9 @@ struct Timings {
 
 static FDCAN_HandleTypeDef hfdcan1;
 
+static volatile uint8_t canRxFifoHWM = 0;
+static volatile uint8_t canTxFifoHWM = 0;
+
 /* --- Initialization --- */
 
 /**
@@ -73,7 +76,7 @@ static bool canardSTM32ComputeTimings(const uint32_t target_bitrate, struct Timi
     /*
      * Hardware configuration
      */
-    const uint32_t pclk = HAL_RCC_GetPCLK1Freq();
+    const uint32_t pclk = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_FDCAN);
 
     static const int MaxBS1 = 16;
     static const int MaxBS2 = 8;
@@ -178,7 +181,7 @@ static bool canardSTM32ComputeTimings(const uint32_t target_bitrate, struct Timi
           (int)(1 + solution.bs1 + solution.bs2), (double)(solution.sample_point_permill) / (double)(10.0));
 
     out_timings->prescaler = (uint16_t)(prescaler);
-    out_timings->sjw = 8;                        // Not happy with this value, but 1MBPs with unshielded cable?
+    out_timings->sjw = 8;                        // Conservative SJW to maximize resync with SLCAN adapters
     out_timings->bs1 = (uint8_t)(solution.bs1);  // The HAL takes care of the 1 bs offset in the register so don't remove it here like AP does.
     out_timings->bs2 = (uint8_t)(solution.bs2);  // The HAL takes care of the 1 bs offset in the register so don't remove it here like AP does.
 
@@ -206,15 +209,21 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
     hfdcan1.Instance = FDCAN1;
     hfdcan1.Init.FrameFormat = FDCAN_FRAME_CLASSIC;  // Initialize in CAN2.0 mode not CAN_FD
     hfdcan1.Init.Mode = FDCAN_MODE_NORMAL;
-    // AutoRetransmission=ENABLE: hardware retries on arbitration loss without software intervention.
-    // Unlike the F7 (ISR + 32-deep SW queue), the H7 has only the HW TX FIFO (no SW queue).
-    // FDCAN TX FIFO maintains strict submission order regardless of retransmission, so frame
-    // ordering is preserved. Risk on a heavily loaded bus: a retrying frame can delay later
-    // FIFO entries but cannot reorder them. Original code used DISABLE (software-controlled
-    // retry via polling). TODO: evaluate whether DISABLE is safer for the H7 polling model.
-    hfdcan1.Init.AutoRetransmission = ENABLE;
+    // DISABLE: each TX attempt is single-shot. The diagnostic CLI ('dronecan' command)
+    // is used to observe TEC/REC/BusOff state to confirm root cause before enabling retry.
+    hfdcan1.Init.AutoRetransmission = DISABLE;
     hfdcan1.Init.TransmitPause = DISABLE;
     hfdcan1.Init.ProtocolException = DISABLE;
+
+    /* Configure FDCAN kernel clock source before computing timings */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FDCAN;
+    PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    {
+      LOG_DEBUG(CAN, "Unable to configure peripheral clock");
+      return -CANARD_ERROR_INTERNAL;
+    }
+    __HAL_RCC_FDCAN_CLK_ENABLE();
 
     if (!canardSTM32ComputeTimings(bitrate, &out_timings))
     {
@@ -240,19 +249,6 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
     hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
     hfdcan1.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
     LOG_DEBUG(CAN, "In CAN Init");
-
-    /** Initializes the peripherals clock
-    */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FDCAN;
-    PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-      LOG_DEBUG(CAN, "Unable to configure peripheral clock");
-      return -CANARD_ERROR_INTERNAL;
-    }
-
-    /* FDCAN1 clock enable */
-    __HAL_RCC_FDCAN_CLK_ENABLE();
 
     canardSTM32GPIO_Init();  // Set up the pins for CAN and optional listen only mode
 
@@ -385,24 +381,41 @@ int16_t canardSTM32Transmit(const CanardCANFrame* const tx_frame) {
   * @param  pProtocolStat  Pointer to the struct to populate with current status.
   */
 void canardSTM32GetProtocolStatus(canardProtocolStatus_t *pProtocolStat){
-	FDCAN_ProtocolStatusTypeDef protocolStatus = {};
+    FDCAN_ProtocolStatusTypeDef protocolStatus = {};
+    FDCAN_ErrorCountersTypeDef errorCounters = {};
 
     memset(pProtocolStat, 0, sizeof(*pProtocolStat));
     HAL_FDCAN_GetProtocolStatus(&hfdcan1, &protocolStatus);
+    HAL_FDCAN_GetErrorCounters(&hfdcan1, &errorCounters);
     pProtocolStat->BusOff = protocolStatus.BusOff;
     pProtocolStat->ErrorPassive = protocolStatus.ErrorPassive;
+    pProtocolStat->tec = (uint8_t)(errorCounters.TxErrorCnt & 0xFF);
+    pProtocolStat->rec = (uint8_t)(errorCounters.RxErrorCnt & 0xFF);
+    pProtocolStat->lec = (uint8_t)(protocolStatus.LastErrorCode & 0x07);
+
+    uint32_t rxFill = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1, FDCAN_RX_FIFO0);
+    if (rxFill > canRxFifoHWM) {
+        canRxFifoHWM = (uint8_t)rxFill;
+    }
+    pProtocolStat->rx_buffer_hwm = canRxFifoHWM;
+
+    uint32_t txFree = HAL_FDCAN_GetTxFifoFreeLevel(&hfdcan1);
+    uint32_t txFill = 32 - txFree;
+    if (txFill > canTxFifoHWM) {
+        canTxFifoHWM = (uint8_t)txFill;
+    }
+    pProtocolStat->tx_queue_hwm = canTxFifoHWM;
+
     LOG_DEBUG(CAN, "BusOff: %lu", protocolStatus.BusOff);
     LOG_DEBUG(CAN, "ErrorPassive: %lu", protocolStatus.ErrorPassive);
 }
 
 /**
-  * @brief  Return the current number of frames pending in the software TX queue.
-  *         The H7 FDCAN driver transmits directly into the hardware TX FIFO with no
-  *         intermediate software queue, so this always returns 0.
-  * @retval 0 (no software TX queue on H7).
+  * @brief  Return the current number of frames pending in the hardware TX FIFO.
+  * @retval Number of frames queued for transmission.
   */
 int32_t canardSTM32GetTxQueueFillLevel(void) {
-    return 0;
+    return 32 - (int32_t)HAL_FDCAN_GetTxFifoFreeLevel(&hfdcan1);
 }
 
 /**

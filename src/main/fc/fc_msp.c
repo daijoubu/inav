@@ -133,6 +133,11 @@
 #include "sensors/temperature.h"
 #include "sensors/esc_sensor.h"
 
+#ifdef USE_DRONECAN
+#include "drivers/dronecan/libcanard/canard_stm32_driver.h"
+#include "drivers/dronecan/dronecan.h"
+#endif
+
 #include "telemetry/telemetry.h"
 
 #ifdef USE_HARDWARE_REVISION_DETECTION
@@ -742,6 +747,33 @@ static bool mspFcProcessOutCommand(uint16_t cmdMSP, sbuf_t *dst, mspPostProcessF
         sbufWriteU8(dst, calculateBatteryPercentage());
         sbufWriteU16(dst, getRSSI());
         break;
+
+#ifdef USE_DRONECAN
+    case MSP2_INAV_DRONECAN_STATUS:
+    {
+        canardProtocolStatus_t stat;
+        canardSTM32GetProtocolStatus(&stat);
+        int32_t rxFifoFill = canardSTM32GetRxFifoFillLevel();
+        int32_t txFifoFill = canardSTM32GetTxQueueFillLevel();
+        sbufWriteU8(dst, stat.BusOff ? 1 : 0);
+        sbufWriteU8(dst, stat.ErrorPassive ? 1 : 0);
+        sbufWriteU8(dst, stat.tec);
+        sbufWriteU8(dst, stat.rec);
+        sbufWriteU8(dst, stat.lec);
+        sbufWriteU16(dst, stat.tx_dropped);
+        sbufWriteU8(dst, stat.tx_queue_hwm);
+        sbufWriteU8(dst, stat.rx_buffer_hwm);
+        sbufWriteU8(dst, (uint8_t)rxFifoFill);
+        sbufWriteU8(dst, (uint8_t)txFifoFill);
+        // LEC error type counters: Stuff, Form, ACK, Bit1, Bit0, CRC
+        uint32_t errCounters[6];
+        dronecanGetErrorCounters(errCounters);
+        for (int i = 0; i < 6; i++) {
+            sbufWriteU32(dst, errCounters[i]);
+        }
+        break;
+    }
+#endif
 
     case MSP_LOOP_TIME:
         sbufWriteU16(dst, gyroConfig()->looptime);

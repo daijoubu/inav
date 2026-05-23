@@ -129,6 +129,7 @@ bool cliMode = false;
 
 #ifdef USE_DRONECAN
 #include "drivers/dronecan/libcanard/canard_stm32_driver.h"
+#include "drivers/dronecan/dronecan.h"
 #endif
 
 #include "telemetry/telemetry.h"
@@ -4351,6 +4352,17 @@ static void cliDronecan(char *cmdline)
     cliPrintLinef("  TX queue:    %ld (hwm: %u)", (long)txFill, (unsigned)stat.tx_queue_hwm);
     cliPrintLinef("  RX buffer:   %ld (hwm: %u)", (long)rxFill, (unsigned)stat.rx_buffer_hwm);
     cliPrintLinef("  TX dropped:  %u", (unsigned)stat.tx_dropped);
+
+    // LEC error type counters: Stuff, Form, ACK, Bit1, Bit0, CRC
+    uint32_t errCounters[6];
+    dronecanGetErrorCounters(errCounters);
+    cliPrintLine("  CAN errors:");
+    cliPrintLinef("    Stuff:  %lu", (unsigned long)errCounters[0]);
+    cliPrintLinef("    Form:   %lu", (unsigned long)errCounters[1]);
+    cliPrintLinef("    ACK:    %lu", (unsigned long)errCounters[2]);
+    cliPrintLinef("    Bit1:   %lu", (unsigned long)errCounters[3]);
+    cliPrintLinef("    Bit0:   %lu", (unsigned long)errCounters[4]);
+    cliPrintLinef("    CRC:    %lu", (unsigned long)errCounters[5]);
 }
 #endif
 

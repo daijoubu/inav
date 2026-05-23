@@ -2,9 +2,11 @@
 
 #include "common/time.h"
 #include "config/parameter_group.h"
+#include <stdint.h>
 
 void dronecanInit(void);
 void dronecanUpdate(timeUs_t currentTimeUs);
+void dronecanGetErrorCounters(uint32_t counters[6]);
 
 typedef enum {
     DRONECAN_BITRATE_125KBPS = 0,

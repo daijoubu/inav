@@ -30,6 +30,11 @@
 static CanardInstance canard;
 static uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
+
+// LEC error type counters, incremented when the Last Error Code changes
+// Indexed by LEC-1: [0]=Stuff, [1]=Form, [2]=ACK, [3]=Bit1, [4]=Bit0, [5]=CRC
+static uint32_t errorCounters[6];
+static uint8_t lastLec;
 enum dronecanState_e {
     STATE_DRONECAN_INIT,
     STATE_DRONECAN_NORMAL,
@@ -62,6 +67,12 @@ static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer);
 static void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfer);
 static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer);
 static void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer);
+
+// Public API for reading accumulated LEC error type counters
+void dronecanGetErrorCounters(uint32_t counters[6])
+{
+    memcpy(counters, errorCounters, sizeof(errorCounters));
+}
 
 /* --- Public API --- */
 
@@ -98,6 +109,10 @@ void dronecanInit(void)
         // TODO: Notify the user that CAN does not work and disable the peripheral
         return;
     }
+
+    // Clear LEC error type counters
+    memset(errorCounters, 0, sizeof(errorCounters));
+    lastLec = 0;
     /*
     Initializing the Libcanard instance.
     */
@@ -162,6 +177,19 @@ void dronecanUpdate(timeUs_t currentTimeUs)
             }
 
             canardSTM32GetProtocolStatus(&protocolStatus);
+
+            // Track LEC changes to accumulate per-type error counters
+            uint8_t currentLec = protocolStatus.lec & 0x07;
+            if (currentLec >= 1 && currentLec <= 6) {
+                // Only count when LEC changes to avoid counting the same event twice.
+                // Consecutive same-type errors between polls are undercounted,
+                // but this is sufficient to identify which error types occur.
+                if (currentLec != lastLec) {
+                    errorCounters[currentLec - 1]++;
+                    lastLec = currentLec;
+                }
+            }
+
             if(protocolStatus.BusOff != 0) {
                 dronecanState = STATE_DRONECAN_BUS_OFF;
                 busoffTimeUs = currentTimeUs;

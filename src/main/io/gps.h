@@ -105,6 +105,7 @@ typedef struct gpsConfig_s {
     uint8_t gpsMinSats;
     uint8_t ubloxNavHz;
     gpsBaudRate_e autoBaudMax;
+    uint16_t protocolTimeoutMs;
 } gpsConfig_t;
 
 PG_DECLARE(gpsConfig_t, gpsConfig);
