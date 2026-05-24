@@ -181,7 +181,7 @@ static bool canardSTM32ComputeTimings(const uint32_t target_bitrate, struct Timi
           (int)(1 + solution.bs1 + solution.bs2), (double)(solution.sample_point_permill) / (double)(10.0));
 
     out_timings->prescaler = (uint16_t)(prescaler);
-    out_timings->sjw = 3;                        // Standard SJW
+    out_timings->sjw = 1;                        // Standard SJW
     out_timings->bs1 = (uint8_t)(solution.bs1);  // The HAL takes care of the 1 bs offset in the register so don't remove it here like AP does.
     out_timings->bs2 = (uint8_t)(solution.bs2);  // The HAL takes care of the 1 bs offset in the register so don't remove it here like AP does.
 
@@ -245,7 +245,7 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
     hfdcan1.Init.ExtFiltersNbr = 1;
     hfdcan1.Init.TxFifoQueueElmtsNbr = 32;
     hfdcan1.Init.TxEventsNbr = 0;
-    hfdcan1.Init.TxBuffersNbr = 5;
+    hfdcan1.Init.TxBuffersNbr = 0;
     hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
     hfdcan1.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
     LOG_DEBUG(CAN, "In CAN Init");
