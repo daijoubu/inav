@@ -248,7 +248,6 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
     hfdcan1.Init.TxBuffersNbr = 0;
     hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
     hfdcan1.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
-    LOG_DEBUG(CAN, "In CAN Init");
 
     canardSTM32GPIO_Init();  // Set up the pins for CAN and optional listen only mode
 
