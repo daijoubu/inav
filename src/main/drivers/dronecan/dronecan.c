@@ -78,7 +78,6 @@ void dronecanGetErrorCounters(uint32_t counters[6])
 
 void dronecanInit(void)
 {
-    LOG_DEBUG(CAN, "dronecan Init");
     uint32_t bitrate = 500000; // At least define 500000
 
     switch (dronecanConfig()->bitRateKbps){
