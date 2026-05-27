@@ -196,7 +196,6 @@ static bool canardSTM32ComputeTimings(const uint32_t target_bitrate, struct Timi
   */
 int16_t canardSTM32CAN1_Init(uint32_t bitrate)
 {
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     struct Timings out_timings;
 
     FDCAN_FilterTypeDef sFilterConfig;
@@ -216,14 +215,6 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
     hfdcan1.Init.TransmitPause = DISABLE;
     hfdcan1.Init.ProtocolException = DISABLE;
 
-    /* Configure FDCAN kernel clock source before computing timings */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FDCAN;
-    PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-      LOG_DEBUG(CAN, "Unable to configure peripheral clock");
-      return -CANARD_ERROR_INTERNAL;
-    }
     __HAL_RCC_FDCAN_CLK_ENABLE();
 
     if (!canardSTM32ComputeTimings(bitrate, &out_timings))
