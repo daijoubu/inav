@@ -217,7 +217,7 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
 
     /* Configure FDCAN kernel clock source before computing timings */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FDCAN;
-    PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL;
+    PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       LOG_DEBUG(CAN, "Unable to configure peripheral clock");
