@@ -209,9 +209,7 @@ int16_t canardSTM32CAN1_Init(uint32_t bitrate)
     hfdcan1.Instance = FDCAN1;
     hfdcan1.Init.FrameFormat = FDCAN_FRAME_CLASSIC;  // Initialize in CAN2.0 mode not CAN_FD
     hfdcan1.Init.Mode = FDCAN_MODE_NORMAL;
-    // DISABLE: each TX attempt is single-shot. The diagnostic CLI ('dronecan' command)
-    // is used to observe TEC/REC/BusOff state to confirm root cause before enabling retry.
-    hfdcan1.Init.AutoRetransmission = DISABLE;
+    hfdcan1.Init.AutoRetransmission = ENABLE;
     hfdcan1.Init.TransmitPause = DISABLE;
     hfdcan1.Init.ProtocolException = DISABLE;
 
