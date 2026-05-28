@@ -497,17 +497,28 @@ void SystemClock_Config(void)
     RCC_PeriphClkInit.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;
     HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit);
 
-#ifdef USE_SDCARD_SDIO
-    RCC_PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_SDMMC;
-    RCC_PeriphClkInit.PLL2.PLL2M = 5;
-    RCC_PeriphClkInit.PLL2.PLL2N = 500;
-    RCC_PeriphClkInit.PLL2.PLL2P = 2; // 500Mhz
-    RCC_PeriphClkInit.PLL2.PLL2Q = 3; // 266Mhz - 133Mhz can be derived from this for for QSPI if flash chip supports the speed.
-    RCC_PeriphClkInit.PLL2.PLL2R = 4; // 200Mhz HAL LIBS REQUIRE 200MHZ SDMMC CLOCK, see HAL_SD_ConfigWideBusOperation, SDMMC_HSpeed_CLK_DIV, SDMMC_NSpeed_CLK_DIV
+#if defined(USE_SDCARD_SDIO) || defined(USE_DRONECAN)
+    // PLL2 provides SDMMC (200MHz via PLL2R) and FDCAN (80MHz via PLL2Q)
+    // PLL2M scales with HSE to keep VCO=800MHz for all HSE frequencies
+    RCC_PeriphClkInit.PLL2.PLL2M = HSE_VALUE / 1000000 / 2;
+    RCC_PeriphClkInit.PLL2.PLL2N = 400;
+    RCC_PeriphClkInit.PLL2.PLL2P = 2;
+    RCC_PeriphClkInit.PLL2.PLL2Q = 10; // 80 Mhz - FDCAN
+    RCC_PeriphClkInit.PLL2.PLL2R = 4;  // 200Mhz HAL LIBS REQUIRE 200MHZ SDMMC CLOCK, see HAL_SD_ConfigWideBusOperation, SDMMC_HSpeed_CLK_DIV, SDMMC_NSpeed_CLK_DIV
     RCC_PeriphClkInit.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
     RCC_PeriphClkInit.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
     RCC_PeriphClkInit.PLL2.PLL2FRACN = 0;
+
+    uint32_t periphSel = 0;
+#ifdef USE_SDCARD_SDIO
+    periphSel |= RCC_PERIPHCLK_SDMMC;
     RCC_PeriphClkInit.SdmmcClockSelection = RCC_SDMMCCLKSOURCE_PLL2;
+#endif
+#ifdef USE_DRONECAN
+    periphSel |= RCC_PERIPHCLK_FDCAN;
+    RCC_PeriphClkInit.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
+#endif
+    RCC_PeriphClkInit.PeriphClockSelection = periphSel;
     HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit);
 #endif
 
