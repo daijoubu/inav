@@ -499,9 +499,9 @@ void SystemClock_Config(void)
 
 #if defined(USE_SDCARD_SDIO) || defined(USE_DRONECAN)
     // PLL2 provides SDMMC (200MHz via PLL2R) and FDCAN (80MHz via PLL2Q)
-    // PLL2M scales with HSE to keep VCO=800MHz for all HSE frequencies
-    RCC_PeriphClkInit.PLL2.PLL2M = HSE_VALUE / 1000000 / 2;
-    RCC_PeriphClkInit.PLL2.PLL2N = 400;
+    // VCO input = 1.6 MHz (HSE / M), VCO output = 800 MHz (1.6 * N=500)
+    RCC_PeriphClkInit.PLL2.PLL2M = HSE_VALUE / 1600000;
+    RCC_PeriphClkInit.PLL2.PLL2N = 500;
     RCC_PeriphClkInit.PLL2.PLL2P = 2;
     RCC_PeriphClkInit.PLL2.PLL2Q = 10; // 80 Mhz - FDCAN
     RCC_PeriphClkInit.PLL2.PLL2R = 4;  // 200Mhz HAL LIBS REQUIRE 200MHZ SDMMC CLOCK, see HAL_SD_ConfigWideBusOperation, SDMMC_HSpeed_CLK_DIV, SDMMC_NSpeed_CLK_DIV
