@@ -504,7 +504,7 @@ void SystemClock_Config(void)
     // CMake sets HSE_VALUE per-target via -DHSE_VALUE=<n> (default 8MHz); the stm32h7xx_hal_conf.h
     // fallback of 25MHz is never used for real hardware. Current targets: 8MHz (÷5) and 16MHz (÷10).
     // If adding a new target with a non-multiple HSE, this assert will fire — choose a different VCO input.
-    static_assert(HSE_VALUE % 1600000 == 0, "HSE_VALUE must be a multiple of 1.6MHz for PLL2M calculation");
+    STATIC_ASSERT(HSE_VALUE % 1600000 == 0, HSE_VALUE_must_be_a_multiple_of_1_6MHz_for_PLL2M_calculation);
     RCC_PeriphClkInit.PLL2.PLL2M = HSE_VALUE / 1600000;
     RCC_PeriphClkInit.PLL2.PLL2N = 500;
     RCC_PeriphClkInit.PLL2.PLL2P = 2;
