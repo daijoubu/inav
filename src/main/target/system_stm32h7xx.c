@@ -519,7 +519,9 @@ void SystemClock_Config(void)
     RCC_PeriphClkInit.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL2;
 #endif
     RCC_PeriphClkInit.PeriphClockSelection = periphSel;
-    HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit);
+    if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphClkInit) != HAL_OK) {
+        Error_Handler();
+    }
 #endif
 
 #ifdef USE_QUADSPI
