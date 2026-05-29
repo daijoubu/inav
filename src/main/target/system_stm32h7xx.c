@@ -501,7 +501,9 @@ void SystemClock_Config(void)
     // PLL2 provides SDMMC (200MHz via PLL2R) and FDCAN (80MHz via PLL2Q)
     // VCO input = 1.6 MHz (HSE / M), VCO output = 800 MHz (1.6 * N=500)
     // HSE_VALUE must be an exact multiple of 1600000 for integer division to give the correct M divider.
-    // All supported H7 targets use 8MHz or 25MHz HSE (÷5 or ÷16), both exact multiples.
+    // CMake sets HSE_VALUE per-target via -DHSE_VALUE=<n> (default 8MHz); the stm32h7xx_hal_conf.h
+    // fallback of 25MHz is never used for real hardware. Current targets: 8MHz (÷5) and 16MHz (÷10).
+    // If adding a new target with a non-multiple HSE, this assert will fire — choose a different VCO input.
     static_assert(HSE_VALUE % 1600000 == 0, "HSE_VALUE must be a multiple of 1.6MHz for PLL2M calculation");
     RCC_PeriphClkInit.PLL2.PLL2M = HSE_VALUE / 1600000;
     RCC_PeriphClkInit.PLL2.PLL2N = 500;
