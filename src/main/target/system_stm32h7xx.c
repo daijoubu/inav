@@ -500,6 +500,9 @@ void SystemClock_Config(void)
 #if defined(USE_SDCARD_SDIO) || defined(USE_DRONECAN)
     // PLL2 provides SDMMC (200MHz via PLL2R) and FDCAN (80MHz via PLL2Q)
     // VCO input = 1.6 MHz (HSE / M), VCO output = 800 MHz (1.6 * N=500)
+    // HSE_VALUE must be an exact multiple of 1600000 for integer division to give the correct M divider.
+    // All supported H7 targets use 8MHz or 25MHz HSE (÷5 or ÷16), both exact multiples.
+    static_assert(HSE_VALUE % 1600000 == 0, "HSE_VALUE must be a multiple of 1.6MHz for PLL2M calculation");
     RCC_PeriphClkInit.PLL2.PLL2M = HSE_VALUE / 1600000;
     RCC_PeriphClkInit.PLL2.PLL2N = 500;
     RCC_PeriphClkInit.PLL2.PLL2P = 2;
