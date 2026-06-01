@@ -41,10 +41,15 @@ PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
 );
 
 static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
+#ifdef UNIT_TEST
+uint8_t activeNodeCount = 0;
+dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
+#else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static volatile uint32_t txErrCount = 0;
 static uint32_t busOffCount = 0;
+#endif
 
 /* Forward declarations ------------------------------------------------------*/
 
