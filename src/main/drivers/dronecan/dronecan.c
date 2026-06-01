@@ -39,8 +39,13 @@ PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
 );
 
 static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
+#ifdef UNIT_TEST
+uint8_t activeNodeCount = 0;
+dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
+#else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
+#endif
 
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
