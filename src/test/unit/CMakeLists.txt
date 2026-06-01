@@ -53,6 +53,20 @@ set_property(SOURCE dronecan_messages_unittest.cc PROPERTY extra_includes
     "../../lib/main/Dronecan/dsdlc_generated/include")
 set_property(SOURCE dronecan_messages_unittest.cc PROPERTY definitions USE_DRONECAN CANARD_ENABLE_TAO_OPTION=0)
 
+# GetNodeInfo, SoftwareVersion, HardwareVersion, RTCMStream tests
+set_property(SOURCE dronecan_getnodeinfo_unittest.cc PROPERTY depends
+    "drivers/dronecan/libcanard/canard.c")
+set_property(SOURCE dronecan_getnodeinfo_unittest.cc PROPERTY extra_sources
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_res.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_req.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.SoftwareVersion.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.HardwareVersion.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.NodeStatus.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.RTCMStream.c")
+set_property(SOURCE dronecan_getnodeinfo_unittest.cc PROPERTY extra_includes
+    "../../lib/main/Dronecan/dsdlc_generated/include")
+set_property(SOURCE dronecan_getnodeinfo_unittest.cc PROPERTY definitions USE_DRONECAN CANARD_ENABLE_TAO_OPTION=0)
+
 # bxCAN timing algorithm tests - self-contained, no driver or HAL dependencies
 # Keep in sync with canard_stm32f7xx_driver.c:canardSTM32ComputeTimings
 
