@@ -4627,41 +4627,34 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 break;
             }
             uint8_t nodeID = sbufReadU8(src);
-            uint8_t count = dronecanGetNodeCount();
-            bool found = false;
-            for (uint8_t i = 0; i < count; i++) {
-                const dronecanNodeInfo_t *node = dronecanGetNode(i);
-                if (node->nodeID == nodeID) {
-                    found = true;
-                    // nodeID(1)+health(1)+mode(1)+uptime_sec(4)+vendor_status_code(2)+elapsed_ms(4)
-                    // +name_len(1)+name(32)+sw_major(1)+sw_minor(1)+sw_optional_field_flags(1)
-                    // +sw_vcs_commit(4)+hw_major(1)+hw_minor(1)+hw_unique_id(16) = 71
-                    if (sbufBytesRemaining(dst) < (1+1+1+4+2+4+1+32+1+1+1+4+1+1+16)) {
-                        *ret = MSP_RESULT_ERROR;
-                        break;
-                    }
-                    sbufWriteU8(dst, node->nodeID);
-                    sbufWriteU8(dst, node->health);
-                    sbufWriteU8(dst, node->mode);
-                    sbufWriteU32(dst, node->uptime_sec);
-                    sbufWriteU16(dst, node->vendor_status_code);
-                    sbufWriteU32(dst, millis() - node->last_seen_ms);
-                    sbufWriteU8(dst, node->name_len);
-                    sbufWriteDataSafe(dst, node->name, 32);
-                    sbufWriteU8(dst,  node->sw_major);
-                    sbufWriteU8(dst,  node->sw_minor);
-                    sbufWriteU8(dst,  node->sw_optional_field_flags);
-                    sbufWriteU32(dst, node->sw_vcs_commit);
-                    sbufWriteU8(dst,  node->hw_major);
-                    sbufWriteU8(dst,  node->hw_minor);
-                    sbufWriteDataSafe(dst, node->hw_unique_id, 16);
-                    *ret = MSP_RESULT_ACK;
-                    break;
-                }
-            }
-            if (!found) {
+            const dronecanNodeInfo_t *node = dronecanGetNodeByID(nodeID);
+            if (!node) {
                 *ret = MSP_RESULT_ERROR;
+                break;
             }
+            // nodeID(1)+health(1)+mode(1)+uptime_sec(4)+vendor_status_code(2)+elapsed_ms(4)
+            // +name_len(1)+name(32)+sw_major(1)+sw_minor(1)+sw_optional_field_flags(1)
+            // +sw_vcs_commit(4)+hw_major(1)+hw_minor(1)+hw_unique_id(16) = 71
+            if (sbufBytesRemaining(dst) < (1+1+1+4+2+4+1+32+1+1+1+4+1+1+16)) {
+                *ret = MSP_RESULT_ERROR;
+                break;
+            }
+            sbufWriteU8(dst, node->nodeID);
+            sbufWriteU8(dst, node->health);
+            sbufWriteU8(dst, node->mode);
+            sbufWriteU32(dst, node->uptime_sec);
+            sbufWriteU16(dst, node->vendor_status_code);
+            sbufWriteU32(dst, millis() - node->last_seen_ms);
+            sbufWriteU8(dst, node->name_len);
+            sbufWriteDataSafe(dst, node->name, 32);
+            sbufWriteU8(dst,  node->sw_major);
+            sbufWriteU8(dst,  node->sw_minor);
+            sbufWriteU8(dst,  node->sw_optional_field_flags);
+            sbufWriteU32(dst, node->sw_vcs_commit);
+            sbufWriteU8(dst,  node->hw_major);
+            sbufWriteU8(dst,  node->hw_minor);
+            sbufWriteDataSafe(dst, node->hw_unique_id, 16);
+            *ret = MSP_RESULT_ACK;
         }
         break;
 #endif

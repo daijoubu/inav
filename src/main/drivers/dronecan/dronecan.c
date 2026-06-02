@@ -331,6 +331,53 @@ static void processCanardTxQueueSafe(void) {
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
 
+static dronecanNodeInfo_t *findNodeByID(uint8_t nodeID) {
+    for (uint8_t i = 0; i < activeNodeCount; i++) {
+        if (nodeTable[i].nodeID == nodeID) {
+            return &nodeTable[i];
+        }
+    }
+    return NULL;
+}
+
+const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID) {
+    return findNodeByID(nodeID);
+}
+
+static void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
+{
+    UNUSED(ins);
+    struct uavcan_protocol_GetNodeInfoResponse resp;
+
+    if (uavcan_protocol_GetNodeInfoResponse_decode(transfer, &resp)) {
+        LOG_DEBUG(CAN, "GetNodeInfoResponse decode failed");
+        return;
+    }
+
+    uint8_t nodeID = transfer->source_node_id;
+    dronecanNodeInfo_t *node = findNodeByID(nodeID);
+    if (!node) {
+        LOG_DEBUG(CAN, "GetNodeInfoResponse from unknown node %u", nodeID);
+        return;
+    }
+
+    uint8_t len = resp.name.len < 32 ? resp.name.len : 32;
+    node->name_len = len;
+    memcpy(node->name, resp.name.data, len);
+
+    node->sw_major = resp.software_version.major;
+    node->sw_minor = resp.software_version.minor;
+    node->sw_optional_field_flags = resp.software_version.optional_field_flags;
+    node->sw_vcs_commit = (resp.software_version.optional_field_flags & UAVCAN_PROTOCOL_SOFTWAREVERSION_OPTIONAL_FIELD_FLAG_VCS_COMMIT)
+                         ? resp.software_version.vcs_commit : 0;
+
+    node->hw_major = resp.hardware_version.major;
+    node->hw_minor = resp.hardware_version.minor;
+    memcpy(node->hw_unique_id, resp.hardware_version.unique_id, 16);
+}
+// Canard Senders
+
+
 /*
   send the 1Hz NodeStatus message. This is what allows a node to show
   up in the DroneCAN GUI tool and in the flight controller logs
@@ -461,7 +508,6 @@ static bool shouldAcceptTransfer(const CanardInstance *ins,
 // Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
 
 static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
     struct uavcan_protocol_NodeStatus nodeStatus;
 
 	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
@@ -470,16 +516,14 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 	}
 
 	uint8_t nodeId = transfer->source_node_id;
-    for (uint8_t i = 0; i < activeNodeCount; i++) {
-        if (nodeTable[i].nodeID == nodeId) {
-            // update health, mode, uptime, vendor_status_code, last_seen_ms
-            nodeTable[i].health = nodeStatus.health;
-            nodeTable[i].mode = nodeStatus.mode;
-            nodeTable[i].uptime_sec = nodeStatus.uptime_sec;
-            nodeTable[i].vendor_status_code = nodeStatus.vendor_specific_status_code;
-            nodeTable[i].last_seen_ms = millis();
-            return;
-        }
+    dronecanNodeInfo_t *node = findNodeByID(nodeId);
+    if (node) {
+        node->health = nodeStatus.health;
+        node->mode = nodeStatus.mode;
+        node->uptime_sec = nodeStatus.uptime_sec;
+        node->vendor_status_code = nodeStatus.vendor_specific_status_code;
+        node->last_seen_ms = millis();
+        return;
     }
     // new node
     if (activeNodeCount < DRONECAN_MAX_NODES) {
@@ -491,9 +535,26 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].name_len = 0;
         nodeTable[activeNodeCount].name[0] = 0;
         nodeTable[activeNodeCount].last_seen_ms = millis();
+        nodeTable[activeNodeCount].sw_major = 0;
+        nodeTable[activeNodeCount].sw_minor = 0;
+        nodeTable[activeNodeCount].sw_optional_field_flags = 0;
+        nodeTable[activeNodeCount].sw_vcs_commit = 0;
+        nodeTable[activeNodeCount].hw_major = 0;
+        nodeTable[activeNodeCount].hw_minor = 0;
+        memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);
+        nodeTable[activeNodeCount].getNodeInfo_transfer_id = 0;
         activeNodeCount++;
-    }
 
+        dronecanMaskTxISR();
+        const int16_t res = canardRequestOrRespond(ins, nodeId,
+            UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
+            &nodeTable[activeNodeCount - 1].getNodeInfo_transfer_id,
+            CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
+        dronecanUnmaskTxISR();
+        if (res < 0) {
+            LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeId, res);
+        }
+    }
 }
 
 static void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
@@ -614,6 +675,9 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
 	}
 	if (transfer->transfer_type == CanardTransferTypeResponse) {
 		switch (transfer->data_type_id) {
+        case UAVCAN_PROTOCOL_GETNODEINFO_ID:
+            handle_GetNodeInfoResponse(ins, transfer);
+            break;
 		}
 	}
 	if (transfer->transfer_type == CanardTransferTypeBroadcast) {
