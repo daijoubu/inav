@@ -547,11 +547,18 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 
         case STATE_DRONECAN_BUS_OFF:
             if(currentTimeUs > (busoffTimeUs + 20000)) { // Wait 20ms: worst-case 128x11 recovery is 11.264ms at 125kbps
+                static uint8_t busoff_retries = 0;
                 canardSTM32RecoverFromBusOff();
                 busoffTimeUs = currentTimeUs;
                 canardSTM32GetProtocolStatus(&protocolStatus);
                 if(protocolStatus.BusOff == 0) {
+                    busoff_retries = 0;
                     dronecanState = STATE_DRONECAN_NORMAL;
+                } else if (++busoff_retries >= 50) {
+                    // ~1 second of 20ms recovery attempts with no success — permanent fault
+                    busoff_retries = 0;
+                    dronecanState = STATE_DRONECAN_FAILED;
+                    LOG_DEBUG(CAN, "DroneCAN: bus-off recovery failed after 50 attempts, entering FAILED state");
                 }
             }
             break;
