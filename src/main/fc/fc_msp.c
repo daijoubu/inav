@@ -4592,12 +4592,12 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 *ret = MSP_RESULT_ERROR;
                 break;
             }
-            uint8_t nodeId = sbufReadU8(src);
+            uint8_t nodeID = sbufReadU8(src);
             uint8_t count = dronecanGetNodeCount();
             bool found = false;
             for (uint8_t i = 0; i < count; i++) {
                 const dronecanNodeInfo_t *node = dronecanGetNode(i);
-                if (node->nodeID == nodeId) {
+                if (node->nodeID == nodeID) {
                     found = true;
                     if (sbufBytesRemaining(dst) < 46) {
                         *ret = MSP_RESULT_ERROR;
