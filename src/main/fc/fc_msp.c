@@ -4654,7 +4654,6 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                     sbufWriteDataSafe(dst, node->hw_unique_id, 16);
                     *ret = MSP_RESULT_ACK;
                     break;
-                    
                 }
             }
             if (!found) {
