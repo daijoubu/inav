@@ -9840,7 +9840,7 @@
                 ]
             },
             "variable_len": true,
-            "notes": "Requires `USE_DRONECAN`. Response is `nodeCount` followed by `nodeCount` records of 7 bytes each: nodeID(1)+health(1)+mode(1)+last_seen_ms(4). Maximum payload 1 + (DRONECAN_MAX_NODES * 7) = 225 bytes. Full node detail including uptime, vendor status, and name is available via MSP2_INAV_DRONECAN_NODE_INFO.",
+            "notes": "Requires `USE_DRONECAN`. Response is `nodeCount` followed by `nodeCount` records of 7 bytes each: nodeID(1)+health(1)+mode(1)+elapsed_ms(4), where elapsed_ms is milliseconds since the node was last seen. Maximum payload 1 + (DRONECAN_MAX_NODES * 7) = 225 bytes. Full node detail including uptime, vendor status, and name is available via MSP2_INAV_DRONECAN_NODE_INFO.",
             "description": "Returns the list of all detected DroneCAN nodes with their current status."
         },                                                                                                        
         "MSP2_INAV_DRONECAN_NODE_INFO": {                                                   
@@ -9890,8 +9890,8 @@
                     },
                     {
                         "name": "last_seen_ms",
-                        "ctype": "uint32_t",                                                                      
-                        "desc": "FC millisecond timestamp when this node was last seen",
+                        "ctype": "uint32_t",
+                        "desc": "Milliseconds elapsed since this node was last seen (millis() - last_seen_ms at time of request)",
                         "units": "ms"                                                                             
                     },                                                                      
                     {
