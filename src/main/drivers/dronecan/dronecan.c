@@ -92,11 +92,14 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);   
         activeNodeCount++;  
         
-        /* Phase 2: request node info from newly discovered node*/
-        uint8_t transfer_id = 0;
+        /* Phase 2: request node info from newly discovered node.
+         * transfer_id must be persistent so Canard can increment it across retries.
+         * TODO: retry on failure — if CAN TX is full at discovery time, version
+         * fields stay zero. Add a getNodeInfo_pending flag and retry in dronecanUpdate. */
+        static uint8_t getNodeInfo_transfer_id = 0;
         int16_t res = canardRequestOrRespond(ins, nodeID, UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
-            &transfer_id, CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
-        
+            &getNodeInfo_transfer_id, CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
+
         if (res < 0) {
             LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeID, res);
         }
@@ -211,7 +214,7 @@ void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
     struct uavcan_protocol_GetNodeInfoResponse resp;
 
     if (uavcan_protocol_GetNodeInfoResponse_decode(transfer, &resp)) {
-        LOG_DEBUG(CAN, "GetNodeInfoRespones decode failed");
+        LOG_DEBUG(CAN, "GetNodeInfoResponse decode failed");
         return;
     }
 
@@ -225,7 +228,7 @@ void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
             nodeTable[i].sw_major = resp.software_version.major;
             nodeTable[i].sw_minor = resp.software_version.minor;
             nodeTable[i].sw_optional_field_flags = resp.software_version.optional_field_flags;
-            nodeTable[i].sw_vcs_commit = (resp.software_version.optional_field_flags & 1)
+            nodeTable[i].sw_vcs_commit = (resp.software_version.optional_field_flags & UAVCAN_PROTOCOL_SOFTWAREVERSION_OPTIONAL_FIELD_FLAG_VCS_COMMIT)
                                          ? resp.software_version.vcs_commit : 0;
 
             nodeTable[i].hw_major = resp.hardware_version.major;

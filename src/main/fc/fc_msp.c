@@ -4614,7 +4614,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                     sbufWriteU32(dst, node->sw_vcs_commit);
                     sbufWriteU8(dst,  node->hw_major);
                     sbufWriteU8(dst,  node->hw_minor);
-                    sbufWriteData(dst, node->hw_unique_id, 16);
+                    sbufWriteDataSafe(dst, node->hw_unique_id, 16);
                     *ret = MSP_RESULT_ACK;
                     break;
                     
