@@ -85,23 +85,13 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     }
     // new node
     if (activeNodeCount < DRONECAN_MAX_NODES) {
+        memset(&nodeTable[activeNodeCount], 0, sizeof(dronecanNodeInfo_t));
         nodeTable[activeNodeCount].nodeID = nodeID;
         nodeTable[activeNodeCount].health = nodeStatus.health;
         nodeTable[activeNodeCount].mode = nodeStatus.mode;
         nodeTable[activeNodeCount].uptime_sec = nodeStatus.uptime_sec;
         nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
-        nodeTable[activeNodeCount].name_len = 0;
-        nodeTable[activeNodeCount].name[0] = 0;
         nodeTable[activeNodeCount].last_seen_ms = millis();
-        /* Phase 1: zero-initialize version fields until GetNodeInfo response arrives*/
-        nodeTable[activeNodeCount].sw_major = 0;
-        nodeTable[activeNodeCount].sw_minor = 0;
-        nodeTable[activeNodeCount].sw_optional_field_flags = 0;
-        nodeTable[activeNodeCount].sw_vcs_commit = 0;
-        nodeTable[activeNodeCount].hw_major = 0;
-        nodeTable[activeNodeCount].hw_minor = 0;
-        memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);
-        nodeTable[activeNodeCount].getNodeInfo_transfer_id = 0;
         activeNodeCount++;
 
         /* Phase 2: request node info from newly discovered node.
