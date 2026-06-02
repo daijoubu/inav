@@ -194,11 +194,18 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 
         case STATE_DRONECAN_BUS_OFF:
             if(currentTimeUs > (busoffTimeUs + 20000)) { // Wait 20ms: worst-case 128x11 recovery is 11.264ms at 125kbps
+                static uint8_t busoff_retries = 0;
                 canardSTM32RecoverFromBusOff();
                 busoffTimeUs = currentTimeUs;
                 canardSTM32GetProtocolStatus(&protocolStatus);
                 if(protocolStatus.BusOff == 0) {
+                    busoff_retries = 0;
                     dronecanState = STATE_DRONECAN_NORMAL;
+                } else if (++busoff_retries >= 50) {
+                    // ~1 second of 20ms recovery attempts with no success — permanent fault
+                    busoff_retries = 0;
+                    dronecanState = STATE_DRONECAN_FAILED;
+                    LOG_DEBUG(CAN, "DroneCAN: bus-off recovery failed after 50 attempts, entering FAILED state");
                 }
             }
             break;
@@ -638,4 +645,39 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
         }
 	}
 }
+
+	// Transmitting
+	for (const CanardCANFrame *tx_frame ; (tx_frame = canardPeekTxQueue(&canard)) != NULL;)
+    {
+        const int16_t tx_res = canardSTM32Transmit(tx_frame);
+
+		if (tx_res < 0) {
+			LOG_DEBUG(CAN, "Transmit error %d", tx_res);
+			canardPopTxQueue(&canard);  // Error - discard frame
+		} else if (tx_res > 0) {
+			canardPopTxQueue(&canard);  // Success - remove from queue
+		} else {
+			// tx_res == 0: TX FIFO full, retry later
+			break;
+		}
+	}
+
+}
+
+/*
+  This function is called at 1 Hz rate from the main loop.
+*/
+void process1HzTasks(timeUs_t timestamp_usec)
+{
+   /*
+      Purge transfers that are no longer transmitted. This can free up some memory
+    */
+    canardCleanupStaleTransfers(&canard, timestamp_usec);
+
+    /*
+      Transmit the node status message
+    */
+    send_NodeStatus();
+}
+
 #endif
