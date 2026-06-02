@@ -9903,13 +9903,55 @@
                     {
                         "name": "name",
                         "ctype": "char[32]",
-                        "desc": "Node name up to 32 bytes, zero-padded",                                          
+                        "desc": "Node name up to 32 bytes, zero-padded",
                         "units": ""
-                    }                                                                                             
-                ]                                                                           
+                    },
+                    {
+                        "name": "sw_major",
+                        "ctype": "uint8_t",
+                        "desc": "Software version major (from GetNodeInfo response)",
+                        "units": ""
+                    },
+                    {
+                        "name": "sw_minor",
+                        "ctype": "uint8_t",
+                        "desc": "Software version minor (from GetNodeInfo response)",
+                        "units": ""
+                    },
+                    {
+                        "name": "sw_optional_field_flags",
+                        "ctype": "uint8_t",
+                        "desc": "UAVCAN SoftwareVersion optional_field_flags: bit 0 = vcs_commit valid, bit 1 = image_crc valid",
+                        "units": ""
+                    },
+                    {
+                        "name": "sw_vcs_commit",
+                        "ctype": "uint32_t",
+                        "desc": "Git commit hash (valid when sw_optional_field_flags bit 0 is set)",
+                        "units": ""
+                    },
+                    {
+                        "name": "hw_major",
+                        "ctype": "uint8_t",
+                        "desc": "Hardware version major (from GetNodeInfo response)",
+                        "units": ""
+                    },
+                    {
+                        "name": "hw_minor",
+                        "ctype": "uint8_t",
+                        "desc": "Hardware version minor (from GetNodeInfo response)",
+                        "units": ""
+                    },
+                    {
+                        "name": "hw_unique_id",
+                        "ctype": "uint8_t[16]",
+                        "desc": "128-bit hardware unique ID (from GetNodeInfo response)",
+                        "units": ""
+                    }
+                ]
             },
-            "notes": "Requires `USE_DRONECAN`. Returns `MSP_RESULT_ERROR` if the requested node ID is not in the node table.",                                                                                                     
-            "description": "Returns full status detail for a single DroneCAN node by ID."
+            "notes": "Requires `USE_DRONECAN`. Returns `MSP_RESULT_ERROR` if the requested node ID is not in the node table. Response is 71 bytes when GetNodeInfo data has been received from the node (46 bytes if not yet received).",
+            "description": "Returns full status detail for a single DroneCAN node by ID, including software and hardware version data retrieved via the DroneCAN GetNodeInfo service."
         },                                        
         "MSP2_INAV_LED_STRIP_CONFIG_EX": {
             "code": 8264,
