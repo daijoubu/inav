@@ -53,6 +53,7 @@ bool shouldAcceptTransfer(const CanardInstance *ins,
                           uint16_t data_type_id,
                           CanardTransferType transfer_type,
                           uint8_t source_node_id);
+void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer);
 
 /* =========================================================================
  * Stubs — provide every symbol dronecan.c references that isn't supplied by
@@ -134,12 +135,17 @@ static CanardRxTransfer makeNodeStatusTransfer(
 
 class DroneCANNodeTableTest : public ::testing::Test {
 protected:
+    CanardInstance ins;
+    uint8_t memory_pool[4096]; /* generous pool: 32 nodes × 1 frame each */
     uint8_t buf[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE + 4];
 
     void SetUp() override {
         activeNodeCount = 0;
         memset(nodeTable, 0, sizeof(dronecanNodeInfo_t) * DRONECAN_MAX_NODES);
         mock_time_ms = 0;
+        canardInit(&ins, memory_pool, sizeof(memory_pool),
+                   onTransferReceived, shouldAcceptTransfer, NULL);
+        canardSetLocalNodeID(&ins, 1); /* FC node ID required for canardRequestOrRespond */
     }
 };
 
@@ -153,7 +159,7 @@ TEST_F(DroneCANNodeTableTest, NewNodeAddedOnFirstStatus)
             UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK,
             UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL,
             0xABCD, buf);
-    handle_NodeStatus(nullptr, &xfer);
+    handle_NodeStatus(&ins, &xfer);
 
     EXPECT_EQ(dronecanGetNodeCount(), 1u);
 
@@ -173,8 +179,8 @@ TEST_F(DroneCANNodeTableTest, TwoDistinctNodesStoredSeparately)
 {
     CanardRxTransfer x1 = makeNodeStatusTransfer(10, 100, 0, 0, 0, buf);
     CanardRxTransfer x2 = makeNodeStatusTransfer(20, 200, 0, 0, 0, buf);
-    handle_NodeStatus(nullptr, &x1);
-    handle_NodeStatus(nullptr, &x2);
+    handle_NodeStatus(&ins, &x1);
+    handle_NodeStatus(&ins, &x2);
 
     EXPECT_EQ(dronecanGetNodeCount(), 2u);
     EXPECT_EQ(dronecanGetNode(0)->nodeID, 10u);
@@ -189,7 +195,7 @@ TEST_F(DroneCANNodeTableTest, ExistingNodeUpdatedInPlace)
             UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK,
             UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL,
             0x0000, buf);
-    handle_NodeStatus(nullptr, &x1);
+    handle_NodeStatus(&ins, &x1);
     ASSERT_EQ(dronecanGetNodeCount(), 1u);
 
     CanardRxTransfer x2 = makeNodeStatusTransfer(
@@ -197,7 +203,7 @@ TEST_F(DroneCANNodeTableTest, ExistingNodeUpdatedInPlace)
             UAVCAN_PROTOCOL_NODESTATUS_HEALTH_WARNING,
             UAVCAN_PROTOCOL_NODESTATUS_MODE_MAINTENANCE,
             0xBEEF, buf);
-    handle_NodeStatus(nullptr, &x2);
+    handle_NodeStatus(&ins, &x2);
 
     EXPECT_EQ(dronecanGetNodeCount(), 1u);   /* still one node */
 
@@ -214,7 +220,7 @@ TEST_F(DroneCANNodeTableTest, LastSeenMsFollowsMillis)
 {
     mock_time_ms = 1000;
     CanardRxTransfer x1 = makeNodeStatusTransfer(20, 10, 0, 0, 0, buf);
-    handle_NodeStatus(nullptr, &x1);
+    handle_NodeStatus(&ins, &x1);
 
     const dronecanNodeInfo_t *node = dronecanGetNode(0);
     ASSERT_NE(node, nullptr);
@@ -222,7 +228,7 @@ TEST_F(DroneCANNodeTableTest, LastSeenMsFollowsMillis)
 
     mock_time_ms = 2500;
     CanardRxTransfer x2 = makeNodeStatusTransfer(20, 20, 0, 0, 0, buf);
-    handle_NodeStatus(nullptr, &x2);
+    handle_NodeStatus(&ins, &x2);
 
     EXPECT_EQ(node->last_seen_ms, 2500u);
 }
@@ -232,7 +238,7 @@ TEST_F(DroneCANNodeTableTest, LastSeenMsSetOnInsert)
 {
     mock_time_ms = 9999;
     CanardRxTransfer xfer = makeNodeStatusTransfer(5, 0, 0, 0, 0, buf);
-    handle_NodeStatus(nullptr, &xfer);
+    handle_NodeStatus(&ins, &xfer);
 
     const dronecanNodeInfo_t *node = dronecanGetNode(0);
     ASSERT_NE(node, nullptr);
@@ -245,13 +251,13 @@ TEST_F(DroneCANNodeTableTest, TableFullNodeRejected)
 {
     for (uint8_t i = 1; i <= DRONECAN_MAX_NODES; i++) {
         CanardRxTransfer xfer = makeNodeStatusTransfer(i, 0, 0, 0, 0, buf);
-        handle_NodeStatus(nullptr, &xfer);
+        handle_NodeStatus(&ins, &xfer);
     }
     ASSERT_EQ(dronecanGetNodeCount(), (uint8_t)DRONECAN_MAX_NODES);
 
     /* Try to add a 33rd node (ID 100, not in 1..32) */
     CanardRxTransfer overflow = makeNodeStatusTransfer(100, 0, 0, 0, 0, buf);
-    handle_NodeStatus(nullptr, &overflow);
+    handle_NodeStatus(&ins, &overflow);
 
     EXPECT_EQ(dronecanGetNodeCount(), (uint8_t)DRONECAN_MAX_NODES);
 
