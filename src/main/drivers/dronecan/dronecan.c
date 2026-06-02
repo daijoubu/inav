@@ -60,19 +60,19 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 		return;
 	}
 
-	uint8_t nodeID = transfer->source_node_id;                                                                                                                                                                                                
+	uint8_t nodeID = transfer->source_node_id;
     for (uint8_t i = 0; i < activeNodeCount; i++) {
-        if (nodeTable[i].nodeID == nodeID) { 
-            // update health, mode, uptime, vendor_status_code, last_seen_ms                                                                                                                                                                                                 
+        if (nodeTable[i].nodeID == nodeID) {
+            // update health, mode, uptime, vendor_status_code, last_seen_ms
             nodeTable[i].health = nodeStatus.health;
             nodeTable[i].mode = nodeStatus.mode;
             nodeTable[i].uptime_sec = nodeStatus.uptime_sec;
             nodeTable[i].vendor_status_code = nodeStatus.vendor_specific_status_code;
-            nodeTable[i].last_seen_ms = millis();                    
-            return;                                                                                                                                                                                                                           
-        }                                                                                       
-    }                                                                                                                                                                                                                                         
-    // new node                                                                                 
+            nodeTable[i].last_seen_ms = millis();
+            return;
+        }
+    }
+    // new node
     if (activeNodeCount < DRONECAN_MAX_NODES) {
         nodeTable[activeNodeCount].nodeID = nodeID;
         nodeTable[activeNodeCount].health = nodeStatus.health;
@@ -81,7 +81,7 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
         nodeTable[activeNodeCount].name_len = 0;
         nodeTable[activeNodeCount].name[0] = 0;
-        nodeTable[activeNodeCount].last_seen_ms = millis();  
+        nodeTable[activeNodeCount].last_seen_ms = millis();
         /* Phase 1: zero-initialize version fields until GetNodeInfo response arrives*/
         nodeTable[activeNodeCount].sw_major = 0;
         nodeTable[activeNodeCount].sw_minor = 0;
@@ -89,9 +89,9 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].sw_vcs_commit = 0;
         nodeTable[activeNodeCount].hw_major = 0;
         nodeTable[activeNodeCount].hw_minor = 0;
-        memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);   
-        activeNodeCount++;  
-        
+        memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);
+        activeNodeCount++;
+
         /* Phase 2: request node info from newly discovered node.
          * transfer_id must be persistent so Canard can increment it across retries.
          * TODO: retry on failure — if CAN TX is full at discovery time, version
@@ -255,7 +255,7 @@ void send_NodeStatus(void) {
     else {
         node_status.health = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL;
     }
-    
+
     node_status.mode = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;  // Indicates that node is able to communicate over CAN, not that it is in flight.
     node_status.sub_mode = 0; // Not currently used in dronecan
 
@@ -376,27 +376,27 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
 		// check if we want to handle a specific broadcast message
 		switch (transfer->data_type_id) {
 
-            case UAVCAN_PROTOCOL_NODESTATUS_ID: 
+            case UAVCAN_PROTOCOL_NODESTATUS_ID:
                 handle_NodeStatus(ins, transfer);
                 break;
-            
 
-            case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
                 handle_GNSSAuxiliary(ins, transfer);
                 break;
-            
-            case UAVCAN_EQUIPMENT_GNSS_FIX_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_FIX_ID:
                 handle_GNSSFix(ins, transfer);
                 break;
-            
-            case UAVCAN_EQUIPMENT_GNSS_FIX2_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
                 handle_GNSSFix2(ins, transfer);
                 break;
-            
-            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID: 
+
+            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
                 handle_GNSSRCTMStream(ins, transfer);
                 break;
-            
+
             case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
                 handle_BatteryInfo(ins, transfer);
                 break;
@@ -452,7 +452,7 @@ void dronecanInit(void)
         case DRONECAN_BITRATE_250KBPS:
             bitrate = 250000;
             break;
-        
+
         case DRONECAN_BITRATE_500KBPS:
             bitrate = 500000;
             break;
@@ -471,7 +471,7 @@ void dronecanInit(void)
         LOG_ERROR(CAN, "Unable to initialize the CAN peripheral");
         dronecanState = STATE_DRONECAN_FAILED;
         return;
-    }  
+    }
     /*
     Initializing the Libcanard instance.
     */
@@ -562,7 +562,7 @@ void dronecanUpdate(timeUs_t currentTimeUs)
             break;
 
     }
-    
+
 }
 
 dronecanState_e dronecanGetState(void)
@@ -583,13 +583,13 @@ uint32_t dronecanGetBitrateKbps(void)
 
         case DRONECAN_BITRATE_250KBPS:
             return 250;
-        
+
         case DRONECAN_BITRATE_500KBPS:
             return 500;
 
         case DRONECAN_BITRATE_1000KBPS:
             return 1000;
-        
+
         case DRONECAN_BITRATE_COUNT:
             return 0;
     }
