@@ -35,6 +35,15 @@ typedef struct dronecanNodeInfo_s {
     uint32_t last_seen_ms;
     uint8_t name_len;
     char name[32];
+    /* Software version (from GetNodeInfo response)*/
+    uint8_t sw_major;
+    uint8_t sw_minor;
+    uint8_t sw_optional_field_flags;
+    uint32_t sw_vcs_commit;
+    /* Hardware version (from GetNodeInfo response)*/
+    uint8_t hw_major;
+    uint8_t hw_minor;
+    uint8_t hw_unique_id[16];
 } dronecanNodeInfo_t;
 
 // Wire format for MSP2_INAV_DRONECAN_NODES records (7 bytes each, packed).
