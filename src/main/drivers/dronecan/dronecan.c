@@ -52,6 +52,19 @@ static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 
 // Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
 
+static dronecanNodeInfo_t *findNodeByID(uint8_t nodeID) {
+    for (uint8_t i = 0; i < activeNodeCount; i++) {
+        if (nodeTable[i].nodeID == nodeID) {
+            return &nodeTable[i];
+        }
+    }
+    return NULL;
+}
+
+const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID) {
+    return findNodeByID(nodeID);
+}
+
 void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_protocol_NodeStatus nodeStatus;
 
@@ -61,16 +74,14 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 	}
 
 	uint8_t nodeID = transfer->source_node_id;
-    for (uint8_t i = 0; i < activeNodeCount; i++) {
-        if (nodeTable[i].nodeID == nodeID) {
-            // update health, mode, uptime, vendor_status_code, last_seen_ms
-            nodeTable[i].health = nodeStatus.health;
-            nodeTable[i].mode = nodeStatus.mode;
-            nodeTable[i].uptime_sec = nodeStatus.uptime_sec;
-            nodeTable[i].vendor_status_code = nodeStatus.vendor_specific_status_code;
-            nodeTable[i].last_seen_ms = millis();
-            return;
-        }
+    dronecanNodeInfo_t *node = findNodeByID(nodeID);
+    if (node) {
+        node->health = nodeStatus.health;
+        node->mode = nodeStatus.mode;
+        node->uptime_sec = nodeStatus.uptime_sec;
+        node->vendor_status_code = nodeStatus.vendor_specific_status_code;
+        node->last_seen_ms = millis();
+        return;
     }
     // new node
     if (activeNodeCount < DRONECAN_MAX_NODES) {
@@ -220,25 +231,25 @@ void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
     }
 
     uint8_t nodeID = transfer->source_node_id;
-    for(uint8_t i = 0; i < activeNodeCount; i++) {
-        if (nodeTable[i].nodeID == nodeID) {
-            uint8_t len = resp.name.len < 32 ? resp.name.len : 32;
-            nodeTable[i].name_len = len;
-            memcpy(nodeTable[i].name, resp.name.data, len);
-
-            nodeTable[i].sw_major = resp.software_version.major;
-            nodeTable[i].sw_minor = resp.software_version.minor;
-            nodeTable[i].sw_optional_field_flags = resp.software_version.optional_field_flags;
-            nodeTable[i].sw_vcs_commit = (resp.software_version.optional_field_flags & UAVCAN_PROTOCOL_SOFTWAREVERSION_OPTIONAL_FIELD_FLAG_VCS_COMMIT)
-                                         ? resp.software_version.vcs_commit : 0;
-
-            nodeTable[i].hw_major = resp.hardware_version.major;
-            nodeTable[i].hw_minor = resp.hardware_version.minor;
-            memcpy(nodeTable[i].hw_unique_id, resp.hardware_version.unique_id, 16);
-            return;
-        }
+    dronecanNodeInfo_t *node = findNodeByID(nodeID);
+    if (!node) {
+        LOG_DEBUG(CAN, "GetNodeInfoResponse from unknown node %u", nodeID);
+        return;
     }
-    LOG_DEBUG(CAN, "GetNodeInfoResponse from unknown node %u", nodeID);
+
+    uint8_t len = resp.name.len < 32 ? resp.name.len : 32;
+    node->name_len = len;
+    memcpy(node->name, resp.name.data, len);
+
+    node->sw_major = resp.software_version.major;
+    node->sw_minor = resp.software_version.minor;
+    node->sw_optional_field_flags = resp.software_version.optional_field_flags;
+    node->sw_vcs_commit = (resp.software_version.optional_field_flags & UAVCAN_PROTOCOL_SOFTWAREVERSION_OPTIONAL_FIELD_FLAG_VCS_COMMIT)
+                         ? resp.software_version.vcs_commit : 0;
+
+    node->hw_major = resp.hardware_version.major;
+    node->hw_minor = resp.hardware_version.minor;
+    memcpy(node->hw_unique_id, resp.hardware_version.unique_id, 16);
 }
 // Canard Senders
 

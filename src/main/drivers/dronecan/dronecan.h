@@ -63,5 +63,6 @@ dronecanState_e dronecanGetState(void);
 uint8_t dronecanGetNodeCount(void);
 uint32_t dronecanGetBitrateKbps(void);
 const dronecanNodeInfo_t *dronecanGetNode(uint8_t index);
+const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID);
 
 PG_DECLARE(dronecanConfig_t, dronecanConfig);
