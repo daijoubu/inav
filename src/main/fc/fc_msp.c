@@ -4599,7 +4599,10 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 const dronecanNodeInfo_t *node = dronecanGetNode(i);
                 if (node->nodeID == nodeID) {
                     found = true;
-                    if (sbufBytesRemaining(dst) < 71) {
+                    // nodeID(1)+health(1)+mode(1)+uptime_sec(4)+vendor_status_code(2)+elapsed_ms(4)
+                    // +name_len(1)+name(32)+sw_major(1)+sw_minor(1)+sw_optional_field_flags(1)
+                    // +sw_vcs_commit(4)+hw_major(1)+hw_minor(1)+hw_unique_id(16) = 71
+                    if (sbufBytesRemaining(dst) < (1+1+1+4+2+4+1+32+1+1+1+4+1+1+16)) {
                         *ret = MSP_RESULT_ERROR;
                         break;
                     }
