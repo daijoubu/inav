@@ -308,11 +308,10 @@ TEST(DroneCANShouldAcceptTransfer, AcceptsGetNodeInfoRequest)
     EXPECT_EQ(signature, UAVCAN_PROTOCOL_GETNODEINFO_REQUEST_SIGNATURE);
 }
 
-TEST(DroneCANShouldAcceptTransfer, RejectsGetNodeInfoResponseBeforePhase3)
+TEST(DroneCANShouldAcceptTransfer, AcceptsGetNodeInfoResponse)
 {
-    /* Phase 3 will add response handling — until then this must return false
-       so the test documents the expected change and will fail when Phase 3
-       wires up the response handler, prompting an update. */
+    /* Phase 3: FC now accepts GetNodeInfo responses so handle_GetNodeInfoResponse
+       can populate the node table with name and version data. */
     uint64_t signature = 0;
     bool accept = shouldAcceptTransfer(
             nullptr, &signature,
@@ -320,7 +319,8 @@ TEST(DroneCANShouldAcceptTransfer, RejectsGetNodeInfoResponseBeforePhase3)
             CanardTransferTypeResponse,
             42);
 
-    EXPECT_FALSE(accept);
+    EXPECT_TRUE(accept);
+    EXPECT_EQ(signature, UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_SIGNATURE);
 }
 
 TEST(DroneCANShouldAcceptTransfer, RejectsUnknownBroadcastId)

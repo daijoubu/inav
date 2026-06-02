@@ -53,7 +53,6 @@ static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 // Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
 
 void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
     struct uavcan_protocol_NodeStatus nodeStatus;
 
 	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
@@ -82,8 +81,25 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
         nodeTable[activeNodeCount].name_len = 0;
         nodeTable[activeNodeCount].name[0] = 0;
-        nodeTable[activeNodeCount].last_seen_ms = millis();     
-        activeNodeCount++;                                                                                                                                                               
+        nodeTable[activeNodeCount].last_seen_ms = millis();  
+        /* Phase 1: zero-initialize version fields until GetNodeInfo response arrives*/
+        nodeTable[activeNodeCount].sw_major = 0;
+        nodeTable[activeNodeCount].sw_minor = 0;
+        nodeTable[activeNodeCount].sw_optional_field_flags = 0;
+        nodeTable[activeNodeCount].sw_vcs_commit = 0;
+        nodeTable[activeNodeCount].hw_major = 0;
+        nodeTable[activeNodeCount].hw_minor = 0;
+        memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);   
+        activeNodeCount++;  
+        
+        /* Phase 2: request node info from newly discovered node*/
+        uint8_t transfer_id = 0;
+        int16_t res = canardRequestOrRespond(ins, nodeId, UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
+            &transfer_id, CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
+        
+        if (res < 0) {
+            LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeId, res);
+        }
     }
 
 }
@@ -260,6 +276,10 @@ bool shouldAcceptTransfer(const CanardInstance *ins,
 	if (transfer_type == CanardTransferTypeResponse) {
 		// check if we want to handle a specific service request
 		switch (data_type_id) {
+        case UAVCAN_PROTOCOL_GETNODEINFO_ID: {
+            *out_data_type_signature = UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_SIGNATURE;
+            return true;
+            }
 		}
 	}
 	if (transfer_type == CanardTransferTypeBroadcast) {
