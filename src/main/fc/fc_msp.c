@@ -4596,7 +4596,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 const dronecanNodeInfo_t *node = dronecanGetNode(i);
                 if (node->nodeID == nodeID) {
                     found = true;
-                    if (sbufBytesRemaining(dst) < 46) {
+                    if (sbufBytesRemaining(dst) < 71) {
                         *ret = MSP_RESULT_ERROR;
                         break;
                     }
@@ -4608,9 +4608,16 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                     sbufWriteU32(dst, millis() - node->last_seen_ms);
                     sbufWriteU8(dst, node->name_len);
                     sbufWriteDataSafe(dst, node->name, 32);
-                    found = true;
+                    sbufWriteU8(dst,  node->sw_major);
+                    sbufWriteU8(dst,  node->sw_minor);
+                    sbufWriteU8(dst,  node->sw_optional_field_flags);
+                    sbufWriteU32(dst, node->sw_vcs_commit);
+                    sbufWriteU8(dst,  node->hw_major);
+                    sbufWriteU8(dst,  node->hw_minor);
+                    sbufWriteData(dst, node->hw_unique_id, 16);
                     *ret = MSP_RESULT_ACK;
                     break;
+                    
                 }
             }
             if (!found) {
