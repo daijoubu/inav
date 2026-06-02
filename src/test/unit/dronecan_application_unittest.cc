@@ -11,7 +11,7 @@
  *   GAP-N3  last_seen_ms follows controllable millis() value
  *   GAP-N4  33rd unique node → table overflow rejected, count stays at 32
  *   GAP-S1  shouldAcceptTransfer: NodeStatus ✓, GetNodeInfo request ✓,
- *           GetNodeInfo response ✗ (Phase 3 will change this), unknown ID ✗
+ *           GetNodeInfo response ✓, unknown ID ✗
  */
 
 #include "gtest/gtest.h"
