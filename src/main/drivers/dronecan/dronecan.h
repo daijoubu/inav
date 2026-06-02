@@ -45,6 +45,9 @@ typedef struct dronecanNodeInfo_s {
     uint8_t hw_major;
     uint8_t hw_minor;
     uint8_t hw_unique_id[16];
+    /* Canard transfer ID for outgoing GetNodeInfo requests to this node.
+     * Must be per-node: Canard forbids sharing a counter across different dst_node_id. */
+    uint8_t getNodeInfo_transfer_id;
 } dronecanNodeInfo_t;
 
 // Wire format for MSP2_INAV_DRONECAN_NODES records (7 bytes each, packed).
