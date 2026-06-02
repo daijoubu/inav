@@ -346,3 +346,92 @@ TEST(DroneCANShouldAcceptTransfer, RejectsUnknownResponseId)
 
     EXPECT_FALSE(accept);
 }
+
+/* =========================================================================
+ * onTransferReceived dispatch test (GAP-S2)
+ *
+ * Verifies that a GetNodeInfo response transfer is dispatched to
+ * handle_GetNodeInfoResponse and populates the node table entry.
+ * Written before Phase 4 — fails until the handler is implemented.
+ * ========================================================================= */
+
+class DroneCANDispatchTest : public ::testing::Test {
+protected:
+    CanardInstance ins;
+    uint8_t memory_pool[4096];
+    uint8_t buf[UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_MAX_SIZE + 16];
+
+    void SetUp() override {
+        activeNodeCount = 0;
+        memset(nodeTable, 0, sizeof(dronecanNodeInfo_t) * DRONECAN_MAX_NODES);
+        mock_time_ms = 0;
+        canardInit(&ins, memory_pool, sizeof(memory_pool),
+                   onTransferReceived, shouldAcceptTransfer, NULL);
+        canardSetLocalNodeID(&ins, 1);
+    }
+};
+
+/* GAP-S2: GetNodeInfo response → handler populates name and version fields */
+TEST_F(DroneCANDispatchTest, GetNodeInfoResponsePopulatesNodeTableEntry)
+{
+    /* Pre-insert node 42 via a NodeStatus so the table has a slot for it */
+    uint8_t ns_buf[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE + 4];
+    CanardRxTransfer ns_xfer = makeNodeStatusTransfer(42, 10, 0, 0, 0, ns_buf);
+    handle_NodeStatus(&ins, &ns_xfer);
+    ASSERT_EQ(dronecanGetNodeCount(), 1u);
+
+    /* Build a GetNodeInfo response from node 42 */
+    struct uavcan_protocol_GetNodeInfoResponse resp;
+    memset(&resp, 0, sizeof(resp));
+
+    resp.status.uptime_sec = 10;
+    resp.status.health     = UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK;
+    resp.status.mode       = UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL;
+
+    resp.software_version.major                = 1;
+    resp.software_version.minor                = 7;
+    resp.software_version.optional_field_flags = 1; /* vcs_commit valid */
+    resp.software_version.vcs_commit           = 0xDEADBEEF;
+
+    resp.hardware_version.major = 2;
+    resp.hardware_version.minor = 0;
+    for (int i = 0; i < 16; i++) {
+        resp.hardware_version.unique_id[i] = (uint8_t)(0xA0 + i);
+    }
+
+    const char *name = "com.example.gps";
+    resp.name.len = (uint8_t)strlen(name);
+    memcpy(resp.name.data, name, resp.name.len);
+
+    uint32_t encoded_len = uavcan_protocol_GetNodeInfoResponse_encode(&resp, buf);
+
+    CanardRxTransfer xfer;
+    memset(&xfer, 0, sizeof(xfer));
+    xfer.transfer_type  = CanardTransferTypeResponse;
+    xfer.data_type_id   = UAVCAN_PROTOCOL_GETNODEINFO_ID;
+    xfer.source_node_id = 42;
+    xfer.payload_head   = buf;
+    xfer.payload_len    = (uint16_t)encoded_len;
+
+    onTransferReceived(&ins, &xfer);
+
+    /* Verify the node table entry was populated */
+    const dronecanNodeInfo_t *node = dronecanGetNode(0);
+    ASSERT_NE(node, nullptr);
+    EXPECT_EQ(node->nodeID, 42u);
+
+    EXPECT_EQ(node->name_len, (uint8_t)strlen(name));
+    EXPECT_EQ(0, memcmp(node->name, name, node->name_len));
+
+    EXPECT_EQ(node->sw_major,                1u);
+    EXPECT_EQ(node->sw_minor,                7u);
+    EXPECT_EQ(node->sw_optional_field_flags,  1u);
+    EXPECT_EQ(node->sw_vcs_commit,           0xDEADBEEFu);
+
+    EXPECT_EQ(node->hw_major, 2u);
+    EXPECT_EQ(node->hw_minor, 0u);
+    for (int i = 0; i < 16; i++) {
+        EXPECT_EQ(node->hw_unique_id[i], (uint8_t)(0xA0 + i))
+            << "unique_id mismatch at byte " << i;
+    }
+}
