@@ -90,15 +90,16 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].hw_major = 0;
         nodeTable[activeNodeCount].hw_minor = 0;
         memset(nodeTable[activeNodeCount].hw_unique_id, 0, 16);
+        nodeTable[activeNodeCount].getNodeInfo_transfer_id = 0;
         activeNodeCount++;
 
         /* Phase 2: request node info from newly discovered node.
-         * transfer_id must be persistent so Canard can increment it across retries.
+         * transfer_id is per-node: Canard requires a separate counter for each
+         * destination node ID (different descriptors must not share transfer IDs).
          * TODO: retry on failure — if CAN TX is full at discovery time, version
          * fields stay zero. Add a getNodeInfo_pending flag and retry in dronecanUpdate. */
-        static uint8_t getNodeInfo_transfer_id = 0;
         int16_t res = canardRequestOrRespond(ins, nodeID, UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
-            &getNodeInfo_transfer_id, CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
+            &nodeTable[activeNodeCount - 1].getNodeInfo_transfer_id, CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
 
         if (res < 0) {
             LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeID, res);
