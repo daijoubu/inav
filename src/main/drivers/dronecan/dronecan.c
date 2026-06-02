@@ -60,9 +60,9 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 		return;
 	}
 
-	uint8_t nodeId = transfer->source_node_id;                                                                                                                                                                                                
+	uint8_t nodeID = transfer->source_node_id;                                                                                                                                                                                                
     for (uint8_t i = 0; i < activeNodeCount; i++) {
-        if (nodeTable[i].nodeID == nodeId) { 
+        if (nodeTable[i].nodeID == nodeID) { 
             // update health, mode, uptime, vendor_status_code, last_seen_ms                                                                                                                                                                                                 
             nodeTable[i].health = nodeStatus.health;
             nodeTable[i].mode = nodeStatus.mode;
@@ -74,7 +74,7 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     }                                                                                                                                                                                                                                         
     // new node                                                                                 
     if (activeNodeCount < DRONECAN_MAX_NODES) {
-        nodeTable[activeNodeCount].nodeID = nodeId;
+        nodeTable[activeNodeCount].nodeID = nodeID;
         nodeTable[activeNodeCount].health = nodeStatus.health;
         nodeTable[activeNodeCount].mode = nodeStatus.mode;
         nodeTable[activeNodeCount].uptime_sec = nodeStatus.uptime_sec;
@@ -94,11 +94,11 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         
         /* Phase 2: request node info from newly discovered node*/
         uint8_t transfer_id = 0;
-        int16_t res = canardRequestOrRespond(ins, nodeId, UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
+        int16_t res = canardRequestOrRespond(ins, nodeID, UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
             &transfer_id, CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
         
         if (res < 0) {
-            LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeId, res);
+            LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeID, res);
         }
     }
 
@@ -215,9 +215,9 @@ void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
         return;
     }
 
-    uint8_t nodeId = transfer->source_node_id;
+    uint8_t nodeID = transfer->source_node_id;
     for(uint8_t i = 0; i < activeNodeCount; i++) {
-        if (nodeTable[i].nodeID == nodeId) {
+        if (nodeTable[i].nodeID == nodeID) {
             uint8_t len = resp.name.len < 32 ? resp.name.len : 32;
             nodeTable[i].name_len = len;
             memcpy(nodeTable[i].name, resp.name.data, len);
@@ -234,7 +234,7 @@ void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
             return;
         }
     }
-    LOG_DEBUG(CAN, "GetNodeInfoResponse from unknown node %u", nodeId);
+    LOG_DEBUG(CAN, "GetNodeInfoResponse from unknown node %u", nodeID);
 }
 // Canard Senders
 
