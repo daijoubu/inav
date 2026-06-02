@@ -205,6 +205,37 @@ void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 						   total_size);
 }
 
+void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
+{
+    UNUSED(ins);
+    struct uavcan_protocol_GetNodeInfoResponse resp;
+
+    if (uavcan_protocol_GetNodeInfoResponse_decode(transfer, &resp)) {
+        LOG_DEBUG(CAN, "GetNodeInfoRespones decode failed");
+        return;
+    }
+
+    uint8_t nodeId = transfer->source_node_id;
+    for(uint8_t i = 0; i < activeNodeCount; i++) {
+        if (nodeTable[i].nodeID == nodeId) {
+            uint8_t len = resp.name.len < 32 ? resp.name.len : 32;
+            nodeTable[i].name_len = len;
+            memcpy(nodeTable[i].name, resp.name.data, len);
+
+            nodeTable[i].sw_major = resp.software_version.major;
+            nodeTable[i].sw_minor = resp.software_version.minor;
+            nodeTable[i].sw_optional_field_flags = resp.software_version.optional_field_flags;
+            nodeTable[i].sw_vcs_commit = (resp.software_version.optional_field_flags & 1)
+                                         ? resp.software_version.vcs_commit : 0;
+
+            nodeTable[i].hw_major = resp.hardware_version.major;
+            nodeTable[i].hw_minor = resp.hardware_version.minor;
+            memcpy(nodeTable[i].hw_unique_id, resp.hardware_version.unique_id, 16);
+            return;
+        }
+    }
+    LOG_DEBUG(CAN, "GetNodeInfoResponse from unknown node %u", nodeId);
+}
 // Canard Senders
 
 /*
@@ -332,6 +363,10 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
 	}
 	if (transfer->transfer_type == CanardTransferTypeResponse) {
 		switch (transfer->data_type_id) {
+        case UAVCAN_PROTOCOL_GETNODEINFO_ID: {
+            handle_GetNodeInfoResponse(ins, transfer);
+            break;
+            }
 		}
 	}
 	if (transfer->transfer_type == CanardTransferTypeBroadcast) {
