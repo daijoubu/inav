@@ -149,11 +149,6 @@
 
 #ifdef USE_DRONECAN
 #include "drivers/dronecan/dronecan.h"
-// MSP2_INAV_DRONECAN_NODE_INFO reply size:
-// nodeID(1)+health(1)+mode(1)+uptime_sec(4)+vendor_status_code(2)+elapsed_ms(4)
-// +name_len(1)+name(32)+sw_major(1)+sw_minor(1)+sw_optional_field_flags(1)
-// +sw_vcs_commit(4)+hw_major(1)+hw_minor(1)+hw_unique_id(16) = 71
-#define MSP2_DRONECAN_NODE_INFO_SIZE 71
 #endif
 
 extern timeDelta_t cycleTime; // FIXME dependency on mw.c
