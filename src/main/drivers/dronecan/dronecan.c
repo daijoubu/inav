@@ -289,9 +289,10 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
                 return;
             }
             dronecanGetNodeInfoResult_t *r = &dronecanAsyncSlot.result.node_info;
-            uint8_t len = resp.name.len < sizeof(r->name) ? resp.name.len : sizeof(r->name);
+            uint8_t len = resp.name.len < (sizeof(r->name) - 1) ? resp.name.len : (sizeof(r->name) - 1);
             r->name_len = len;
             memcpy(r->name, resp.name.data, len);
+            r->name[len] = '\0';
             r->sw_major = resp.software_version.major;
             r->sw_minor = resp.software_version.minor;
             r->sw_optional_field_flags = resp.software_version.optional_field_flags;
