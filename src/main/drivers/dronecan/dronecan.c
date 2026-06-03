@@ -105,6 +105,8 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         if (res < 0) {
             LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeID, res);
         }
+    } else {
+        LOG_DEBUG(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeID);
     }
 
 }
@@ -227,7 +229,7 @@ void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *transfer)
         return;
     }
 
-    uint8_t len = resp.name.len < 32 ? resp.name.len : 32;
+    uint8_t len = resp.name.len < sizeof(node->name) ? resp.name.len : sizeof(node->name);
     node->name_len = len;
     memcpy(node->name, resp.name.data, len);
 

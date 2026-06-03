@@ -4606,7 +4606,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
             sbufWriteU16(dst, node->vendor_status_code);
             sbufWriteU32(dst, millis() - node->last_seen_ms);
             sbufWriteU8(dst, node->name_len);
-            sbufWriteDataSafe(dst, node->name, 32);
+            sbufWriteDataSafe(dst, node->name, 80);
             sbufWriteU8(dst,  node->sw_major);
             sbufWriteU8(dst,  node->sw_minor);
             sbufWriteU8(dst,  node->sw_optional_field_flags);
