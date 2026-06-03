@@ -27,35 +27,79 @@ typedef struct dronecanConfig_s {
 } dronecanConfig_t;
 
 typedef struct dronecanNodeInfo_s {
-    uint8_t nodeID;
-    uint8_t health;
-    uint8_t mode;
+    uint8_t  nodeID;
+    uint8_t  health;
+    uint8_t  mode;
     uint32_t uptime_sec;
     uint16_t vendor_status_code;
     uint32_t last_seen_ms;
-    uint8_t name_len;
-    char name[80];
-    /* Software version (from GetNodeInfo response)*/
-    uint8_t sw_major;
-    uint8_t sw_minor;
-    uint8_t sw_optional_field_flags;
-    uint32_t sw_vcs_commit;
-    /* Hardware version (from GetNodeInfo response)*/
-    uint8_t hw_major;
-    uint8_t hw_minor;
-    uint8_t hw_unique_id[16];
-    /* Canard transfer ID for outgoing GetNodeInfo requests to this node.
-     * Must be per-node: Canard forbids sharing a counter across different dst_node_id. */
-    uint8_t getNodeInfo_transfer_id;
 } dronecanNodeInfo_t;
 
-// Wire format for MSP2_INAV_DRONECAN_NODES records (7 bytes each, packed).
-typedef struct dronecanNodeStatus_s {
-    uint8_t nodeID;
-    uint8_t health;
-    uint8_t mode;
-    uint32_t last_seen_ms;
-} __attribute__((packed)) dronecanNodeStatus_t;
+typedef enum {
+    DRONECAN_ASYNC_IDLE = 0,
+    DRONECAN_ASYNC_PENDING,
+    DRONECAN_ASYNC_READY,
+    DRONECAN_ASYNC_ERROR,
+} dronecanAsyncState_e;
+
+#define DRONECAN_SERVICE_GETNODEINFO  1
+#define DRONECAN_SERVICE_PARAM_GETSET 11
+
+#define DRONECAN_PARAM_TYPE_EMPTY   0
+#define DRONECAN_PARAM_TYPE_INT     1
+#define DRONECAN_PARAM_TYPE_FLOAT   2
+#define DRONECAN_PARAM_TYPE_BOOL    3
+#define DRONECAN_PARAM_TYPE_STRING  4
+
+typedef struct dronecanParamRequest_s {
+    uint16_t index;
+    uint8_t  is_write;
+    uint8_t  value_type;
+    int64_t  value_int;
+    float    value_float;
+    uint8_t  value_bool;
+    uint8_t  value_str_len;
+    char     value_str[64];
+} dronecanParamRequest_t;
+
+typedef struct dronecanGetNodeInfoResult_s {
+    uint8_t  sw_major;
+    uint8_t  sw_minor;
+    uint8_t  sw_optional_field_flags;
+    uint32_t sw_vcs_commit;
+    uint8_t  hw_major;
+    uint8_t  hw_minor;
+    uint8_t  hw_unique_id[16];
+    uint8_t  name_len;
+    char     name[80];
+} dronecanGetNodeInfoResult_t;
+
+typedef struct dronecanParamResult_s {
+    uint8_t type;
+    int64_t value_int;
+    float   value_float;
+    uint8_t value_bool;
+    uint8_t value_str_len;
+    char    value_str[64];
+    uint8_t name_len;
+    char    name[93];
+} dronecanParamResult_t;
+
+typedef struct dronecanAsyncSlot_s {
+    dronecanAsyncState_e state;
+    uint8_t  seq;
+    uint16_t service_id;
+    uint8_t  node_id;
+    uint8_t  transfer_id;
+    uint32_t requested_at_ms;
+    union {
+        dronecanGetNodeInfoResult_t node_info;
+        dronecanParamResult_t       param;
+    } result;
+} dronecanAsyncSlot_t;
+
+extern dronecanAsyncSlot_t dronecanAsyncSlot;
+bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payload, uint8_t payload_len);
 
 void dronecanInit(void);
 void dronecanUpdate(timeUs_t currentTimeUs);
