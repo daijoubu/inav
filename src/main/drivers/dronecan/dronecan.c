@@ -609,6 +609,28 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
             break;
         }
 
+        case DRONECAN_SERVICE_EXECUTE_OPCODE: {
+            struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
+            if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
+                return;
+            }
+            dronecanAsyncSlot.result.simple.ok = resp.ok;
+            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
+            break;
+        }
+
+        case DRONECAN_SERVICE_RESTART_NODE: {
+            struct uavcan_protocol_RestartNodeResponse resp;
+            if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
+                return;
+            }
+            dronecanAsyncSlot.result.simple.ok = resp.ok;
+            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
+            break;
+        }
+
         default:
             break;
     }
@@ -676,6 +698,16 @@ static void process1HzTasks(timeUs_t timestamp_usec)
     // Remove nodes that have stopped broadcasting NodeStatus
     for (uint8_t i = 0; i < activeNodeCount; ) {
         if (millis() - nodeTable[i].last_seen_ms > DRONECAN_NODE_STALE_TIMEOUT_MS) {
+            nodeTable[i] = nodeTable[activeNodeCount - 1];
+            activeNodeCount--;
+        } else {
+            i++;
+        }
+    }
+
+    // Remove nodes that have stopped broadcasting NodeStatus
+    for (uint8_t i = 0; i < activeNodeCount; ) {
+        if (millis() - nodeTable[i].last_seen_ms > 10000) {
             nodeTable[i] = nodeTable[activeNodeCount - 1];
             activeNodeCount--;
         } else {
