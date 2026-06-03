@@ -4755,6 +4755,22 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                             default:
                                 break;
                         }
+                        sbufWriteU8(dst, r->min_type);
+                        if (r->min_type == 1) {
+                            sbufWriteU32(dst, (uint32_t)(r->min_int & 0xFFFFFFFF));
+                            sbufWriteU32(dst, (uint32_t)((r->min_int >> 32) & 0xFFFFFFFF));
+                        } else if (r->min_type == 2) {
+                            uint32_t raw; memcpy(&raw, &r->min_float, 4);
+                            sbufWriteU32(dst, raw);
+                        }
+                        sbufWriteU8(dst, r->max_type);
+                        if (r->max_type == 1) {
+                            sbufWriteU32(dst, (uint32_t)(r->max_int & 0xFFFFFFFF));
+                            sbufWriteU32(dst, (uint32_t)((r->max_int >> 32) & 0xFFFFFFFF));
+                        } else if (r->max_type == 2) {
+                            uint32_t raw; memcpy(&raw, &r->max_float, 4);
+                            sbufWriteU32(dst, raw);
+                        }
                         break;
                     }
                     case DRONECAN_SERVICE_EXECUTE_OPCODE:
