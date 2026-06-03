@@ -4642,7 +4642,23 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                             break;
                     }
                 }
+                if (sbufBytesRemaining(src) >= 1) {
+                    req.req_name_len = sbufReadU8(src);
+                    if (req.req_name_len > sizeof(req.req_name))
+                        req.req_name_len = sizeof(req.req_name);
+                    if (sbufBytesRemaining(src) >= req.req_name_len)
+                        sbufReadData(src, req.req_name, req.req_name_len);
+                }
                 accepted = dronecanAsyncRequest(service_id, nodeID, &req, sizeof(req));
+            } else if (service_id == DRONECAN_SERVICE_EXECUTE_OPCODE) {
+                if (sbufBytesRemaining(src) < 1) {
+                    *ret = MSP_RESULT_ERROR;
+                    break;
+                }
+                uint8_t opcode = sbufReadU8(src);
+                accepted = dronecanAsyncRequest(service_id, nodeID, &opcode, sizeof(opcode));
+            } else if (service_id == DRONECAN_SERVICE_RESTART_NODE) {
+                accepted = dronecanAsyncRequest(service_id, nodeID, NULL, 0);
             }
 
             sbufWriteU8(dst, accepted ? 0 : 1); // 0=accepted, 1=busy
@@ -4704,6 +4720,10 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                         }
                         break;
                     }
+                    case DRONECAN_SERVICE_EXECUTE_OPCODE:
+                    case DRONECAN_SERVICE_RESTART_NODE:
+                        sbufWriteU8(dst, dronecanAsyncSlot.result.simple.ok ? 1 : 0);
+                        break;
                 }
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_IDLE;
             }

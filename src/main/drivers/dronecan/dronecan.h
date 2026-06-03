@@ -42,8 +42,10 @@ typedef enum {
     DRONECAN_ASYNC_ERROR,
 } dronecanAsyncState_e;
 
-#define DRONECAN_SERVICE_GETNODEINFO  1
-#define DRONECAN_SERVICE_PARAM_GETSET 11
+#define DRONECAN_SERVICE_GETNODEINFO     1
+#define DRONECAN_SERVICE_RESTART_NODE    5
+#define DRONECAN_SERVICE_EXECUTE_OPCODE  10
+#define DRONECAN_SERVICE_PARAM_GETSET    11
 
 #define DRONECAN_PARAM_TYPE_EMPTY   0
 #define DRONECAN_PARAM_TYPE_INT     1
@@ -60,6 +62,8 @@ typedef struct dronecanParamRequest_s {
     uint8_t  value_bool;
     uint8_t  value_str_len;
     char     value_str[64];
+    uint8_t  req_name_len;
+    char     req_name[92];
 } dronecanParamRequest_t;
 
 typedef struct dronecanGetNodeInfoResult_s {
@@ -85,6 +89,10 @@ typedef struct dronecanParamResult_s {
     char    name[93];
 } dronecanParamResult_t;
 
+typedef struct dronecanSimpleResult_s {
+    bool ok;
+} dronecanSimpleResult_t;
+
 typedef struct dronecanAsyncSlot_s {
     dronecanAsyncState_e state;
     uint8_t  seq;
@@ -95,6 +103,7 @@ typedef struct dronecanAsyncSlot_s {
     union {
         dronecanGetNodeInfoResult_t node_info;
         dronecanParamResult_t       param;
+        dronecanSimpleResult_t      simple;
     } result;
 } dronecanAsyncSlot_t;
 
