@@ -248,6 +248,7 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
             return false;
     }
 
+    // buf_ptr remains NULL for zero-length payloads (GETNODEINFO, RESTART_NODE with no payload); libcanard accepts NULL with len=0
     int16_t res = canardRequestOrRespond(&canard, node_id, signature, service_id,
         &dronecanAsyncSlot.transfer_id, CANARD_TRANSFER_PRIORITY_MEDIUM, CanardRequest,
         buf_ptr, len);
@@ -275,9 +276,13 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
 
     if (dronecanAsyncSlot.state != DRONECAN_ASYNC_PENDING) // timed out or already received
         return;
-    if (transfer->data_type_id != dronecanAsyncSlot.service_id) // Data does not match the requested parameter 
+    if (transfer->data_type_id != dronecanAsyncSlot.service_id) // Data does not match the requested parameter
         return;
     if (transfer->source_node_id != dronecanAsyncSlot.node_id) // response received for different node_id
+        return;
+    // UAVCAN requires matching transfer_id to guard against stale frames (e.g. after bus-off recovery).
+    // canardRequestOrRespond increments the slot's transfer_id after sending, so the in-flight id is (transfer_id-1) mod 32.
+    if (transfer->transfer_id != ((dronecanAsyncSlot.transfer_id - 1) & 0x1F))
         return;
 
     switch (dronecanAsyncSlot.service_id) {
@@ -348,6 +353,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_EXECUTE_OPCODE: {
             struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
             if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
+                LOG_DEBUG(CAN, "ExecuteOpcodeResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
