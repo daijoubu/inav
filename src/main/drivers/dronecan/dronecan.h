@@ -35,7 +35,7 @@ typedef struct dronecanNodeInfo_s {
     uint16_t vendor_status_code;
     uint32_t last_seen_ms;
     uint8_t name_len;
-    char name[32];
+    char name[80];
     /* Software version (from GetNodeInfo response)*/
     uint8_t sw_major;
     uint8_t sw_minor;
