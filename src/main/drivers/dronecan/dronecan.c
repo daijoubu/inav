@@ -361,16 +361,16 @@ const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID) {
 }
 
 
-bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payload, uint8_t payload_len)
+bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *payload)
 {
-    UNUSED(payload_len);
-
     if (dronecanAsyncSlot.state == DRONECAN_ASYNC_PENDING &&
-        millis() - dronecanAsyncSlot.requested_at_ms <= 2000) {
+        millis() - dronecanAsyncSlot.requested_at_ms < DRONECAN_ASYNC_TIMEOUT_MS) {
         return false;
     }
 
+    // PARAM_GETSET_REQUEST is the largest payload; zero-init prevents garbage in UAVCAN reserved bits
     uint8_t buffer[UAVCAN_PROTOCOL_PARAM_GETSET_REQUEST_MAX_SIZE];
+    memset(buffer, 0, sizeof(buffer));
     uint16_t len = 0;
     uint64_t signature = 0;
     const uint8_t *buf_ptr = NULL;
@@ -408,17 +408,42 @@ bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payl
                         break;
                 }
             }
+            getset.name.len = req->req_name_len;
+            memcpy(getset.name.data, req->req_name, req->req_name_len);
             len = uavcan_protocol_param_GetSetRequest_encode(&getset, buffer);
             buf_ptr = buffer;
             signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
             break;
         }
-  
+        
+        case DRONECAN_SERVICE_EXECUTE_OPCODE: {
+            if (!payload) return false;
+            const uint8_t *opcode = (const uint8_t *)payload;
+            struct uavcan_protocol_param_ExecuteOpcodeRequest req;
+            memset(&req, 0, sizeof(req));
+            req.opcode = *opcode;
+            req.argument = 0;
+            len = uavcan_protocol_param_ExecuteOpcodeRequest_encode(&req, buffer);
+            buf_ptr = buffer;
+            signature = UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_SIGNATURE;
+            break;
+        }
+
+        case DRONECAN_SERVICE_RESTART_NODE: {
+            struct uavcan_protocol_RestartNodeRequest req;
+            memset(&req, 0, sizeof(req));
+            req.magic_number = UAVCAN_PROTOCOL_RESTARTNODE_REQUEST_MAGIC_NUMBER;
+            len = uavcan_protocol_RestartNodeRequest_encode(&req, buffer);
+            buf_ptr = buffer;
+            signature = UAVCAN_PROTOCOL_RESTARTNODE_SIGNATURE;
+            break;
+        }
+
         default:
             return false;
     }
 
-    int16_t res = canardRequestOrRespond(&canard, node_id, signature, (uint8_t)service_id,
+    int16_t res = canardRequestOrRespond(&canard, node_id, signature, service_id,
         &dronecanAsyncSlot.transfer_id, CANARD_TRANSFER_PRIORITY_MEDIUM, CanardRequest,
         buf_ptr, len);
 
@@ -437,7 +462,7 @@ bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payl
 
 /*
     Handle a response to an asynchronous service request such as
-    a configuration parameter on the node info structur
+    a configuration parameter on the node info structure
 */
 static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *transfer)
 {
@@ -514,6 +539,28 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
             break;
         }
 
+        case DRONECAN_SERVICE_EXECUTE_OPCODE: {
+            struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
+            if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
+                return;
+            }
+            dronecanAsyncSlot.result.simple.ok = resp.ok;
+            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
+            break;
+        }
+
+        case DRONECAN_SERVICE_RESTART_NODE: {
+            struct uavcan_protocol_RestartNodeResponse resp;
+            if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
+                return;
+            }
+            dronecanAsyncSlot.result.simple.ok = resp.ok;
+            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
+            break;
+        }
+
         default:
             break;
     }
@@ -578,6 +625,16 @@ static void process1HzTasks(timeUs_t timestamp_usec)
         canardCleanupStaleTransfers(&canard, timestamp_usec);
     }
 
+    // Remove nodes that have stopped broadcasting NodeStatus
+    for (uint8_t i = 0; i < activeNodeCount; ) {
+        if (millis() - nodeTable[i].last_seen_ms > 10000) {
+            nodeTable[i] = nodeTable[activeNodeCount - 1];
+            activeNodeCount--;
+        } else {
+            i++;
+        }
+    }
+
     /*
       Transmit the node status message
     */
@@ -623,6 +680,16 @@ static bool shouldAcceptTransfer(const CanardInstance *ins,
 
         case UAVCAN_PROTOCOL_PARAM_GETSET_ID: {
             *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
+            return true;
+            }
+
+        case UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_ID: {
+            *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_SIGNATURE;
+            return true;
+            }
+
+        case UAVCAN_PROTOCOL_RESTARTNODE_ID: {
+            *out_data_type_signature = UAVCAN_PROTOCOL_RESTARTNODE_SIGNATURE;
             return true;
             }
 		}

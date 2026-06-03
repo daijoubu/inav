@@ -48,6 +48,8 @@ typedef enum {
 #define DRONECAN_SERVICE_EXECUTE_OPCODE  10
 #define DRONECAN_SERVICE_PARAM_GETSET    11
 
+#define DRONECAN_ASYNC_TIMEOUT_MS 2000
+
 #define DRONECAN_PARAM_TYPE_EMPTY   0
 #define DRONECAN_PARAM_TYPE_INT     1
 #define DRONECAN_PARAM_TYPE_FLOAT   2
@@ -62,7 +64,7 @@ typedef struct dronecanParamRequest_s {
     float    value_float;
     uint8_t  value_bool;
     uint8_t  value_str_len;
-    char     value_str[64];
+    char     value_str[128];
     uint8_t  req_name_len;
     char     req_name[92];
 } dronecanParamRequest_t;
@@ -85,7 +87,7 @@ typedef struct dronecanParamResult_s {
     float   value_float;
     uint8_t value_bool;
     uint8_t value_str_len;
-    char    value_str[64];
+    char    value_str[128];
     uint8_t name_len;
     char    name[93];
 } dronecanParamResult_t;
@@ -97,7 +99,7 @@ typedef struct dronecanSimpleResult_s {
 typedef struct dronecanAsyncSlot_s {
     dronecanAsyncState_e state;
     uint8_t  seq;
-    uint16_t service_id;
+    uint8_t service_id;
     uint8_t  node_id;
     uint8_t  transfer_id;
     uint32_t requested_at_ms;
@@ -109,7 +111,7 @@ typedef struct dronecanAsyncSlot_s {
 } dronecanAsyncSlot_t;
 
 extern dronecanAsyncSlot_t dronecanAsyncSlot;
-bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payload, uint8_t payload_len);
+bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *payload);
 
 void dronecanInit(void);
 void dronecanUpdate(timeUs_t currentTimeUs);
