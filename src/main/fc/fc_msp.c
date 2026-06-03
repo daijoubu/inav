@@ -4596,7 +4596,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
             uint8_t nodeID = sbufReadU8(src);
 
             if (dronecanGetState() != STATE_DRONECAN_NORMAL) {
-                sbufWriteU8(dst, 0xFF); // not ready - outside async enum range
+                sbufWriteU8(dst, DRONECAN_STATE_NOT_READY);
                 sbufWriteU8(dst, 0);
                 *ret = MSP_RESULT_ACK;
                 break;
@@ -4664,7 +4664,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 accepted = dronecanAsyncRequest(service_id, nodeID, NULL);
             }
 
-            sbufWriteU8(dst, accepted ? 0 : 1); // 0=accepted, 1=busy
+            sbufWriteU8(dst, accepted ? 0 : 1); // 0=accepted, 1=busy or unrecognised service_id
             sbufWriteU8(dst, dronecanAsyncSlot.seq);
             *ret = MSP_RESULT_ACK;
         }
