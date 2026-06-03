@@ -443,7 +443,7 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
             return false;
     }
 
-    // buf_ptr remains NULL for zero-length payloads (GETNODEINFO, RESTART_NODE with no payload); libcanard accepts NULL with len=0
+    // buf_ptr remains NULL only for GETNODEINFO (zero-length request); libcanard accepts NULL with len=0
     int16_t res = canardRequestOrRespond(&canard, node_id, signature, service_id,
         &dronecanAsyncSlot.transfer_id, CANARD_TRANSFER_PRIORITY_MEDIUM, CanardRequest,
         buf_ptr, len);
@@ -471,7 +471,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
 
     if (dronecanAsyncSlot.state != DRONECAN_ASYNC_PENDING) // timed out or already received
         return;
-    if (transfer->data_type_id != dronecanAsyncSlot.service_id) // Data does not match the requested parameter
+    if (transfer->data_type_id != dronecanAsyncSlot.service_id) // response service_id does not match the pending request
         return;
     if (transfer->source_node_id != dronecanAsyncSlot.node_id) // response received for different node_id
         return;
@@ -560,6 +560,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_RESTART_NODE: {
             struct uavcan_protocol_RestartNodeResponse resp;
             if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
+                LOG_DEBUG(CAN, "RestartNodeResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
