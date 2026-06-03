@@ -4606,14 +4606,14 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
             if (service_id == DRONECAN_SERVICE_GETNODEINFO) {
                 accepted = dronecanAsyncRequest(service_id, nodeID, NULL);
             } else if (service_id == DRONECAN_SERVICE_PARAM_GETSET) {
-                if (sbufBytesRemaining(src) < 2) {
+                if (sbufBytesRemaining(src) < 3) { // index(2) + is_write(1) minimum
                     *ret = MSP_RESULT_ERROR;
                     break;
                 }
                 dronecanParamRequest_t req;
                 memset(&req, 0, sizeof(req));
                 req.index    = sbufReadU16(src);
-                req.is_write = sbufBytesRemaining(src) > 0 ? sbufReadU8(src) : 0;
+                req.is_write = sbufReadU8(src);
                 if (req.is_write && sbufBytesRemaining(src) >= 1) {
                     req.value_type = sbufReadU8(src);
                     switch (req.value_type) {
