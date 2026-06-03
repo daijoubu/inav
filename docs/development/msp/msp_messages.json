@@ -9902,8 +9902,8 @@
                     },                                                                      
                     {
                         "name": "name",
-                        "ctype": "char[32]",
-                        "desc": "Node name up to 32 bytes, zero-padded",
+                        "ctype": "char[80]",
+                        "desc": "Node name up to 80 bytes, zero-padded",
                         "units": ""
                     },
                     {
@@ -9950,7 +9950,7 @@
                     }
                 ]
             },
-            "notes": "Requires `USE_DRONECAN`. Returns `MSP_RESULT_ERROR` if the requested node ID is not in the node table. Response is 71 bytes when GetNodeInfo data has been received from the node (46 bytes if not yet received).",
+            "notes": "Requires `USE_DRONECAN`. Returns `MSP_RESULT_ERROR` if the requested node ID is not in the node table. Response is always 119 bytes.",
             "description": "Returns full status detail for a single DroneCAN node by ID, including software and hardware version data retrieved via the DroneCAN GetNodeInfo service."
         },                                        
         "MSP2_INAV_LED_STRIP_CONFIG_EX": {
