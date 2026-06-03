@@ -48,7 +48,8 @@ typedef enum {
 #define DRONECAN_SERVICE_EXECUTE_OPCODE  10
 #define DRONECAN_SERVICE_PARAM_GETSET    11
 
-#define DRONECAN_ASYNC_TIMEOUT_MS 2000
+#define DRONECAN_ASYNC_TIMEOUT_MS  2000
+#define DRONECAN_STATE_NOT_READY   0xFF  // MSP sentinel: bus not in STATE_NORMAL; outside dronecanAsyncState_e range
 
 #define DRONECAN_PARAM_TYPE_EMPTY   0
 #define DRONECAN_PARAM_TYPE_INT     1
@@ -78,7 +79,7 @@ typedef struct dronecanGetNodeInfoResult_s {
     uint8_t  hw_minor;
     uint8_t  hw_unique_id[16];
     uint8_t  name_len;
-    char     name[80];
+    char     name[81]; // 80 bytes max + null terminator
 } dronecanGetNodeInfoResult_t;
 
 typedef struct dronecanParamResult_s {
