@@ -166,17 +166,16 @@ void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
     Send an asynchronous request for data from a dronecan node such as
     a configuration parameter or the node info
 */
-bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payload, uint8_t payload_len)
+bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *payload)
 {
-    UNUSED(payload_len);
-
     if (dronecanAsyncSlot.state == DRONECAN_ASYNC_PENDING &&
-        millis() - dronecanAsyncSlot.requested_at_ms <= 2000) {
+        millis() - dronecanAsyncSlot.requested_at_ms < DRONECAN_ASYNC_TIMEOUT_MS) {
         return false;
     }
 
+    // PARAM_GETSET_REQUEST is the largest payload; zero-init prevents garbage in UAVCAN reserved bits
     uint8_t buffer[UAVCAN_PROTOCOL_PARAM_GETSET_REQUEST_MAX_SIZE];
-    memset(buffer, 0, sizeof(buffer)); // Initialize buffer to 0
+    memset(buffer, 0, sizeof(buffer));
     uint16_t len = 0;
     uint64_t signature = 0;
     const uint8_t *buf_ptr = NULL;
@@ -237,6 +236,7 @@ bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payl
 
         case DRONECAN_SERVICE_RESTART_NODE: {
             struct uavcan_protocol_RestartNodeRequest req;
+            memset(&req, 0, sizeof(req));
             req.magic_number = UAVCAN_PROTOCOL_RESTARTNODE_REQUEST_MAGIC_NUMBER;
             len = uavcan_protocol_RestartNodeRequest_encode(&req, buffer);
             buf_ptr = buffer;
@@ -248,7 +248,7 @@ bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payl
             return false;
     }
 
-    int16_t res = canardRequestOrRespond(&canard, node_id, signature, (uint8_t)service_id,
+    int16_t res = canardRequestOrRespond(&canard, node_id, signature, service_id,
         &dronecanAsyncSlot.transfer_id, CANARD_TRANSFER_PRIORITY_MEDIUM, CanardRequest,
         buf_ptr, len);
 
@@ -267,7 +267,7 @@ bool dronecanAsyncRequest(uint16_t service_id, uint8_t node_id, const void *payl
 
 /*
     Handle a response to an asynchronous service request such as
-    a configuration parameter on the node info structur
+    a configuration parameter on the node info structure
 */
 static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *transfer)
 {
@@ -709,9 +709,9 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 
             // Check for and expire any pending async requests that have timed out.
             if (dronecanAsyncSlot.state == DRONECAN_ASYNC_PENDING &&
-                millis() - dronecanAsyncSlot.requested_at_ms > 2000) {
-                    dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
-                }
+                millis() - dronecanAsyncSlot.requested_at_ms >= DRONECAN_ASYNC_TIMEOUT_MS) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
+            }
 
             for (numMessagesToProcess = canardSTM32GetRxFifoFillLevel(); numMessagesToProcess > 0; numMessagesToProcess--)
             {

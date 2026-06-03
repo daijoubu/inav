@@ -4589,11 +4589,11 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 *ret = MSP_RESULT_ERROR;
                 break;
             }
-            uint16_t service_id = sbufReadU16(src);
+            uint8_t service_id = (uint8_t)sbufReadU16(src); // MSP uses u16 for protocol compat; UAVCAN service IDs are 8-bit
             uint8_t nodeID = sbufReadU8(src);
 
             if (dronecanGetState() != STATE_DRONECAN_NORMAL) {
-                sbufWriteU8(dst, 2); // not ready
+                sbufWriteU8(dst, 0xFF); // not ready - outside async enum range
                 sbufWriteU8(dst, 0);
                 *ret = MSP_RESULT_ACK;
                 break;
@@ -4601,7 +4601,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
   
             bool accepted = false;
             if (service_id == DRONECAN_SERVICE_GETNODEINFO) {
-                accepted = dronecanAsyncRequest(service_id, nodeID, NULL, 0);
+                accepted = dronecanAsyncRequest(service_id, nodeID, NULL);
             } else if (service_id == DRONECAN_SERVICE_PARAM_GETSET) {
                 if (sbufBytesRemaining(src) < 2) {
                     *ret = MSP_RESULT_ERROR;
@@ -4649,16 +4649,16 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                     if (sbufBytesRemaining(src) >= req.req_name_len)
                         sbufReadData(src, req.req_name, req.req_name_len);
                 }
-                accepted = dronecanAsyncRequest(service_id, nodeID, &req, sizeof(req));
+                accepted = dronecanAsyncRequest(service_id, nodeID, &req);
             } else if (service_id == DRONECAN_SERVICE_EXECUTE_OPCODE) {
                 if (sbufBytesRemaining(src) < 1) {
                     *ret = MSP_RESULT_ERROR;
                     break;
                 }
                 uint8_t opcode = sbufReadU8(src);
-                accepted = dronecanAsyncRequest(service_id, nodeID, &opcode, sizeof(opcode));
+                accepted = dronecanAsyncRequest(service_id, nodeID, &opcode);
             } else if (service_id == DRONECAN_SERVICE_RESTART_NODE) {
-                accepted = dronecanAsyncRequest(service_id, nodeID, NULL, 0);
+                accepted = dronecanAsyncRequest(service_id, nodeID, NULL);
             }
 
             sbufWriteU8(dst, accepted ? 0 : 1); // 0=accepted, 1=busy
