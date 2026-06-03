@@ -90,6 +90,13 @@ typedef struct dronecanParamResult_s {
     char    value_str[128];
     uint8_t name_len;
     char    name[93];
+    // NumericValue range from the GetSet response (type 0=EMPTY means not provided by node)
+    uint8_t min_type;
+    int64_t min_int;
+    float   min_float;
+    uint8_t max_type;
+    int64_t max_int;
+    float   max_float;
 } dronecanParamResult_t;
 
 typedef struct dronecanSimpleResult_s {
