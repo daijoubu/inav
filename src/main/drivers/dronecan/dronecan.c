@@ -346,23 +346,31 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
                     r->type = DRONECAN_PARAM_TYPE_EMPTY;
                     break;
             }
-            r->min_type = (uint8_t)resp.min_value.union_tag;
+            r->min_type = DRONECAN_PARAM_TYPE_EMPTY;
+            r->min_int  = 0;
+            r->min_float = 0.0f;
             switch (resp.min_value.union_tag) {
                 case UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_INTEGER_VALUE:
-                    r->min_int = resp.min_value.integer_value;
+                    r->min_type = DRONECAN_PARAM_TYPE_INT;
+                    r->min_int  = resp.min_value.integer_value;
                     break;
                 case UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_REAL_VALUE:
+                    r->min_type  = DRONECAN_PARAM_TYPE_FLOAT;
                     r->min_float = resp.min_value.real_value;
                     break;
                 default:
                     break;
             }
-            r->max_type = (uint8_t)resp.max_value.union_tag;
+            r->max_type  = DRONECAN_PARAM_TYPE_EMPTY;
+            r->max_int   = 0;
+            r->max_float = 0.0f;
             switch (resp.max_value.union_tag) {
                 case UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_INTEGER_VALUE:
-                    r->max_int = resp.max_value.integer_value;
+                    r->max_type = DRONECAN_PARAM_TYPE_INT;
+                    r->max_int  = resp.max_value.integer_value;
                     break;
                 case UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_REAL_VALUE:
+                    r->max_type  = DRONECAN_PARAM_TYPE_FLOAT;
                     r->max_float = resp.max_value.real_value;
                     break;
                 default:
