@@ -90,14 +90,14 @@ typedef struct dronecanParamResult_s {
     char    value_str[128];
     uint8_t name_len;
     char    name[93];
-    // NumericValue range from the GetSet response (DRONECAN_PARAM_TYPE_EMPTY=0 means not provided by node;
-    // only INT and FLOAT variants are valid — BOOL and STRING have no numeric range)
+    // NumericValue range from the GetSet response; DRONECAN_PARAM_TYPE_EMPTY means not provided.
+    // Only INT and FLOAT variants are valid — BOOL and STRING have no numeric range.
+    uint8_t min_type;
     int64_t min_int;
     float   min_float;
-    uint8_t min_type;
+    uint8_t max_type;
     int64_t max_int;
     float   max_float;
-    uint8_t max_type;
 } dronecanParamResult_t;
 
 typedef struct dronecanSimpleResult_s {
