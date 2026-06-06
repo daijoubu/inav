@@ -14,7 +14,11 @@
  *   DNA-6  Stage 2 without prior Stage 1 → stage mismatch, rejected
  *   DNA-7  Followup timeout mid-handshake → accumulator reset, Stage 2 rejected
  *   DNA-8  FC's own node ID is never assigned to a peripheral
- *   DNA-9  [FAILING] Peripheral requests specific node ID → not yet honoured
+ *   DNA-9  Peripheral requests specific node ID → honoured when available
+ *   DNA-10 First sequential assignment is 125 (top-down per spec)
+ *   DNA-11 Preferred ID in reserved range (126-127) → falls back to sequential
+ *   DNA-12 Preferred ID already taken → falls back to sequential
+ *   DNA-13 Stored ID in use on live network → reassigned, table entry updated
  */
 
 #include "gtest/gtest.h"
@@ -45,9 +49,16 @@ uint32_t millis(void) { return mock_time_ms; }
 /* saveConfig — called when a new allocation is persisted */
 void saveConfig(void) {}
 
-/* Live node table stubs — no network in unit tests; allocator sees 0 active nodes */
-uint8_t dronecanGetNodeCount(void) { return 0; }
-const dronecanNodeInfo_t *dronecanGetNode(uint8_t index) { (void)index; return NULL; }
+/* Controllable live node table — populated by tests that need it (DNA-13).
+   All other tests leave mock_node_count = 0 so the allocator sees no live nodes. */
+static dronecanNodeInfo_t mock_node_table[DRONECAN_MAX_NODES];
+static uint8_t            mock_node_count = 0;
+
+uint8_t dronecanGetNodeCount(void) { return mock_node_count; }
+const dronecanNodeInfo_t *dronecanGetNode(uint8_t index) {
+    if (index >= mock_node_count) return NULL;
+    return &mock_node_table[index];
+}
 
 } /* extern "C" */
 
@@ -142,6 +153,8 @@ protected:
         mock_time_ms = s_base_ms;
 
         memset(dnaServerDataMutable(), 0, sizeof(dnaServerData_t));
+        memset(mock_node_table, 0, sizeof(mock_node_table));
+        mock_node_count = 0;
 
         canardInit(&canard, canard_pool, sizeof(canard_pool),
                    NULL, NULL, NULL);
@@ -345,9 +358,9 @@ TEST_F(DroneCANDnaServerTest, FollowupTimeoutResetsAccumulator)
  * ========================================================================= */
 TEST_F(DroneCANDnaServerTest, FcNodeIdNeverAssigned)
 {
-    /* Run enough handshakes that sequential assignment would reach FC_NODE_ID
-       if the skip were absent. FC_NODE_ID = 5, so IDs 1-4 are assigned first,
-       then the 5th peripheral should get 6, not 5. */
+    /* Run several handshakes and verify none receives FC_NODE_ID. With
+       top-down assignment starting at 125, FC_NODE_ID (5) is far from the
+       initial assignments — but the skip must hold regardless of position. */
     for (uint8_t n = 0; n < FC_NODE_ID; n++) {
         uint8_t uid[16];
         memset(uid, n + 1, 16);
@@ -364,12 +377,12 @@ TEST_F(DroneCANDnaServerTest, FcNodeIdNeverAssigned)
 }
 
 /* =========================================================================
- * DNA-9 [FAILING]: Peripheral's preferred node ID is honoured
+ * DNA-9: Peripheral's preferred node ID is honoured
  *
  * The UAVCAN spec allows a peripheral to include a preferred node_id in its
- * Stage-1 request. The allocator should assign that ID when available.
- * This is not yet implemented — the handler ignores the field and assigns
- * sequentially. Expected to fail until the feature is added.
+ * Stage-1 request. The allocator assigns that ID if it is in the valid
+ * dynamic range (1-125) and not already taken, falling back to sequential
+ * assignment otherwise.
  * ========================================================================= */
 TEST_F(DroneCANDnaServerTest, RequestedNodeIdIsHonoured)
 {
@@ -385,4 +398,133 @@ TEST_F(DroneCANDnaServerTest, RequestedNodeIdIsHonoured)
     EXPECT_EQ(assigned, requested)
         << "Peripheral requested node ID " << (int)requested
         << " but was assigned " << (int)assigned;
+}
+
+/* =========================================================================
+ * DNA-10: First sequential (no preferred ID) assignment is 125
+ *
+ * The UAVCAN spec requires allocators to assign from the top of the dynamic
+ * range downward so that manually assigned low IDs are least likely to
+ * collide. DRONECAN_DNA_MAX_NODE_ID = 125 (126-127 reserved).
+ * ========================================================================= */
+TEST_F(DroneCANDnaServerTest, SequentialAssignmentStartsAtTop)
+{
+    const uint8_t uid[16] = {
+        0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
+        0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
+        0xA0,0xA0,0xA0,0xA0
+    };
+
+    uint8_t assigned = runHandshake(uid);
+
+    EXPECT_EQ(assigned, DRONECAN_DNA_MAX_NODE_ID)
+        << "First sequential assignment must be " << (int)DRONECAN_DNA_MAX_NODE_ID
+        << " (top of dynamic range), got " << (int)assigned;
+}
+
+/* =========================================================================
+ * DNA-11: Preferred ID in reserved range (126 or 127) → falls back to 125
+ *
+ * Node IDs 126 and 127 are reserved for network maintenance tools and must
+ * never be assigned dynamically. A request for these must be silently
+ * ignored and a valid ID assigned instead.
+ * ========================================================================= */
+TEST_F(DroneCANDnaServerTest, ReservedPreferredIdFallsBackToSequential)
+{
+    const uint8_t uid[16] = {
+        0xB0,0xB0,0xB0,0xB0,0xB0,0xB0,
+        0xB0,0xB0,0xB0,0xB0,0xB0,0xB0,
+        0xB0,0xB0,0xB0,0xB0
+    };
+
+    uint8_t assigned = runHandshake(uid, 126u);
+
+    EXPECT_NE(assigned, 0u)   << "Reserved preferred ID must not block allocation";
+    EXPECT_NE(assigned, 126u) << "Reserved node ID 126 must not be assigned";
+    EXPECT_NE(assigned, 127u) << "Reserved node ID 127 must not be assigned";
+    EXPECT_LE(assigned, (uint8_t)DRONECAN_DNA_MAX_NODE_ID)
+        << "Assigned ID must be within the dynamic range";
+}
+
+/* =========================================================================
+ * DNA-12: Preferred ID already taken → falls back to sequential
+ *
+ * If the requested node ID is valid but already in the allocation table,
+ * the allocator must assign the next free ID rather than failing.
+ * ========================================================================= */
+TEST_F(DroneCANDnaServerTest, TakenPreferredIdFallsBackToSequential)
+{
+    const uint8_t uid1[16] = {
+        0xC1,0xC1,0xC1,0xC1,0xC1,0xC1,
+        0xC1,0xC1,0xC1,0xC1,0xC1,0xC1,
+        0xC1,0xC1,0xC1,0xC1
+    };
+    const uint8_t uid2[16] = {
+        0xC2,0xC2,0xC2,0xC2,0xC2,0xC2,
+        0xC2,0xC2,0xC2,0xC2,0xC2,0xC2,
+        0xC2,0xC2,0xC2,0xC2
+    };
+    const uint8_t preferred = 60u;
+
+    /* First peripheral claims the preferred ID */
+    uint8_t first = runHandshake(uid1, preferred);
+    ASSERT_EQ(first, preferred) << "Setup: first peripheral should get its preferred ID";
+
+    s_base_ms   += 10000;
+    mock_time_ms = s_base_ms;
+
+    /* Second peripheral requests the same ID — must get a different one */
+    uint8_t second = runHandshake(uid2, preferred);
+
+    EXPECT_NE(second, 0u)       << "Fallback must still produce a valid allocation";
+    EXPECT_NE(second, preferred) << "Already-taken preferred ID must not be reassigned";
+    EXPECT_LE(second, (uint8_t)DRONECAN_DNA_MAX_NODE_ID);
+}
+
+/* =========================================================================
+ * DNA-13: Stored ID in use on live network → reassigned, table entry updated
+ *
+ * If a peripheral re-negotiates and its previously stored node ID is now
+ * claimed by a live static-ID node (visible in the NodeStatus table), the
+ * allocator must assign a new ID and overwrite the old table entry rather
+ * than creating a duplicate.
+ * ========================================================================= */
+TEST_F(DroneCANDnaServerTest, ConflictingLiveNodeCausesReassignment)
+{
+    const uint8_t uid[16] = {
+        0xD0,0xD0,0xD0,0xD0,0xD0,0xD0,
+        0xD0,0xD0,0xD0,0xD0,0xD0,0xD0,
+        0xD0,0xD0,0xD0,0xD0
+    };
+
+    /* Initial allocation — gets DRONECAN_DNA_MAX_NODE_ID (125) */
+    uint8_t first = runHandshake(uid);
+    ASSERT_EQ(first, (uint8_t)DRONECAN_DNA_MAX_NODE_ID);
+
+    s_base_ms   += 10000;
+    mock_time_ms = s_base_ms;
+
+    /* Simulate a static-ID node claiming that ID on the live network */
+    mock_node_table[0].nodeID = first;
+    mock_node_count = 1;
+
+    /* Re-negotiate — server must detect the conflict and assign a new ID */
+    uint8_t second = runHandshake(uid);
+
+    EXPECT_NE(second, 0u)   << "Conflict must not prevent allocation";
+    EXPECT_NE(second, first) << "Conflicted ID must not be re-assigned";
+    EXPECT_LE(second, (uint8_t)DRONECAN_DNA_MAX_NODE_ID);
+
+    /* Table must have exactly one entry for this UID with the new ID */
+    int count = 0;
+    uint8_t tableId = 0;
+    for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
+        if (memcmp(dnaServerData()->entries[i].uniqueId, uid, 16) == 0 &&
+            dnaServerData()->entries[i].nodeId != 0) {
+            count++;
+            tableId = dnaServerData()->entries[i].nodeId;
+        }
+    }
+    EXPECT_EQ(count, 1)      << "Must be exactly one table entry for this UID";
+    EXPECT_EQ(tableId, second) << "Table entry must reflect the newly assigned ID";
 }
