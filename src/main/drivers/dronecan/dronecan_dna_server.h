@@ -6,6 +6,7 @@
 extern CanardInstance canard;
 
 #define DNA_UNIQUE_ID_LENGTH       16
+#define DRONECAN_DNA_MAX_NODE_ID  125  /* 126-127 reserved for network maintenance tools */
 
 typedef struct {
     uint8_t uniqueId[DNA_UNIQUE_ID_LENGTH];
