@@ -289,7 +289,7 @@ static int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocati
     {
         return DNA_STAGE_2;
     }
-    if (msg->unique_id.len < UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST)
+    if (msg->unique_id.len == (uint8_t)DNA_STAGE3_UID_LEN)
     {
         return DNA_STAGE_3;
     }
