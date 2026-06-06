@@ -119,7 +119,7 @@ void dronecanInit(void)
     if (dronecanConfig()->nodeID > 0) {
 	      canardSetLocalNodeID(&canard, dronecanConfig()->nodeID);
     } else {
-	      LOG_DEBUG(CAN, "Node ID is 0, this node is anonymous and can't transmit most messages. Please update this in config");
+	      LOG_WARNING(CAN, "Node ID is 0, this node is anonymous and can't transmit most messages. Please update this in config");
     }
 }
 
@@ -154,7 +154,7 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 	            rx_res = canardSTM32Receive(&rx_frame);
 
 	             if (rx_res < 0) {
-		             LOG_DEBUG(CAN, "Receive error %d", rx_res);
+		             LOG_WARNING(CAN, "Receive error %d", rx_res);
 	             }
 	             else if (rx_res > 0)        // Success - process the frame
 	             {
@@ -212,7 +212,7 @@ void dronecanUpdate(timeUs_t currentTimeUs)
                     // ~1 second of 20ms recovery attempts with no success — permanent fault
                     busoff_retries = 0;
                     dronecanState = STATE_DRONECAN_FAILED;
-                    LOG_DEBUG(CAN, "DroneCAN: bus-off recovery failed after 50 attempts, entering FAILED state");
+                    LOG_ERROR(CAN, "DroneCAN: bus-off recovery failed after 50 attempts, entering FAILED state");
                 }
             }
             break;
@@ -326,7 +326,7 @@ static void processCanardTxQueueSafe(void) {
                 const int16_t tx_res = canardSTM32Transmit(tx_frame);  // HAL register write, ~1µs
                 if (tx_res != 0) {
                     if (tx_res < 0) {
-                        LOG_DEBUG(CAN, "Transmit error %d", tx_res);
+                        LOG_WARNING(CAN, "Transmit error %d", tx_res);
                     }
                     canardPopTxQueue(&canard);
                 } else {
@@ -369,7 +369,7 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_protocol_NodeStatus nodeStatus;
 
 	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
-		LOG_DEBUG(CAN, "NodeStatus decode failed");
+		LOG_WARNING(CAN, "NodeStatus decode failed");
 		return;
 	}
 
@@ -395,7 +395,7 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         activeNodeCount++;
 
     } else {
-        LOG_DEBUG(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeID);
+        LOG_WARNING(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeID);
     }
 
 }
@@ -405,7 +405,7 @@ static void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer
     struct uavcan_equipment_gnss_Auxiliary gnssAuxiliary;
 
 	if (uavcan_equipment_gnss_Auxiliary_decode(transfer, &gnssAuxiliary)) {
-		LOG_DEBUG(CAN, "GNSSAuxiliary decode failed");
+		LOG_WARNING(CAN, "GNSSAuxiliary decode failed");
 		return;
 	}
     dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary);
@@ -417,7 +417,7 @@ static void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_gnss_Fix gnssFix;
 
 	if (uavcan_equipment_gnss_Fix_decode(transfer, &gnssFix)) {
-		LOG_DEBUG(CAN, "GNSSFix decode failed");
+		LOG_WARNING(CAN, "GNSSFix decode failed");
 		return;
 	}
     dronecanGPSReceiveGNSSFix(&gnssFix);
@@ -429,7 +429,7 @@ static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_gnss_Fix2 gnssFix2;
 
 	if (uavcan_equipment_gnss_Fix2_decode(transfer, &gnssFix2)) {
-		LOG_DEBUG(CAN, "GNSSFix2 decode failed");
+		LOG_WARNING(CAN, "GNSSFix2 decode failed");
 		return;
 	}
     dronecanGPSReceiveGNSSFix2(&gnssFix2);
@@ -441,7 +441,7 @@ static void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfe
     struct uavcan_equipment_gnss_RTCMStream gnssRTCMStream;
 
 	if (uavcan_equipment_gnss_RTCMStream_decode(transfer, &gnssRTCMStream)) {
-		LOG_DEBUG(CAN, "RTCMStream decode failed");
+		LOG_WARNING(CAN, "RTCMStream decode failed");
 		return;
 	}
 }
@@ -451,7 +451,7 @@ static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) 
     struct uavcan_equipment_power_BatteryInfo batteryInfo;
 
 	if (uavcan_equipment_power_BatteryInfo_decode(transfer, &batteryInfo)) {
-		LOG_DEBUG(CAN, "BatteryInfo decode failed");
+		LOG_WARNING(CAN, "BatteryInfo decode failed");
 		return;
 	}
     dronecanBatterySensorReceiveInfo(&batteryInfo);
@@ -709,28 +709,6 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
             break;
         }
 
-        case DRONECAN_SERVICE_EXECUTE_OPCODE: {
-            struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
-            if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
-                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
-                return;
-            }
-            dronecanAsyncSlot.result.simple.ok = resp.ok;
-            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
-            break;
-        }
-
-        case DRONECAN_SERVICE_RESTART_NODE: {
-            struct uavcan_protocol_RestartNodeResponse resp;
-            if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
-                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
-                return;
-            }
-            dronecanAsyncSlot.result.simple.ok = resp.ok;
-            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
-            break;
-        }
-
         default:
             break;
     }
@@ -878,7 +856,11 @@ static void process1HzTasks(timeUs_t timestamp_usec)
  This function must fill in the out_data_type_signature to be the signature of the message.
  */
 
+#ifdef UNIT_TEST
 bool shouldAcceptTransfer(const CanardInstance *ins,
+#else
+static bool shouldAcceptTransfer(const CanardInstance *ins,
+#endif
                                  uint64_t *out_data_type_signature,
                                  uint16_t data_type_id,
                                  CanardTransferType transfer_type,
@@ -940,7 +922,11 @@ bool shouldAcceptTransfer(const CanardInstance *ins,
 /*
  This callback is invoked by the library when a new message or request or response is received.
 */
+#ifdef UNIT_TEST
 void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
+#else
+static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
+#endif
 	// switch on data type ID to pass to the right handler function
 	if (transfer->transfer_type == CanardTransferTypeRequest) {
 		// check if we want to handle a specific service request
