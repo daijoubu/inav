@@ -100,6 +100,17 @@ set_property(SOURCE dronecan_application_unittest.cc PROPERTY definitions
     USE_DRONECAN CANARD_ENABLE_TAO_OPTION=0
     FC_VERSION_MAJOR=10 FC_VERSION_MINOR=0 FC_VERSION_PATCH_LEVEL=0)
 
+# DroneCAN DNA server tests
+set_property(SOURCE dronecan_dna_server_unittest.cc PROPERTY depends
+    "drivers/dronecan/dronecan_dna_server.c"
+    "drivers/dronecan/libcanard/canard.c")
+set_property(SOURCE dronecan_dna_server_unittest.cc PROPERTY extra_sources
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c")
+set_property(SOURCE dronecan_dna_server_unittest.cc PROPERTY extra_includes
+    "../../lib/main/Dronecan/dsdlc_generated/include")
+set_property(SOURCE dronecan_dna_server_unittest.cc PROPERTY definitions
+    USE_DRONECAN CANARD_ENABLE_TAO_OPTION=0)
+
 # CAN bit-timing solver tests - links the real, HAL-free timing core shared
 # by the F7 (bxCAN) and H7 (FDCAN) drivers, so there is nothing to keep in sync
 set_property(SOURCE bxcan_timing_unittest.cc PROPERTY depends
