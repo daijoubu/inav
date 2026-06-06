@@ -38,7 +38,8 @@ PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CO
 
 PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .nodeID = SETTING_DRONECAN_NODE_ID_DEFAULT,
-    .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT
+    .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT,
+    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT
 );
 
 static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
@@ -951,7 +952,9 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
                 break;
 
             case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
-                dronecanDnaHandleAllocation(ins, transfer);
+                if (dronecanConfig()->dronecanUseDNAServer) {
+                    dronecanDnaHandleAllocation(ins, transfer);
+                }
                 break;
 
             case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
