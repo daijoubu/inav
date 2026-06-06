@@ -157,7 +157,6 @@ static bool isNodeAvailable(uint8_t assignedNodeId)
 */
 static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId)
 {
-    uint8_t assigned = false;
     uint8_t assignedNodeId = CANARD_BROADCAST_NODE_ID;
 
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
@@ -167,18 +166,18 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
             return dnaServerData()->entries[i].nodeId;
         }
     }
-    if((requestedNodeId >= CANARD_MIN_NODE_ID) && (requestedNodeId <= CANARD_MAX_NODE_ID)) {
+    if((requestedNodeId >= CANARD_MIN_NODE_ID) && (requestedNodeId <= DRONECAN_DNA_MAX_NODE_ID)) {
         if(isNodeAvailable(requestedNodeId)) {
             assignedNodeId = requestedNodeId;
         }
     }
     if(assignedNodeId == CANARD_BROADCAST_NODE_ID) {
-        for (assignedNodeId = CANARD_MIN_NODE_ID; assignedNodeId < CANARD_MAX_NODE_ID; assignedNodeId++) {
+        for (assignedNodeId = DRONECAN_DNA_MAX_NODE_ID; assignedNodeId >= CANARD_MIN_NODE_ID; assignedNodeId--) {
             if(isNodeAvailable(assignedNodeId))
                 break;
         }
     }
-    if (assignedNodeId >= CANARD_MAX_NODE_ID) {
+    if (assignedNodeId < CANARD_MIN_NODE_ID) {
         LOG_ERROR(CAN, "DNA: no free node IDs available");
         return 0;
     }
@@ -188,15 +187,12 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
             dnaServerDataMutable()->entries[i].nodeId = assignedNodeId;
             LOG_INFO(CAN, "DNA added node %u (UID index %u)", assignedNodeId, i);
             saveConfig();
-            assigned = true;
+            return assignedNodeId;
             break;
         }
     }
-    if (!assigned) {
-        LOG_ERROR(CAN, "DNA: allocation table full");
-        return 0;
-    }
-    return assignedNodeId;
+    LOG_ERROR(CAN, "DNA: allocation table full");
+    return 0;
 }
 
 /*
