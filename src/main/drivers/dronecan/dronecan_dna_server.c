@@ -15,6 +15,9 @@
 #define DNA_STAGE_2                2
 #define DNA_STAGE_3                3
 
+#define DNA_STAGE3_UID_LEN  (DNA_UNIQUE_ID_LENGTH - UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST * 2)
+_Static_assert(DNA_STAGE3_UID_LEN > 0, "DNA_UNIQUE_ID_LENGTH too small for 3-stage protocol");
+
 
 PG_REGISTER(dnaServerData_t, dnaServerData, PG_DRONECAN_DNA_SERVER, 0);
 
@@ -86,11 +89,13 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
     memcpy(currentUniqueId.data + currentUniqueId.len, dynamicAllocation.unique_id.data, dynamicAllocation.unique_id.len);
     currentUniqueId.len += dynamicAllocation.unique_id.len;
 
+#ifdef USE_LOG
     char uidStr[DNA_UNIQUE_ID_LENGTH * 2 + 1];
     for (int i = 0; i < currentUniqueId.len; i++) {
         sprintf(&uidStr[i * 2], "%02x", currentUniqueId.data[i]);
     }
     LOG_DEBUG(CAN, "Received UID part: %s", uidStr);
+#endif
 
     if (currentUniqueId.len == DNA_UNIQUE_ID_LENGTH)
     {
@@ -108,7 +113,6 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
         dnaSendResponse(0, currentUniqueId.data, currentUniqueId.len);
     }
 
-    LOG_DEBUG(CAN, "Received a DNA allocation broadcast. First part is %u", dynamicAllocation.first_part_of_unique_id);
     lastMessageTimestamp = millis();
 }
 
@@ -258,7 +262,7 @@ static int8_t getExpectedStage(uint8_t currentUniqueIdLength)
 static int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocation *msg)
 {
     if ((msg->unique_id.len != UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST) &&
-        (msg->unique_id.len != (DNA_UNIQUE_ID_LENGTH - UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST * 2U)) &&
+        (msg->unique_id.len != (uint8_t)DNA_STAGE3_UID_LEN) &&
         (msg->unique_id.len != DNA_UNIQUE_ID_LENGTH))
     {
         return DNA_INVALID_STAGE;
