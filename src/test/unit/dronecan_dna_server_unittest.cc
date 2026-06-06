@@ -473,11 +473,11 @@ TEST_F(DroneCANDnaServerTest, TakenPreferredIdFallsBackToSequential)
     s_base_ms   += 10000;
     mock_time_ms = s_base_ms;
 
-    /* Second peripheral requests the same ID — must get a different one */
+    /* Second peripheral requests the same ID — must get the next upward free ID */
     uint8_t second = runHandshake(uid2, preferred);
 
-    EXPECT_NE(second, 0u)       << "Fallback must still produce a valid allocation";
-    EXPECT_NE(second, preferred) << "Already-taken preferred ID must not be reassigned";
+    EXPECT_EQ(second, preferred + 1)
+        << "Upward search from taken preferred ID must yield preferred+1";
     EXPECT_LE(second, (uint8_t)DRONECAN_DNA_MAX_NODE_ID);
 }
 
