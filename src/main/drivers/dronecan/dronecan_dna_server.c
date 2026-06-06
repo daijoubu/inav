@@ -42,6 +42,7 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
         uint8_t len;
         uint8_t data[DNA_UNIQUE_ID_LENGTH];
     } currentUniqueId;
+    static uint8_t requestedNodeId = CANARD_BROADCAST_NODE_ID;
 
     static uint32_t lastMessageTimestamp = 0;
     int8_t request_stage;
@@ -52,6 +53,7 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
     if ((millis() - lastMessageTimestamp) > UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_FOLLOWUP_TIMEOUT_MS) {
         memset(currentUniqueId.data, 0, DNA_UNIQUE_ID_LENGTH);
         currentUniqueId.len = 0;
+        requestedNodeId = CANARD_BROADCAST_NODE_ID;
     }
 
     if (uavcan_protocol_dynamic_node_id_Allocation_decode(transfer, &dynamicAllocation)) {
@@ -72,6 +74,9 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
         LOG_WARNING(CAN, "DNA stage mismatch (got %d, expected %d)", request_stage, expected_stage);
         return;
     }
+    if (request_stage == DNA_STAGE_1)
+        requestedNodeId = dynamicAllocation.node_id;   // Store requested node id as it's only on stage 1
+
     if (dynamicAllocation.unique_id.len > DNA_UNIQUE_ID_LENGTH - currentUniqueId.len)
     {
         LOG_WARNING(CAN, "DNA malformed request - UID exceeds remaining capacity");
@@ -89,13 +94,14 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
 
     if (currentUniqueId.len == DNA_UNIQUE_ID_LENGTH)
     {
-        uint8_t assignedNodeId = dnaLookupOrAssignNode(currentUniqueId.data, dynamicAllocation.node_id);
+        uint8_t assignedNodeId = dnaLookupOrAssignNode(currentUniqueId.data, requestedNodeId);
         if (assignedNodeId != 0) {
             LOG_INFO(CAN, "DNA assigned Node ID: %u to peripheral", assignedNodeId);
             dnaSendResponse(assignedNodeId, currentUniqueId.data, currentUniqueId.len);
         }
         memset(currentUniqueId.data, 0, DNA_UNIQUE_ID_LENGTH);
         currentUniqueId.len = 0;
+        requestedNodeId = CANARD_BROADCAST_NODE_ID;
     }
     else
     {
