@@ -45,6 +45,10 @@ uint32_t millis(void) { return mock_time_ms; }
 /* saveConfig — called when a new allocation is persisted */
 void saveConfig(void) {}
 
+/* Live node table stubs — no network in unit tests; allocator sees 0 active nodes */
+uint8_t dronecanGetNodeCount(void) { return 0; }
+const dronecanNodeInfo_t *dronecanGetNode(uint8_t index) { (void)index; return NULL; }
+
 } /* extern "C" */
 
 /* =========================================================================
