@@ -140,13 +140,24 @@ static void dnaSendResponse(uint8_t nodeId, const uint8_t *uid, uint8_t uidLen)
 static bool isNodeAvailable(uint8_t assignedNodeId)
 {
     if (assignedNodeId == canard.node_id)
-        return false;
+        return false;  // Already assigned to this node
 
-    for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
+    for (uint8_t i = 0; i < DRONECAN_MAX_NODES; i++) {
         if (assignedNodeId == dnaServerData()->entries[i].nodeId) {
-            return false;
+            return false;  // Already assigned to another node in the allocation table
         }
     }
+    // the live node table is only populated from NodeStatus broadcasts (1 Hz), so at 
+    // power-up the allocator may not have heard from all static-ID nodes yet. This is 
+    // a known limitation of non-redundant allocators and is accepted in the spec — 
+    // the downward-from-125 assignment strategy naturally reduces collisions with 
+    // manually assigned low IDs.
+    for (uint8_t i = 0; i < dronecanGetNodeCount(); i++) {
+          const dronecanNodeInfo_t *node = dronecanGetNode(i);
+          if (node && node->nodeID == assignedNodeId)
+              return false;  // Already in use on the network
+      }
+
     return true;
 }
 /*
@@ -157,13 +168,27 @@ static bool isNodeAvailable(uint8_t assignedNodeId)
 */
 static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId)
 {
-    uint8_t assignedNodeId = CANARD_BROADCAST_NODE_ID;
+    uint8_t  assignedNodeId = CANARD_BROADCAST_NODE_ID;
+    int8_t   conflictIdx = -1;
+    int8_t   writeIdx;
+    uint8_t  storedId;
+    bool     inUse;
 
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
         if (dnaServerData()->entries[i].nodeId != 0 &&
-            memcmp(dnaServerData()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH) == 0) {
-                LOG_DEBUG(CAN, "Found node in table");
-            return dnaServerData()->entries[i].nodeId;
+                memcmp(dnaServerData()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH) == 0) {
+            LOG_DEBUG(CAN, "Found node in table");
+            storedId = dnaServerData()->entries[i].nodeId;
+            inUse = (storedId == canard.node_id);
+            for (uint8_t j = 0; !inUse && j < dronecanGetNodeCount(); j++) {
+                const dronecanNodeInfo_t *node = dronecanGetNode(j);
+                if (node && node->nodeID == storedId)
+                    inUse = true;
+            }
+            if (!inUse)
+                return storedId;
+            conflictIdx = i;
+            break;
         }
     }
     if((requestedNodeId >= CANARD_MIN_NODE_ID) && (requestedNodeId <= DRONECAN_DNA_MAX_NODE_ID)) {
@@ -181,18 +206,24 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
         LOG_ERROR(CAN, "DNA: no free node IDs available");
         return 0;
     }
-    for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
-        if (dnaServerData()->entries[i].nodeId == 0) {
-            memcpy(dnaServerDataMutable()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH);
-            dnaServerDataMutable()->entries[i].nodeId = assignedNodeId;
-            LOG_INFO(CAN, "DNA added node %u (UID index %u)", assignedNodeId, i);
-            saveConfig();
-            return assignedNodeId;
-            break;
+    writeIdx = conflictIdx; // Overwrite if already in table
+    if(writeIdx < 0) {
+        for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
+            if (dnaServerData()->entries[i].nodeId == 0) {
+                writeIdx = i;
+                break;
+            }
         }
     }
-    LOG_ERROR(CAN, "DNA: allocation table full");
-    return 0;
+    if (writeIdx < 0) { 
+        LOG_ERROR(CAN, "DNA: allocation table full");
+        return 0;
+    }
+    memcpy(dnaServerDataMutable()->entries[writeIdx].uniqueId, uid, DNA_UNIQUE_ID_LENGTH);
+    dnaServerDataMutable()->entries[writeIdx].nodeId = assignedNodeId;
+    LOG_INFO(CAN, "DNA added node %u (UID index %u)", assignedNodeId, writeIdx);
+    saveConfig();
+    return assignedNodeId;    
 }
 
 /*
