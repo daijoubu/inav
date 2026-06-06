@@ -64,18 +64,19 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
     request_stage = detectRequestStage(&dynamicAllocation);
     if (request_stage == DNA_INVALID_STAGE)
     {
-        LOG_DEBUG(CAN, "Malformed request");
+        LOG_WARNING(CAN, "DNA malformed request (invalid stage)");
         return;
     }
     LOG_DEBUG(CAN, "Request Stage %u, Length: %u", request_stage, currentUniqueId.len);
-    if (request_stage != getExpectedStage(currentUniqueId.len))
+    const int8_t expected_stage = getExpectedStage(currentUniqueId.len);
+    if (request_stage != expected_stage)
     {
-        LOG_DEBUG(CAN, "DNA Stage mismatch");
+        LOG_WARNING(CAN, "DNA stage mismatch (got %d, expected %d)", request_stage, expected_stage);
         return;
     }
     if (dynamicAllocation.unique_id.len > DNA_UNIQUE_ID_LENGTH - currentUniqueId.len)
     {
-        LOG_DEBUG(CAN, "Malformed request - message unique ID exceeds remaining capacity.");
+        LOG_WARNING(CAN, "DNA malformed request - UID exceeds remaining capacity");
         return;
     }
 
@@ -92,7 +93,7 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
     {
         uint8_t assignedNodeId = dnaLookupOrAssignNode(currentUniqueId.data);
         if (assignedNodeId != 0) {
-            LOG_DEBUG(CAN, "Assigned Node ID: %u", assignedNodeId);
+            LOG_INFO(CAN, "DNA assigned Node ID: %u to peripheral", assignedNodeId);
             dnaSendResponse(assignedNodeId, currentUniqueId.data, currentUniqueId.len);
         }
         memset(currentUniqueId.data, 0, DNA_UNIQUE_ID_LENGTH);
@@ -164,11 +165,15 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
         if (assigned == false)
             break;
     }
+    if (assignedNodeId >= CANARD_MAX_NODE_ID) {
+        LOG_ERROR(CAN, "DNA: no free node IDs available");
+        return 0;
+    }
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
         if (dnaAllocationTable[i].nodeId == 0) {
             memcpy(dnaAllocationTable[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH);
             dnaAllocationTable[i].nodeId = assignedNodeId;
-            LOG_DEBUG(CAN, "Added node: %u at index %u", assignedNodeId, i);
+            LOG_INFO(CAN, "DNA added node %u (UID index %u)", assignedNodeId, i);
             assigned = true;
             break;
         }
@@ -188,17 +193,17 @@ static int8_t getExpectedStage(uint8_t currentUniqueIdLength)
 {
     if (currentUniqueIdLength == 0)
     {
-        LOG_DEBUG(CAN, "Stage 1");
+        LOG_VERBOSE(CAN, "Stage 1");
         return DNA_STAGE_1;
     }
     if (currentUniqueIdLength >= (UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST * 2))
     {
-        LOG_DEBUG(CAN, "Stage 3");
+        LOG_VERBOSE(CAN, "Stage 3");
         return DNA_STAGE_3;
     }
     if (currentUniqueIdLength >= UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST)
     {
-        LOG_DEBUG(CAN, "Stage 2");
+        LOG_VERBOSE(CAN, "Stage 2");
         return DNA_STAGE_2;
     }
     return DNA_INVALID_STAGE;
