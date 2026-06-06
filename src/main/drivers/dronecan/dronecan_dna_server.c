@@ -195,14 +195,28 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
             break;
         }
     }
-    if((requestedNodeId >= CANARD_MIN_NODE_ID) && (requestedNodeId <= DRONECAN_DNA_MAX_NODE_ID)) {
-        if(isNodeAvailable(requestedNodeId)) {
-            assignedNodeId = requestedNodeId;
+    if (requestedNodeId >= CANARD_MIN_NODE_ID && requestedNodeId <= DRONECAN_DNA_MAX_NODE_ID) {
+        /* Search upward from preferred ID first (per UAVCAN spec) */
+        for (uint8_t id = requestedNodeId; id <= DRONECAN_DNA_MAX_NODE_ID; id++) {
+            if (isNodeAvailable(id)) {
+                assignedNodeId = id;
+                break;
+            }
+        }
+        /* If nothing found upward, search downward from preferred - 1 */
+        if (assignedNodeId == CANARD_BROADCAST_NODE_ID && requestedNodeId > CANARD_MIN_NODE_ID) {
+            for (uint8_t id = requestedNodeId - 1; id >= CANARD_MIN_NODE_ID; id--) {
+                if (isNodeAvailable(id)) {
+                    assignedNodeId = id;
+                    break;
+                }
+            }
         }
     }
-    if(assignedNodeId == CANARD_BROADCAST_NODE_ID) {
+    /* No preference or preferred range exhausted → top-down from 125 */
+    if (assignedNodeId == CANARD_BROADCAST_NODE_ID) {
         for (assignedNodeId = DRONECAN_DNA_MAX_NODE_ID; assignedNodeId >= CANARD_MIN_NODE_ID; assignedNodeId--) {
-            if(isNodeAvailable(assignedNodeId))
+            if (isNodeAvailable(assignedNodeId))
                 break;
         }
     }
