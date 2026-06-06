@@ -128,7 +128,7 @@ void dronecanInit(void)
     if (dronecanConfig()->nodeID > 0) {
 	      canardSetLocalNodeID(&canard, dronecanConfig()->nodeID);
     } else {
-	      LOG_DEBUG(CAN, "Node ID is 0, this node is anonymous and can't transmit most messages. Please update this in config");
+	      LOG_WARNING(CAN, "Node ID is 0, this node is anonymous and can't transmit most messages. Please update this in config");
     }
 }
 
@@ -163,7 +163,7 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 	            rx_res = canardSTM32Receive(&rx_frame);
 
 	             if (rx_res < 0) {
-		             LOG_DEBUG(CAN, "Receive error %d", rx_res);
+		             LOG_WARNING(CAN, "Receive error %d", rx_res);
 	             }
 	             else if (rx_res > 0)        // Success - process the frame
 	             {
@@ -218,7 +218,7 @@ void dronecanUpdate(timeUs_t currentTimeUs)
                     // ~1 second of 20ms recovery attempts with no success — permanent fault
                     busoff_retries = 0;
                     dronecanState = STATE_DRONECAN_FAILED;
-                    LOG_DEBUG(CAN, "DroneCAN: bus-off recovery failed after 50 attempts, entering FAILED state");
+                    LOG_ERROR(CAN, "DroneCAN: bus-off recovery failed after 50 attempts, entering FAILED state");
                 }
             }
             break;
@@ -330,7 +330,7 @@ static void processCanardTxQueueSafe(void) {
         const int16_t tx_res = canardSTM32Transmit(tx_frame);  // HAL register write, ~1µs
         if (tx_res != 0) {
             if (tx_res < 0) {
-                LOG_DEBUG(CAN, "Transmit error %d", tx_res);
+                LOG_WARNING(CAN, "Transmit error %d", tx_res);
             }
             canardPopTxQueue(&canard);
         }
@@ -365,7 +365,7 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_protocol_NodeStatus nodeStatus;
 
 	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
-		LOG_DEBUG(CAN, "NodeStatus decode failed");
+		LOG_WARNING(CAN, "NodeStatus decode failed");
 		return;
 	}
 
@@ -391,7 +391,7 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         activeNodeCount++;
 
     } else {
-        LOG_DEBUG(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeID);
+        LOG_WARNING(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeID);
     }
 
 }
@@ -401,7 +401,7 @@ void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_gnss_Auxiliary gnssAuxiliary;
 
 	if (uavcan_equipment_gnss_Auxiliary_decode(transfer, &gnssAuxiliary)) {
-		LOG_DEBUG(CAN, "GNSSAuxiliary decode failed");
+		LOG_WARNING(CAN, "GNSSAuxiliary decode failed");
 		return;
 	}
     dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary);
@@ -413,7 +413,7 @@ void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_gnss_Fix gnssFix;
 
 	if (uavcan_equipment_gnss_Fix_decode(transfer, &gnssFix)) {
-		LOG_DEBUG(CAN, "GNSSFix decode failed");
+		LOG_WARNING(CAN, "GNSSFix decode failed");
 		return;
 	}
     dronecanGPSReceiveGNSSFix(&gnssFix);
@@ -425,7 +425,7 @@ void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_gnss_Fix2 gnssFix2;
 
 	if (uavcan_equipment_gnss_Fix2_decode(transfer, &gnssFix2)) {
-		LOG_DEBUG(CAN, "GNSSFix2 decode failed");
+		LOG_WARNING(CAN, "GNSSFix2 decode failed");
 		return;
 	}
     dronecanGPSReceiveGNSSFix2(&gnssFix2);
@@ -437,7 +437,7 @@ void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_gnss_RTCMStream gnssRTCMStream;
 
 	if (uavcan_equipment_gnss_RTCMStream_decode(transfer, &gnssRTCMStream)) {
-		LOG_DEBUG(CAN, "RTCMStream decode failed");
+		LOG_WARNING(CAN, "RTCMStream decode failed");
 		return;
 	}
 }
@@ -447,7 +447,7 @@ void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
     struct uavcan_equipment_power_BatteryInfo batteryInfo;
 
 	if (uavcan_equipment_power_BatteryInfo_decode(transfer, &batteryInfo)) {
-		LOG_DEBUG(CAN, "BatteryInfo decode failed");
+		LOG_WARNING(CAN, "BatteryInfo decode failed");
 		return;
 	}
     dronecanBatterySensorReceiveInfo(&batteryInfo);
@@ -550,7 +550,7 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
         buf_ptr, len);
 
     if (res < 0) {
-        LOG_DEBUG(CAN, "dronecanAsyncRequest: service %u node %u failed: %d", service_id, node_id, res);
+        LOG_WARNING(CAN, "dronecanAsyncRequest: service %u node %u failed: %d", service_id, node_id, res);
         return false;
     }
 
@@ -587,7 +587,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_GETNODEINFO: {
             struct uavcan_protocol_GetNodeInfoResponse resp;
             if (uavcan_protocol_GetNodeInfoResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "GetNodeInfoResponse decode failed");
+                LOG_WARNING(CAN, "GetNodeInfoResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
@@ -612,7 +612,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_PARAM_GETSET: {
             struct uavcan_protocol_param_GetSetResponse resp;
             if (uavcan_protocol_param_GetSetResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "ParamGetSetResponse decode failed");
+                LOG_WARNING(CAN, "ParamGetSetResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
@@ -681,7 +681,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_EXECUTE_OPCODE: {
             struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
             if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "ExecuteOpcodeResponse decode failed");
+                LOG_WARNING(CAN, "ExecuteOpcodeResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
@@ -693,7 +693,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_RESTART_NODE: {
             struct uavcan_protocol_RestartNodeResponse resp;
             if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "RestartNodeResponse decode failed");
+                LOG_WARNING(CAN, "RestartNodeResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
