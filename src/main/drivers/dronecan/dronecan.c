@@ -25,7 +25,6 @@
 #include <inttypes.h>
 #include <dronecan_msgs.h>
 
-#define DRONECAN_DNA_FOLLOWUP_TIMEOUT_MS    200
 #define DRONECAN_DNA_UNIQUE_ID_LENGTH       16
 #define DRONECAN_DNA_INVALID_STAGE          -1
 #define DRONECAN_DNA_STAGE_1                1
@@ -117,8 +116,7 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     }
 
 }
-// This is an internal function; see below.
-int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocation *msg)
+static int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocation *msg)
 {
     if ((msg->unique_id.len != UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST) &&
         (msg->unique_id.len != (DRONECAN_DNA_UNIQUE_ID_LENGTH - UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST * 2U)) &&
@@ -141,8 +139,7 @@ int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocation *msg
     return DRONECAN_DNA_INVALID_STAGE;
 }
 
-// This is an internal function; see below.
-int8_t getExpectedStage(uint8_t currentUniqueIdLength)
+static int8_t getExpectedStage(uint8_t currentUniqueIdLength)
 {
     if (currentUniqueIdLength == 0)
     {
@@ -164,19 +161,20 @@ int8_t getExpectedStage(uint8_t currentUniqueIdLength)
 
 static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
 {
-    uint8_t assigned = false;
+    uint8_t assigned;
     uint8_t assignedNodeId;
     
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
-        if (memcmp(dnaAllocationTable[i].uniqueId, uid, DRONECAN_DNA_UNIQUE_ID_LENGTH) == 0) {
+        if (dnaAllocationTable[i].nodeId != 0 &&
+            memcmp(dnaAllocationTable[i].uniqueId, uid, DRONECAN_DNA_UNIQUE_ID_LENGTH) == 0) {
             return dnaAllocationTable[i].nodeId;
         }
     }
     
     for(assignedNodeId = CANARD_MIN_NODE_ID; assignedNodeId < CANARD_MAX_NODE_ID; assignedNodeId++){
         assigned = false;
-        if(assignedNodeId == canard.node_id)  
-            assignedNodeId++;   // Skip our node id.
+        if(assignedNodeId == canard.node_id)
+            continue;   // Skip our node id.
 
         for(int i = 0; i < DRONECAN_MAX_NODES; i++){
             if( assignedNodeId == dnaAllocationTable[i].nodeId){
@@ -192,8 +190,13 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
             memcpy(dnaAllocationTable[i].uniqueId, uid, DRONECAN_DNA_UNIQUE_ID_LENGTH);
             dnaAllocationTable[i].nodeId = assignedNodeId;
             LOG_DEBUG(CAN, "Added node: %u at index %u", assignedNodeId, i);
+            assigned = true;
             break;
         }
+    }
+    if(!assigned) {
+        LOG_ERROR(CAN, "DNA: allocation table full");
+        return 0;
     }
     return assignedNodeId;
 }
@@ -229,7 +232,7 @@ static void dnaSendResponse(uint8_t nodeId, const uint8_t *uid, uint8_t uidLen)
     a new node assignment and sends the assigned ID to the node. Data is persisted in EEPROM
     so network configuration is maintained across power cycles.
 */
-void handle_DNA(CanardInstance *ins, CanardRxTransfer *transfer) {
+static void handle_DNA(CanardInstance *ins, CanardRxTransfer *transfer) {
     UNUSED(ins);
 
     struct uavcan_protocol_dynamic_node_id_Allocation dynamicAllocation;
@@ -246,8 +249,8 @@ void handle_DNA(CanardInstance *ins, CanardRxTransfer *transfer) {
         return;  // This is a response from another allocator
 
     // Reset the expected stage on timeout
-    if ((millis() - lastMessageTimestamp) > DRONECAN_DNA_FOLLOWUP_TIMEOUT_MS) {
-        memset(currentUniqueId.data, 0, DRONECAN_DNA_UNIQUE_ID_LENGTH * sizeof(uint8_t));
+    if ((millis() - lastMessageTimestamp) > UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_FOLLOWUP_TIMEOUT_MS) {
+        memset(currentUniqueId.data, 0, DRONECAN_DNA_UNIQUE_ID_LENGTH);
         currentUniqueId.len = 0;
     }
 
@@ -286,9 +289,11 @@ void handle_DNA(CanardInstance *ins, CanardRxTransfer *transfer) {
     if (currentUniqueId.len == DRONECAN_DNA_UNIQUE_ID_LENGTH)
     {
         uint8_t assignedNodeId = dnaLookupOrAssignNode(currentUniqueId.data);
-        LOG_DEBUG(CAN, "Assigned Node ID: %u", assignedNodeId);
-        dnaSendResponse(assignedNodeId, currentUniqueId.data, currentUniqueId.len);
-        memset(currentUniqueId.data, 0, DRONECAN_DNA_UNIQUE_ID_LENGTH * sizeof(uint8_t));
+        if (assignedNodeId != 0) {
+            LOG_DEBUG(CAN, "Assigned Node ID: %u", assignedNodeId);
+            dnaSendResponse(assignedNodeId, currentUniqueId.data, currentUniqueId.len);
+        }
+        memset(currentUniqueId.data, 0, DRONECAN_DNA_UNIQUE_ID_LENGTH);
         currentUniqueId.len = 0;
     }
     else
