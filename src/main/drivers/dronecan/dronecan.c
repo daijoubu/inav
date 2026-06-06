@@ -165,13 +165,14 @@ int8_t getExpectedStage(uint8_t currentUniqueIdLength)
 static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
 {
     uint8_t assigned = false;
-
+    uint8_t assignedNodeId;
+    
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
         if (memcmp(dnaAllocationTable[i].uniqueId, uid, DRONECAN_DNA_UNIQUE_ID_LENGTH) == 0) {
             return dnaAllocationTable[i].nodeId;
         }
     }
-    uint8_t assignedNodeId = 5;
+    
     for(assignedNodeId = CANARD_MIN_NODE_ID; assignedNodeId < CANARD_MAX_NODE_ID; assignedNodeId++){
         assigned = false;
         if(assignedNodeId == canard.node_id)  
