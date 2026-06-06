@@ -4,21 +4,18 @@
 #include <string.h>
 #include <stdio.h>
 #include <dronecan_msgs.h>
+#include "config/parameter_group.h"
+#include "config/parameter_group_ids.h"
 #include "dronecan.h"
 #include "dronecan_dna_server.h"
 
-#define DNA_UNIQUE_ID_LENGTH       16
 #define DNA_INVALID_STAGE          -1
 #define DNA_STAGE_1                1
 #define DNA_STAGE_2                2
 #define DNA_STAGE_3                3
 
-typedef struct {
-    uint8_t uniqueId[DNA_UNIQUE_ID_LENGTH];
-    uint8_t nodeId;
-} dnaAllocationEntry_t;
 
-static dnaAllocationEntry_t dnaAllocationTable[DRONECAN_MAX_NODES];
+PG_REGISTER(dnaServerData_t, dnaServerData, PG_DRONECAN_DNA_SERVER, 0);
 
 static int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocation *msg);
 static int8_t getExpectedStage(uint8_t currentUniqueIdLength);
@@ -145,9 +142,10 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
     uint8_t assignedNodeId;
 
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
-        if (dnaAllocationTable[i].nodeId != 0 &&
-            memcmp(dnaAllocationTable[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH) == 0) {
-            return dnaAllocationTable[i].nodeId;
+        if (dnaServerData()->entries[i].nodeId != 0 &&
+            memcmp(dnaServerData()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH) == 0) {
+                LOG_DEBUG(CAN, "Found node in table");
+            return dnaServerData()->entries[i].nodeId;
         }
     }
 
@@ -157,7 +155,7 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
             continue;
 
         for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
-            if (assignedNodeId == dnaAllocationTable[i].nodeId) {
+            if (assignedNodeId == dnaServerData()->entries[i].nodeId) {
                 assigned = true;
                 break;
             }
@@ -170,9 +168,9 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
         return 0;
     }
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
-        if (dnaAllocationTable[i].nodeId == 0) {
-            memcpy(dnaAllocationTable[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH);
-            dnaAllocationTable[i].nodeId = assignedNodeId;
+        if (dnaServerData()->entries[i].nodeId == 0) {
+            memcpy(dnaServerDataMutable()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH);
+            dnaServerDataMutable()->entries[i].nodeId = assignedNodeId;
             LOG_INFO(CAN, "DNA added node %u (UID index %u)", assignedNodeId, i);
             assigned = true;
             break;
