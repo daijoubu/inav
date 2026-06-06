@@ -42,7 +42,7 @@ save
 | `dronecan_bitrate_kbps` | 125, 250, 500, 1000 | 1000 | CAN bus bitrate in kbps |
 | `dronecan_use_dna_server` | ON, OFF | ON | Enable automatic node ID assignment for plug-and-play peripherals |
 
-With `dronecan_use_dna_server = ON` (the default), peripherals that support Dynamic Node Allocation negotiate their node IDs automatically at power-up. Only the CAN bitrate needs to match across the bus. Peripherals that do not support DNA still need a static node ID configured via a tool such as dronecan_gui. You can use your flight controller as a CAN interface by loading an ArduPilot image on it; once configuration is complete, reflash to INAV.
+With `dronecan_use_dna_server = ON` (the default), peripherals that support Dynamic Node Allocation and have their node ID set to 0 (anonymous/unset) negotiate their node IDs automatically at power-up. Only the CAN bitrate needs to match across the bus. Peripherals that do not support DNA, or that already have a static node ID configured, will not send Allocation requests and must have their node ID set manually via a tool such as dronecan_gui. You can use your flight controller as a CAN interface by loading an ArduPilot image on it; once configuration is complete, reflash to INAV.
 
 ### GPS via DroneCAN
 
