@@ -20,7 +20,7 @@ PG_REGISTER(dnaServerData_t, dnaServerData, PG_DRONECAN_DNA_SERVER, 0);
 
 static int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocation *msg);
 static int8_t getExpectedStage(uint8_t currentUniqueIdLength);
-static uint8_t dnaLookupOrAssignNode(const uint8_t *uid);
+static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId);
 static void dnaSendResponse(uint8_t nodeId, const uint8_t *uid, uint8_t uidLen);
 
 /*
@@ -89,7 +89,7 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
 
     if (currentUniqueId.len == DNA_UNIQUE_ID_LENGTH)
     {
-        uint8_t assignedNodeId = dnaLookupOrAssignNode(currentUniqueId.data);
+        uint8_t assignedNodeId = dnaLookupOrAssignNode(currentUniqueId.data, dynamicAllocation.node_id);
         if (assignedNodeId != 0) {
             LOG_INFO(CAN, "DNA assigned Node ID: %u to peripheral", assignedNodeId);
             dnaSendResponse(assignedNodeId, currentUniqueId.data, currentUniqueId.len);
@@ -131,16 +131,28 @@ static void dnaSendResponse(uint8_t nodeId, const uint8_t *uid, uint8_t uidLen)
     canardBroadcastObj(&canard, &outboundTransfer);
 }
 
+static bool isNodeAvailable(uint8_t assignedNodeId)
+{
+    if (assignedNodeId == canard.node_id)
+        return false;
+
+    for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
+        if (assignedNodeId == dnaServerData()->entries[i].nodeId) {
+            return false;
+        }
+    }
+    return true;
+}
 /*
     Search the allocation table for an existing entry matching the given unique
     identifier. If found, return the previously assigned node ID. If not found,
     find the first unused node ID (skipping our own) and record a new allocation.
     Returns 0 if the table is full.
 */
-static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
+static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId)
 {
-    uint8_t assigned;
-    uint8_t assignedNodeId;
+    uint8_t assigned = false;
+    uint8_t assignedNodeId = CANARD_BROADCAST_NODE_ID;
 
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
         if (dnaServerData()->entries[i].nodeId != 0 &&
@@ -149,20 +161,16 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
             return dnaServerData()->entries[i].nodeId;
         }
     }
-
-    for (assignedNodeId = CANARD_MIN_NODE_ID; assignedNodeId < CANARD_MAX_NODE_ID; assignedNodeId++) {
-        assigned = false;
-        if (assignedNodeId == canard.node_id)
-            continue;
-
-        for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
-            if (assignedNodeId == dnaServerData()->entries[i].nodeId) {
-                assigned = true;
-                break;
-            }
+    if((requestedNodeId >= CANARD_MIN_NODE_ID) && (requestedNodeId <= CANARD_MAX_NODE_ID)) {
+        if(isNodeAvailable(requestedNodeId)) {
+            assignedNodeId = requestedNodeId;
         }
-        if (assigned == false)
-            break;
+    }
+    if(assignedNodeId == CANARD_BROADCAST_NODE_ID) {
+        for (assignedNodeId = CANARD_MIN_NODE_ID; assignedNodeId < CANARD_MAX_NODE_ID; assignedNodeId++) {
+            if(isNodeAvailable(assignedNodeId))
+                break;
+        }
     }
     if (assignedNodeId >= CANARD_MAX_NODE_ID) {
         LOG_ERROR(CAN, "DNA: no free node IDs available");
