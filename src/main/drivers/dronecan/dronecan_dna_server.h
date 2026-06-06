@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "libcanard/canard.h"
 
+#ifdef USE_DRONECAN
+
 extern CanardInstance canard;
 
 #define DNA_UNIQUE_ID_LENGTH       16
@@ -16,8 +18,9 @@ typedef struct {
 typedef struct {
     dnaAllocationEntry_t entries[DRONECAN_MAX_NODES];
 } dnaServerData_t;
-  
+
 PG_DECLARE(dnaServerData_t, dnaServerData);
 
-
 void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer);
+
+#endif // USE_DRONECAN
