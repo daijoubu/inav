@@ -1,6 +1,9 @@
 #include "platform.h"
 #include "common/log.h"
 #include "drivers/time.h"
+
+#if defined(USE_DRONECAN)
+
 #include <string.h>
 #include <stdio.h>
 #include <dronecan_msgs.h>
@@ -295,3 +298,5 @@ static int8_t detectRequestStage(struct uavcan_protocol_dynamic_node_id_Allocati
     }
     return DNA_INVALID_STAGE;
 }
+
+#endif // USE_DRONECAN
