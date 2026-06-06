@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <dronecan_msgs.h>
+#include "fc/config.h"
 #include "config/parameter_group.h"
 #include "config/parameter_group_ids.h"
 #include "dronecan.h"
@@ -172,6 +173,7 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid)
             memcpy(dnaServerDataMutable()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH);
             dnaServerDataMutable()->entries[i].nodeId = assignedNodeId;
             LOG_INFO(CAN, "DNA added node %u (UID index %u)", assignedNodeId, i);
+            saveConfig();
             assigned = true;
             break;
         }
