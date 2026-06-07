@@ -418,7 +418,8 @@ When the MSP JSON specification changes, bump `msp_messages.json` version:
 [8256 - MSP2_INAV_ESC_RPM](#msp2_inav_esc_rpm)  
 [8257 - MSP2_INAV_ESC_TELEM](#msp2_inav_esc_telem)  
 [8258 - MSP2_INAV_DRONECAN_NODES](#msp2_inav_dronecan_nodes)  
-[8259 - MSP2_INAV_DRONECAN_NODE_INFO](#msp2_inav_dronecan_node_info)  
+[8259 - MSP2_INAV_DRONECAN_ASYNC_REQUEST](#msp2_inav_dronecan_async_request)  
+[8260 - MSP2_INAV_DRONECAN_ASYNC_RESULT](#msp2_inav_dronecan_async_result)  
 [8264 - MSP2_INAV_LED_STRIP_CONFIG_EX](#msp2_inav_led_strip_config_ex)  
 [8265 - MSP2_INAV_SET_LED_STRIP_CONFIG_EX](#msp2_inav_set_led_strip_config_ex)  
 [8266 - MSP2_INAV_FW_APPROACH](#msp2_inav_fw_approach)  
@@ -4168,38 +4169,133 @@ When the MSP JSON specification changes, bump `msp_messages.json` version:
 |Field|C Type|Size (Bytes)|Description|
 |---|---|---|---|
 | `nodeCount` | `uint8_t` | 1 | Number of detected DroneCAN nodes |
-| `nodeData` | `dronecanNodeStatus_t[]` | array | Array of per-node status records, one per detected node. Each record: nodeID(1)+health(1)+mode(1)+last_seen_ms(4) = 7 bytes. Full detail available via MSP2_INAV_DRONECAN_NODE_INFO. |
+| `nodeData` | (repeated) | 13 × nodeCount | Array of per-node status records (see below) |
 
-**Notes:** Requires `USE_DRONECAN`. Response is `nodeCount` followed by `nodeCount` records of 7 bytes each: nodeID(1)+health(1)+mode(1)+elapsed_ms(4), where elapsed_ms is milliseconds since the node was last seen. Maximum payload 1 + (DRONECAN_MAX_NODES * 7) = 225 bytes. Full node detail including uptime, vendor status, and name is available via MSP2_INAV_DRONECAN_NODE_INFO.
+Each node record is 13 bytes in the following order:
 
-## <a id="msp2_inav_dronecan_node_info"></a>`MSP2_INAV_DRONECAN_NODE_INFO (8259 / 0x2043)`
-**Description:** Returns full status detail for a single DroneCAN node by ID, including software and hardware version data retrieved via the DroneCAN GetNodeInfo service.  
-  
-**Request Payload:**
 |Field|C Type|Size (Bytes)|Description|
 |---|---|---|---|
-| `nodeID` | `uint8_t` | 1 | DroneCAN node ID to query (1-127) |
-  
-**Reply Payload:**
-|Field|C Type|Size (Bytes)|Units|Description|
-|---|---|---|---|---|
-| `nodeID` | `uint8_t` | 1 | - | DroneCAN node ID |
-| `health` | `uint8_t` | 1 | - | Node health: 0=OK, 1=WARNING, 2=ERROR, 3=CRITICAL |
-| `mode` | `uint8_t` | 1 | - | Node mode: 0=OPERATIONAL, 1=INITIALIZATION, 2=MAINTENANCE, 3=SOFTWARE_UPDATE, 7=OFFLINE |
-| `uptime_sec` | `uint32_t` | 4 | s | Node uptime in seconds |
-| `vendor_status_code` | `uint16_t` | 2 | - | Vendor-specific status code |
-| `elapsed_ms` | `uint32_t` | 4 | ms | Milliseconds elapsed since this node was last seen (millis() - last_seen_ms at time of request) |
-| `name_len` | `uint8_t` | 1 | - | Length of node name string (0 if unknown) |
-| `name` | `char[80]` | 80 | - | Node name up to 80 bytes, zero-padded |
-| `sw_major` | `uint8_t` | 1 | - | Software version major (from GetNodeInfo response) |
-| `sw_minor` | `uint8_t` | 1 | - | Software version minor (from GetNodeInfo response) |
-| `sw_optional_field_flags` | `uint8_t` | 1 | - | UAVCAN SoftwareVersion optional_field_flags: bit 0 = vcs_commit valid, bit 1 = image_crc valid |
-| `sw_vcs_commit` | `uint32_t` | 4 | - | Git commit hash (valid when sw_optional_field_flags bit 0 is set) |
-| `hw_major` | `uint8_t` | 1 | - | Hardware version major (from GetNodeInfo response) |
-| `hw_minor` | `uint8_t` | 1 | - | Hardware version minor (from GetNodeInfo response) |
-| `hw_unique_id` | `uint8_t[16]` | 16 | - | 128-bit hardware unique ID (from GetNodeInfo response) |
+| `nodeID` | `uint8_t` | 1 | DroneCAN node ID (1-127) |
+| `health` | `uint8_t` | 1 | Node health: 0=OK, 1=WARNING, 2=ERROR, 3=CRITICAL |
+| `mode` | `uint8_t` | 1 | Node mode: 0=OPERATIONAL, 1=INITIALIZATION, 2=MAINTENANCE, 3=SOFTWARE_UPDATE, 7=OFFLINE |
+| `last_seen_ms` | `uint32_t` | 4 | Milliseconds since this node was last seen (FC-local timestamp delta) |
+| `uptime_sec` | `uint32_t` | 4 | Node uptime in seconds (from NodeStatus broadcast) |
+| `vendor_status_code` | `uint16_t` | 2 | Vendor-specific status code |
 
-**Notes:** Requires `USE_DRONECAN`. Returns `MSP_RESULT_ERROR` if the requested node ID is not in the node table. Response is always 119 bytes.
+**Notes:** Requires `USE_DRONECAN`. Maximum payload is 1 + (DRONECAN_MAX_NODES × 13) = 417 bytes. For full node detail (name, software/hardware version, unique ID) use `MSP2_INAV_DRONECAN_ASYNC_REQUEST` with `service_id = DRONECAN_SERVICE_GETNODEINFO (1)`.
+
+## <a id="msp2_inav_dronecan_async_request"></a>`MSP2_INAV_DRONECAN_ASYNC_REQUEST (8259 / 0x2043)`
+**Description:** Initiates an asynchronous DroneCAN service request to a specific node. The result is retrieved by polling `MSP2_INAV_DRONECAN_ASYNC_RESULT`. Only one request may be in-flight at a time; a new request while one is PENDING returns `accepted=1` (busy).
+
+**Service IDs:**
+
+| Constant | Value | Description |
+|---|---|---|
+| `DRONECAN_SERVICE_GETNODEINFO` | 1 | Retrieve node name, SW/HW version, unique ID |
+| `DRONECAN_SERVICE_RESTART_NODE` | 5 | Restart the target node |
+| `DRONECAN_SERVICE_EXECUTE_OPCODE` | 10 | Execute a maintenance opcode (e.g. erase config) |
+| `DRONECAN_SERVICE_PARAM_GETSET` | 11 | Read or write a node parameter |
+
+**Request Payload (common header):**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `service_id` | `uint16_t` | 2 | Service to invoke (see table above; transmitted as u16 for MSP alignment, only low 8 bits used) |
+| `nodeID` | `uint8_t` | 1 | Target DroneCAN node ID (1-127) |
+
+Additional fields follow the common header depending on `service_id`:
+
+**`DRONECAN_SERVICE_GETNODEINFO` (1) — no additional fields.**
+
+**`DRONECAN_SERVICE_RESTART_NODE` (5) — no additional fields.**
+
+**`DRONECAN_SERVICE_EXECUTE_OPCODE` (10):**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `opcode` | `uint8_t` | 1 | Opcode to execute (e.g. 0=save config, 1=erase config) |
+
+**`DRONECAN_SERVICE_PARAM_GETSET` (11) — read:**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `index` | `uint16_t` | 2 | Parameter index to read |
+| `is_write` | `uint8_t` | 1 | 0 = read |
+| `req_name_len` | `uint8_t` | 1 | Length of optional name hint (0 if not provided) |
+| `req_name` | `uint8_t[]` | req_name_len | Optional parameter name hint |
+
+**`DRONECAN_SERVICE_PARAM_GETSET` (11) — write:**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `index` | `uint16_t` | 2 | Parameter index to write |
+| `is_write` | `uint8_t` | 1 | 1 = write |
+| `value_type` | `uint8_t` | 1 | Parameter type: 1=INT, 2=FLOAT, 3=BOOL, 4=STRING |
+| `value` | (type-dependent) | varies | Value to write — see param type encoding table below |
+| `req_name_len` | `uint8_t` | 1 | Length of optional name hint (0 if not provided) |
+| `req_name` | `uint8_t[]` | req_name_len | Optional parameter name hint |
+
+Param value encoding:
+
+| `value_type` | Encoding |
+|---|---|
+| INT (1) | `uint32_t lo` + `uint32_t hi` — 64-bit little-endian split |
+| FLOAT (2) | `uint32_t raw` — IEEE 754 single-precision bit pattern |
+| BOOL (3) | `uint8_t` — 0=false, 1=true |
+| STRING (4) | `uint8_t len` + `uint8_t data[len]` — length-prefixed, not null-terminated |
+
+**Reply Payload:**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `accepted` | `uint8_t` | 1 | 0 = request accepted; 1 = busy (slot in use) or unrecognised service_id |
+| `seq` | `uint8_t` | 1 | Sequence number; use to correlate this request with the matching `MSP2_INAV_DRONECAN_ASYNC_RESULT` response |
+
+**Notes:** Requires `USE_DRONECAN`. If the DroneCAN bus is not in `STATE_DRONECAN_NORMAL`, the reply returns `accepted=1` and `seq=0` without dispatching any request. Requests time out after `DRONECAN_ASYNC_TIMEOUT_MS` (2000 ms); after timeout the slot returns to IDLE and the result is discarded.
+
+## <a id="msp2_inav_dronecan_async_result"></a>`MSP2_INAV_DRONECAN_ASYNC_RESULT (8260 / 0x2044)`
+**Description:** Polls the result of the most recent `MSP2_INAV_DRONECAN_ASYNC_REQUEST`. The caller should poll at ~100 ms intervals until `state` is `DRONECAN_ASYNC_READY (2)` or `DRONECAN_ASYNC_ERROR (3)`.
+
+**Request Payload:** **None**
+
+**Reply Payload (common header):**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `state` | `uint8_t` | 1 | Slot state: 0=IDLE, 1=PENDING, 2=READY, 3=ERROR |
+| `seq` | `uint8_t` | 1 | Sequence number matching the originating `MSP2_INAV_DRONECAN_ASYNC_REQUEST` response |
+| `service_id` | `uint16_t` | 2 | Service ID of the in-flight (or just-completed) request |
+| `node_id` | `uint8_t` | 1 | Node ID of the target |
+
+When `state == DRONECAN_ASYNC_READY (2)`, service-specific result fields follow:
+
+**`DRONECAN_SERVICE_GETNODEINFO` (1):**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `name_len` | `uint8_t` | 1 | Length of node name |
+| `name` | `uint8_t[]` | name_len | Node name (not null-terminated) |
+| `sw_major` | `uint8_t` | 1 | Software version major |
+| `sw_minor` | `uint8_t` | 1 | Software version minor |
+| `sw_optional_field_flags` | `uint8_t` | 1 | Bitmask indicating which optional SW fields are present |
+| `sw_vcs_commit` | `uint32_t` | 4 | VCS commit hash (if `sw_optional_field_flags` bit 0 set) |
+| `hw_major` | `uint8_t` | 1 | Hardware version major |
+| `hw_minor` | `uint8_t` | 1 | Hardware version minor |
+| `hw_unique_id` | `uint8_t[16]` | 16 | 128-bit hardware unique ID |
+
+**`DRONECAN_SERVICE_PARAM_GETSET` (11):**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `name_len` | `uint8_t` | 1 | Length of parameter name |
+| `name` | `uint8_t[]` | name_len | Parameter name (not null-terminated; max 92 bytes per UAVCAN spec) |
+| `type` | `uint8_t` | 1 | Parameter type: 0=EMPTY, 1=INT, 2=FLOAT, 3=BOOL, 4=STRING |
+| `value` | (type-dependent) | varies | Current parameter value — same encoding as request write value |
+| `min_type` | `uint8_t` | 1 | Type of min bound (0=EMPTY means no bound) |
+| `min` | (type-dependent) | varies | Minimum value — present only if `min_type` is INT or FLOAT |
+| `max_type` | `uint8_t` | 1 | Type of max bound (0=EMPTY means no bound) |
+| `max` | (type-dependent) | varies | Maximum value — present only if `max_type` is INT or FLOAT |
+
+Min/max encoding follows the same INT (8-byte lo/hi split) and FLOAT (4-byte raw) patterns as the write value.
+
+**`DRONECAN_SERVICE_EXECUTE_OPCODE` (10) and `DRONECAN_SERVICE_RESTART_NODE` (5):**
+|Field|C Type|Size (Bytes)|Description|
+|---|---|---|---|
+| `ok` | `uint8_t` | 1 | 1 = success, 0 = failure |
+
+**Notes:** Requires `USE_DRONECAN`. Reading the result when `state == DRONECAN_ASYNC_READY` transitions the slot back to `DRONECAN_ASYNC_IDLE`. If `state` is IDLE or PENDING, no result fields are present beyond the 5-byte common header.
 
 ## <a id="msp2_inav_led_strip_config_ex"></a>`MSP2_INAV_LED_STRIP_CONFIG_EX (8264 / 0x2048)`
 **Description:** Retrieves the full configuration for each LED on the strip using the `ledConfig_t` structure. Supersedes `MSP_LED_STRIP_CONFIG`.  
