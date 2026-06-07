@@ -5,7 +5,6 @@
 #if defined(USE_DRONECAN)
 
 #include <string.h>
-#include <stdio.h>
 #include <dronecan_msgs.h>
 #include "fc/config.h"
 #include "config/parameter_group.h"
@@ -73,7 +72,6 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
         LOG_WARNING(CAN, "DNA malformed request (invalid stage)");
         return;
     }
-    LOG_DEBUG(CAN, "Request Stage %u, Length: %u", request_stage, currentUniqueId.len);
     const int8_t expected_stage = getExpectedStage(currentUniqueId.len);
     if (request_stage != expected_stage)
     {
@@ -91,14 +89,6 @@ void dronecanDnaHandleAllocation(CanardInstance *ins, CanardRxTransfer *transfer
 
     memcpy(currentUniqueId.data + currentUniqueId.len, dynamicAllocation.unique_id.data, dynamicAllocation.unique_id.len);
     currentUniqueId.len += dynamicAllocation.unique_id.len;
-
-#ifdef USE_LOG
-    char uidStr[DNA_UNIQUE_ID_LENGTH * 2 + 1];
-    for (int i = 0; i < currentUniqueId.len; i++) {
-        sprintf(&uidStr[i * 2], "%02x", currentUniqueId.data[i]);
-    }
-    LOG_DEBUG(CAN, "Received UID part: %s", uidStr);
-#endif
 
     if (currentUniqueId.len == DNA_UNIQUE_ID_LENGTH)
     {
@@ -184,7 +174,7 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
     for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
         if (dnaServerData()->entries[i].nodeId != 0 &&
                 memcmp(dnaServerData()->entries[i].uniqueId, uid, DNA_UNIQUE_ID_LENGTH) == 0) {
-            LOG_DEBUG(CAN, "Found node in table");
+            LOG_DEBUG(CAN, "DNA: found existing allocation for node %u", dnaServerData()->entries[i].nodeId);
             storedId = dnaServerData()->entries[i].nodeId;
             inUse = (storedId == canard.node_id);
             for (uint8_t j = 0; !inUse && j < dronecanGetNodeCount(); j++) {
@@ -194,6 +184,7 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
             }
             if (!inUse)
                 return storedId;
+            LOG_WARNING(CAN, "DNA: stored node ID %u for UID is already in use — re-assigning", storedId);
             conflictIdx = i;
             break;
         }
@@ -254,20 +245,11 @@ static uint8_t dnaLookupOrAssignNode(const uint8_t *uid, uint8_t requestedNodeId
 static int8_t getExpectedStage(uint8_t currentUniqueIdLength)
 {
     if (currentUniqueIdLength == 0)
-    {
-        LOG_VERBOSE(CAN, "Stage 1");
         return DNA_STAGE_1;
-    }
     if (currentUniqueIdLength >= (UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST * 2))
-    {
-        LOG_VERBOSE(CAN, "Stage 3");
         return DNA_STAGE_3;
-    }
     if (currentUniqueIdLength >= UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_LENGTH_OF_UNIQUE_ID_IN_REQUEST)
-    {
-        LOG_VERBOSE(CAN, "Stage 2");
         return DNA_STAGE_2;
-    }
     return DNA_INVALID_STAGE;
 }
 
