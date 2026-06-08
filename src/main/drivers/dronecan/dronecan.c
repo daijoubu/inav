@@ -719,7 +719,7 @@ void process1HzTasks(timeUs_t timestamp_usec)
 
     // Remove nodes that have stopped broadcasting NodeStatus
     for (uint8_t i = 0; i < activeNodeCount; ) {
-        if (millis() - nodeTable[i].last_seen_ms > 10000) {
+        if (millis() - nodeTable[i].last_seen_ms > UAVCAN_PROTOCOL_NODESTATUS_OFFLINE_TIMEOUT_MS) {
             nodeTable[i] = nodeTable[activeNodeCount - 1];
             activeNodeCount--;
         } else {
