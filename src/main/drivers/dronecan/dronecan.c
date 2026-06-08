@@ -55,6 +55,25 @@ static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 
 static bool isNodeUnhealthy (uint8_t nodeId);
 
+static void logNodeHealth(uint8_t nodeID, uint8_t health) {
+    switch (health) {
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK:
+        LOG_INFO(CAN, "Node %d health: OK", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_WARNING:
+        LOG_WARNING(CAN, "Node %d health: WARNING", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR:
+        LOG_ERROR(CAN, "Node %d health: ERROR", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL:
+        LOG_ERROR(CAN, "Node %d health: CRITICAL", nodeID);
+        break;
+    default:
+        break;
+    }
+}
+
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
 
@@ -86,6 +105,9 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 	uint8_t nodeID = transfer->source_node_id;
     dronecanNodeInfo_t *node = findNodeByID(nodeID);
     if (node) {
+        if (nodeStatus.health != node->health) {
+            logNodeHealth(nodeID, nodeStatus.health);
+        }
         node->health = nodeStatus.health;
         node->mode = nodeStatus.mode;
         node->uptime_sec = nodeStatus.uptime_sec;
@@ -102,6 +124,9 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].uptime_sec = nodeStatus.uptime_sec;
         nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
         nodeTable[activeNodeCount].last_seen_ms = millis();
+        if (nodeStatus.health != UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK) {
+            logNodeHealth(nodeID, nodeStatus.health);
+        }
         activeNodeCount++;
 
     } else {
