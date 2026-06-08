@@ -53,6 +53,8 @@ static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 #endif
 
+static bool isNodeUnhealthy (uint8_t nodeId);
+
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
 
@@ -109,22 +111,21 @@ void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 }
 void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
+    if (gpsConfig()->provider != GPS_DRONECAN) {
+        return;
+    }
     struct uavcan_equipment_gnss_Auxiliary gnssAuxiliary;
 
 	if (uavcan_equipment_gnss_Auxiliary_decode(transfer, &gnssAuxiliary)) {
 		LOG_WARNING(CAN, "GNSSAuxiliary decode failed");
 		return;
 	}
-    dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary);
+    dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary, transfer->source_node_id);
 }
 
 void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-
-    // Filter by Node ID if configured
-    if (dronecanConfig()->gpsNodeId != 0 && transfer->source_node_id != dronecanConfig()->gpsNodeId) {
+    if (gpsConfig()->provider != GPS_DRONECAN) {
         return;
     }
 
@@ -134,15 +135,12 @@ void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
 		LOG_WARNING(CAN, "GNSSFix decode failed");
 		return;
 	}
-    dronecanGPSReceiveGNSSFix(&gnssFix);
+    dronecanGPSReceiveGNSSFix(&gnssFix, transfer->source_node_id);
 }
 
 void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-
-    // Filter by Node ID if configured
-    if (dronecanConfig()->gpsNodeId != 0 && transfer->source_node_id != dronecanConfig()->gpsNodeId) {
+    if (gpsConfig()->provider != GPS_DRONECAN) {
         return;
     }
 
@@ -152,12 +150,17 @@ void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 		LOG_WARNING(CAN, "GNSSFix2 decode failed");
 		return;
 	}
-    dronecanGPSReceiveGNSSFix2(&gnssFix2);
+    dronecanGPSReceiveGNSSFix2(&gnssFix2, transfer->source_node_id);
 }
 
 void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
+    if (gpsConfig()->provider != GPS_DRONECAN) {
+        return;
+    }
+    if (isNodeUnhealthy(transfer->source_node_id)) {
+        return; // Don't accept data from nodes with ERROR or CRITICAL health states
+    }
     struct uavcan_equipment_gnss_RTCMStream gnssRTCMStream;
 
 	if (uavcan_equipment_gnss_RTCMStream_decode(transfer, &gnssRTCMStream)) {
@@ -878,4 +881,14 @@ const dronecanNodeInfo_t *dronecanGetNode(uint8_t index) {
     if (index < activeNodeCount) return &nodeTable[index];
     return NULL;
 }
+
+static bool isNodeUnhealthy (uint8_t nodeId)
+{
+    const dronecanNodeInfo_t *node = dronecanGetNodeByID(nodeId);
+    if(node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
+        return true;
+    }
+    return false;
+}
+
 #endif
