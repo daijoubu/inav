@@ -174,9 +174,10 @@ bool isGPSHeadingValid(void);
 struct serialPort_s;
 void gpsEnablePassthrough(struct serialPort_s *gpsPassthroughPort);
 void mspGPSReceiveNewData(const uint8_t * bufferPtr);
-void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix);
-void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2);
-void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary * pgnssAux);
+void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix, uint8_t sourceNodeId);
+void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2, uint8_t sourceNodeId);
+void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary * pgnssAux, uint8_t sourceNodeId);
+bool dronecanGpsIsHealthy(void);
 
 const char *getGpsHwVersion(void);
 uint8_t getGpsProtoMajorVersion(void);

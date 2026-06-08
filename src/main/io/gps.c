@@ -648,7 +648,12 @@ void updateGpsIndicator(timeUs_t currentTimeUs)
 
 bool isGPSHealthy(void)
 {
-    return true;
+#if defined(USE_DRONECAN)
+    if (gpsConfig()->provider == GPS_DRONECAN) {
+        return dronecanGpsIsHealthy();
+    }
+#endif
+    return sensors(SENSOR_GPS);
 }
 
 bool isGPSHeadingValid(void)

@@ -56,6 +56,7 @@
 
 static bool newDataReady;
 static uint16_t lastHDOP = 9999;
+static uint8_t activeGpsNodeId = 0;
 
 void gpsRestartDronecan(void)
 {
@@ -79,8 +80,21 @@ static uint8_t gpsMapFixType(uint8_t dronecanFixType)
     return GPS_NO_FIX;
 }
 
-void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix)
+void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix, uint8_t sourceNodeId)
 {
+    const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
+    if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
+        return;
+    }
+    if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
+        return;
+    }
+    if (activeGpsNodeId == 0) {
+        // First over the fence: in a PnP system with >1 GNSS module and no explicit
+        // node association, the first healthy GNSS fix accepted wins. Not recommended
+        // for multi-GNSS setups — configure dronecan_gps_node_id instead.
+        activeGpsNodeId = sourceNodeId;
+    }
     gpsSolDRV.fixType   = gpsMapFixType(pgnssFix->status);
     gpsSolDRV.numSat    = pgnssFix->sats_used;
     gpsSolDRV.llh.lon   = pgnssFix->longitude_deg_1e8 / 10; // convert to deg_1e7
@@ -129,8 +143,21 @@ void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix
     newDataReady = true;
 }
 
-void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2)
+void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2, uint8_t sourceNodeId)
 {
+    const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
+    if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
+        return;
+    }
+    if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
+        return;
+    }
+    if (activeGpsNodeId == 0) {
+        // First over the fence: in a PnP system with >1 GNSS module and no explicit
+        // node association, the first healthy GNSS fix accepted wins. Not recommended
+        // for multi-GNSS setups — configure dronecan_gps_node_id instead.
+        activeGpsNodeId = sourceNodeId;
+    }
     gpsSolDRV.fixType   = gpsMapFixType(pgnssFix2->status);
     gpsSolDRV.numSat    = pgnssFix2->sats_used;
     gpsSolDRV.llh.lon   = pgnssFix2->longitude_deg_1e8 / 10; // convert to deg_1e7
@@ -178,12 +205,38 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
     newDataReady = true;
 }
 
-void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary * pgnssAux)
+void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary * pgnssAux, uint8_t sourceNodeId)
 {
+    const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
+    if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
+        return;
+    }
+    if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
+        return;
+    }
+    if (activeGpsNodeId == 0) {
+        // First over the fence: in a PnP system with >1 GNSS module and no explicit
+        // node association, the first healthy GNSS fix accepted wins. Not recommended
+        // for multi-GNSS setups — configure dronecan_gps_node_id instead.
+        activeGpsNodeId = sourceNodeId;
+    }
     // DroneCAN float16 optional fields encode NaN when unpopulated; guard before use.
     // gpsConstrainHDOP clamps to 9999 preventing uint16_t overflow for extreme DOP values.
     if (!isnan(pgnssAux->hdop)) {
         lastHDOP = gpsConstrainHDOP((uint32_t)(pgnssAux->hdop * 100));
     }
+}
+
+bool dronecanGpsIsHealthy(void)
+{
+    uint8_t nodeId = (dronecanConfig()->gpsNodeId != 0) ? dronecanConfig()->gpsNodeId : activeGpsNodeId;
+    if (nodeId == 0) {
+        return false;
+    }
+    const dronecanNodeInfo_t *node = dronecanGetNodeByID(nodeId);
+    if (node == NULL) {
+        return false;
+    }
+    return node->health < UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR;
 }
 #endif
