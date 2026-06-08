@@ -346,6 +346,25 @@ static void processCanardTxQueueSafe(void) {
     }
 }
 
+static void logNodeHealth(uint8_t nodeID, uint8_t health) {
+    switch (health) {
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK:
+        LOG_INFO(CAN, "Node %d health: OK", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_WARNING:
+        LOG_WARNING(CAN, "Node %d health: WARNING", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR:
+        LOG_ERROR(CAN, "Node %d health: ERROR", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL:
+        LOG_ERROR(CAN, "Node %d health: CRITICAL", nodeID);
+        break;
+    default:
+        break;
+    }
+}
+
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
 
