@@ -31,7 +31,7 @@ static CanardInstance canard;
 static uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
 
-PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 1);
 
 PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .nodeID = SETTING_DRONECAN_NODE_ID_DEFAULT,
