@@ -94,6 +94,8 @@ void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix
         // node association, the first healthy GNSS fix accepted wins. Not recommended
         // for multi-GNSS setups — configure dronecan_gps_node_id instead.
         activeGpsNodeId = sourceNodeId;
+    } else if (sourceNodeId != activeGpsNodeId) {
+        return;
     }
     gpsSolDRV.fixType   = gpsMapFixType(pgnssFix->status);
     gpsSolDRV.numSat    = pgnssFix->sats_used;
@@ -157,6 +159,8 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
         // node association, the first healthy GNSS fix accepted wins. Not recommended
         // for multi-GNSS setups — configure dronecan_gps_node_id instead.
         activeGpsNodeId = sourceNodeId;
+    } else if (sourceNodeId != activeGpsNodeId) {
+        return;
     }
     gpsSolDRV.fixType   = gpsMapFixType(pgnssFix2->status);
     gpsSolDRV.numSat    = pgnssFix2->sats_used;
@@ -219,11 +223,20 @@ void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliar
         // node association, the first healthy GNSS fix accepted wins. Not recommended
         // for multi-GNSS setups — configure dronecan_gps_node_id instead.
         activeGpsNodeId = sourceNodeId;
+    } else if (sourceNodeId != activeGpsNodeId) {
+        return;
     }
     // DroneCAN float16 optional fields encode NaN when unpopulated; guard before use.
     // gpsConstrainHDOP clamps to 9999 preventing uint16_t overflow for extreme DOP values.
     if (!isnan(pgnssAux->hdop)) {
         lastHDOP = gpsConstrainHDOP((uint32_t)(pgnssAux->hdop * 100));
+    }
+}
+
+void dronecanGpsNodeEvicted(uint8_t nodeID)
+{
+    if (activeGpsNodeId == nodeID) {
+        activeGpsNodeId = 0;
     }
 }
 

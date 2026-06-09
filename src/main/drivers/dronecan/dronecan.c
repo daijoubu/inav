@@ -53,8 +53,6 @@ static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 #endif
 
-static bool isNodeUnhealthy (uint8_t nodeId);
-
 static void logNodeHealth(uint8_t nodeID, uint8_t health) {
     switch (health) {
     case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK:
@@ -94,15 +92,15 @@ const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID) {
 
 void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
     UNUSED(ins);
-    
+
     struct uavcan_protocol_NodeStatus nodeStatus;
 
-	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
-		LOG_WARNING(CAN, "NodeStatus decode failed");
-		return;
-	}
+    if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
+        LOG_WARNING(CAN, "NodeStatus decode failed");
+        return;
+    }
 
-	uint8_t nodeID = transfer->source_node_id;
+    uint8_t nodeID = transfer->source_node_id;
     dronecanNodeInfo_t *node = findNodeByID(nodeID);
     if (node) {
         if (nodeStatus.health != node->health) {
@@ -178,21 +176,6 @@ void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
     dronecanGPSReceiveGNSSFix2(&gnssFix2, transfer->source_node_id);
 }
 
-void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) {
-        return;
-    }
-    if (isNodeUnhealthy(transfer->source_node_id)) {
-        return; // Don't accept data from nodes with ERROR or CRITICAL health states
-    }
-    struct uavcan_equipment_gnss_RTCMStream gnssRTCMStream;
-
-	if (uavcan_equipment_gnss_RTCMStream_decode(transfer, &gnssRTCMStream)) {
-		LOG_WARNING(CAN, "RTCMStream decode failed");
-		return;
-	}
-}
 
 void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
@@ -613,10 +596,7 @@ bool shouldAcceptTransfer(const CanardInstance *ins,
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
             return true;
         }
-        case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID: {
-            *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_SIGNATURE;
-            return true;
-        }
+
         case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID: {
             *out_data_type_signature = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_SIGNATURE;
             return true;
@@ -676,9 +656,6 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
                 handle_GNSSFix2(ins, transfer);
                 break;
 
-            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
-                handle_GNSSRCTMStream(ins, transfer);
-                break;
 
             case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
                 handle_BatteryInfo(ins, transfer);
@@ -720,6 +697,7 @@ void process1HzTasks(timeUs_t timestamp_usec)
     // Remove nodes that have stopped broadcasting NodeStatus
     for (uint8_t i = 0; i < activeNodeCount; ) {
         if (millis() - nodeTable[i].last_seen_ms > UAVCAN_PROTOCOL_NODESTATUS_OFFLINE_TIMEOUT_MS) {
+            dronecanGpsNodeEvicted(nodeTable[i].nodeID);
             nodeTable[i] = nodeTable[activeNodeCount - 1];
             activeNodeCount--;
         } else {
@@ -907,13 +885,5 @@ const dronecanNodeInfo_t *dronecanGetNode(uint8_t index) {
     return NULL;
 }
 
-static bool isNodeUnhealthy (uint8_t nodeId)
-{
-    const dronecanNodeInfo_t *node = dronecanGetNodeByID(nodeId);
-    if(node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
-        return true;
-    }
-    return false;
-}
 
 #endif
