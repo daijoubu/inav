@@ -54,6 +54,8 @@
 
 #include <dronecan_msgs.h>
 
+static void parseGnssTime(uint64_t usec, uint8_t time_standard, uint8_t num_leap_seconds);
+
 static bool newDataReady;
 static uint16_t lastHDOP = 9999;
 static uint8_t activeGpsNodeId = 0;
@@ -131,15 +133,9 @@ void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix
         gpsSolDRV.flags.validEPE = true;
     } 
 
-    // gpsSolDRV.time.year   = pkt->year;
-    // gpsSolDRV.time.month  = pkt->month;
-    // gpsSolDRV.time.day    = pkt->day;
-    // gpsSolDRV.time.hours  = pkt->hour;
-    // gpsSolDRV.time.minutes = pkt->min;
-    // gpsSolDRV.time.seconds = pkt->sec;
-    // gpsSolDRV.time.millis  = 0;
-
-    gpsSolDRV.flags.validTime = 0; //(pkt->fixType >= 3);
+    parseGnssTime(pgnssFix->gnss_timestamp.usec,
+                  pgnssFix->gnss_time_standard,
+                  pgnssFix->num_leap_seconds);
 
     gpsProcessNewDriverData();
     newDataReady = true;
@@ -192,15 +188,9 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
         gpsSolDRV.epv = gpsConstrainEPE((uint32_t)(sqrtf(var_z) * 100));          // cm
         gpsSolDRV.flags.validEPE = true;
     } 
-    // gpsSolDRV.time.year   = pkt->year;
-    // gpsSolDRV.time.month  = pkt->month;
-    // gpsSolDRV.time.day    = pkt->day;
-    // gpsSolDRV.time.hours  = pkt->hour;
-    // gpsSolDRV.time.minutes = pkt->min;
-    // gpsSolDRV.time.seconds = pkt->sec;
-    // gpsSolDRV.time.millis  = 0;
-
-    gpsSolDRV.flags.validTime = 0; //(pkt->fixType >= 3);
+    parseGnssTime(pgnssFix2->gnss_timestamp.usec,
+                  pgnssFix2->gnss_time_standard,
+                  pgnssFix2->num_leap_seconds);
 
     gpsProcessNewDriverData();
     newDataReady = true;
@@ -246,4 +236,50 @@ bool dronecanGpsIsHealthy(void)
     }
     return node->health < UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR;
 }
+
+static void parseGnssTime(uint64_t usec, uint8_t time_standard, uint8_t num_leap_seconds)
+  {
+      if (usec == UAVCAN_TIMESTAMP_UNKNOWN) {
+          gpsSolDRV.flags.validTime = false;
+          return;
+      }
+      time_t unix_s;
+      switch (time_standard) {
+      case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_UTC:
+          unix_s = (time_t)(usec / 1000000ULL);
+          break;
+      case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_GPS:
+          if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
+              gpsSolDRV.flags.validTime = false;
+              return;
+          }
+          unix_s = (time_t)(usec / 1000000ULL) + 315964800L - num_leap_seconds;
+          break;
+      case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_TAI:
+          if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
+              gpsSolDRV.flags.validTime = false;
+              return;
+          }
+          unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds;
+          break;
+      default:
+          gpsSolDRV.flags.validTime = false;
+          return;
+      }
+      struct tm *t = gmtime(&unix_s);
+      if (!t) {
+          gpsSolDRV.flags.validTime = false;
+          return;
+      }
+      gpsSolDRV.time.year    = (uint16_t)(t->tm_year + 1900);
+      gpsSolDRV.time.month   = (uint8_t)(t->tm_mon + 1);
+      gpsSolDRV.time.day     = (uint8_t)t->tm_mday;
+      gpsSolDRV.time.hours   = (uint8_t)t->tm_hour;
+      gpsSolDRV.time.minutes = (uint8_t)t->tm_min;
+      gpsSolDRV.time.seconds = (uint8_t)t->tm_sec;
+      gpsSolDRV.time.millis  = (uint16_t)((usec % 1000000ULL) / 1000ULL);
+      gpsSolDRV.flags.validTime = true;
+  }
+
+
 #endif
