@@ -788,9 +788,6 @@ static bool shouldAcceptTransfer(const CanardInstance *ins,
         case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
             return true;
-        case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
-            *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_SIGNATURE;
-            return true;
         case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_SIGNATURE;
             return true;
@@ -985,9 +982,6 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
                 handle_GNSSFix2(ins, transfer);
                 break;
 
-            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
-                handle_GNSSRCTMStream(ins, transfer);
-                break;
 
             case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
                 handle_BatteryInfo(ins, transfer);
