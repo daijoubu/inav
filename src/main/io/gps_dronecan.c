@@ -155,10 +155,7 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
         return;
     }
     if (activeGpsNodeId == 0) {
-        // First over the fence: in a PnP system with >1 GNSS module and no explicit
-        // node association, the first healthy GNSS fix accepted wins. Not recommended
-        // for multi-GNSS setups — configure dronecan_gps_node_id instead.
-        activeGpsNodeId = sourceNodeId;
+        activeGpsNodeId = sourceNodeId;  // first-over-fence; see dronecanGPSReceiveGNSSFix
     } else if (sourceNodeId != activeGpsNodeId) {
         return;
     }
@@ -219,10 +216,7 @@ void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliar
         return;
     }
     if (activeGpsNodeId == 0) {
-        // First over the fence: in a PnP system with >1 GNSS module and no explicit
-        // node association, the first healthy GNSS fix accepted wins. Not recommended
-        // for multi-GNSS setups — configure dronecan_gps_node_id instead.
-        activeGpsNodeId = sourceNodeId;
+        activeGpsNodeId = sourceNodeId;  // first-over-fence; see dronecanGPSReceiveGNSSFix
     } else if (sourceNodeId != activeGpsNodeId) {
         return;
     }
