@@ -50,6 +50,7 @@
 
 #include "io/gps.h"
 #include "io/gps_private.h"
+#include "io/gps_dronecan.h"
 #include "drivers/dronecan/dronecan.h"
 
 #include <dronecan_msgs.h>
@@ -82,65 +83,6 @@ static uint8_t gpsMapFixType(uint8_t dronecanFixType)
     return GPS_NO_FIX;
 }
 
-void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix * pgnssFix, uint8_t sourceNodeId)
-{
-    const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
-    if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
-        return;
-    }
-    if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
-        return;
-    }
-    if (activeGpsNodeId == 0) {
-        // First over the fence: in a PnP system with >1 GNSS module and no explicit
-        // node association, the first healthy GNSS fix accepted wins. Not recommended
-        // for multi-GNSS setups — configure dronecan_gps_node_id instead.
-        activeGpsNodeId = sourceNodeId;
-    } else if (sourceNodeId != activeGpsNodeId) {
-        return;
-    }
-    gpsSolDRV.fixType   = gpsMapFixType(pgnssFix->status);
-    gpsSolDRV.numSat    = pgnssFix->sats_used;
-    gpsSolDRV.llh.lon   = pgnssFix->longitude_deg_1e8 / 10; // convert to deg_1e7
-    gpsSolDRV.llh.lat   = pgnssFix->latitude_deg_1e8 / 10; // convert to deg_1e7
-    gpsSolDRV.llh.alt   = pgnssFix->height_msl_mm / 10; // convert to cm
-    gpsSolDRV.velNED[X] = pgnssFix->ned_velocity[0] * 100; // Dronecan is North, East, Down
-    gpsSolDRV.velNED[Y] = pgnssFix->ned_velocity[1] * 100;
-    gpsSolDRV.velNED[Z] = pgnssFix->ned_velocity[2] * 100;
-    gpsSolDRV.groundSpeed = calc_length_pythagorean_2D((float)pgnssFix->ned_velocity[0], (float)pgnssFix->ned_velocity[1]) * 100;
-    float groundCourse = atan2_approx(pgnssFix->ned_velocity[1], pgnssFix->ned_velocity[0]); // atan2 returns [-M_PI, M_PI], with 0 indicating the vector points in the X direction
-    if (groundCourse < 0) {
-        groundCourse += 2 * M_PIf;
-    }
-    gpsSolDRV.groundCourse = RADIANS_TO_DECIDEGREES(groundCourse);
-    // TODO where to get EPH gpsSolDRV.eph = gpsConstrainEPE(pgnssFix-> / 10);
-    // TODO where to get EPV gpsSolDRV.epv = gpsConstrainEPE(pkt->verticalPosAccuracy / 10);
-    if(pgnssFix->pdop > 0){
-        gpsSolDRV.hdop = gpsConstrainHDOP(pgnssFix->pdop * 100);  // Only update if populated
-    } else if((9999 > lastHDOP) && (lastHDOP> 0)) {
-        gpsSolDRV.hdop = lastHDOP;
-    }
-    gpsSolDRV.flags.validVelNE = true;
-    gpsSolDRV.flags.validVelD = true;
-    gpsSolDRV.flags.validEPE = false;  // assume invalid unless the covariance is filled in.
-    if (pgnssFix->position_covariance.len >= 6) {
-        float var_x = pgnssFix->position_covariance.data[0];  // meters²
-        float var_y = pgnssFix->position_covariance.data[2];  // meters²
-        float var_z = pgnssFix->position_covariance.data[5];  // meters²
-
-        gpsSolDRV.eph = gpsConstrainEPE((uint32_t)(sqrtf(var_x + var_y) * 100));  // cm
-        gpsSolDRV.epv = gpsConstrainEPE((uint32_t)(sqrtf(var_z) * 100));          // cm
-        gpsSolDRV.flags.validEPE = true;
-    } 
-
-    parseGnssTime(pgnssFix->gnss_timestamp.usec,
-                  pgnssFix->gnss_time_standard,
-                  pgnssFix->num_leap_seconds);
-
-    gpsProcessNewDriverData();
-    newDataReady = true;
-}
-
 void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2, uint8_t sourceNodeId)
 {
     const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
@@ -169,8 +111,7 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
         groundCourse += 2 * M_PIf;
     }
     gpsSolDRV.groundCourse = RADIANS_TO_DECIDEGREES(groundCourse);
-    // TODO where to get EPH gpsSolDRV.eph = gpsConstrainEPE(pgnssFix-> / 10);
-    // TODO where to get EPV gpsSolDRV.epv = gpsConstrainEPE(pkt->verticalPosAccuracy / 10);
+   
     if (pgnssFix2->pdop > 0){
         gpsSolDRV.hdop = gpsConstrainHDOP(pgnssFix2->pdop * 100); // Only update if valid.
     } else if((9999 > lastHDOP) && (lastHDOP > 0)) {
@@ -179,15 +120,14 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
     gpsSolDRV.flags.validVelNE = true;
     gpsSolDRV.flags.validVelD = true;
     gpsSolDRV.flags.validEPE = false;  // assume invalid unless the covariance is filled in.
-    if (pgnssFix2->covariance.len >= 6) {
-        float var_x = pgnssFix2->covariance.data[0];  // meters²
-        float var_y = pgnssFix2->covariance.data[2];  // meters²
-        float var_z = pgnssFix2->covariance.data[5];  // meters²
-
-        gpsSolDRV.eph = gpsConstrainEPE((uint32_t)(sqrtf(var_x + var_y) * 100));  // cm
-        gpsSolDRV.epv = gpsConstrainEPE((uint32_t)(sqrtf(var_z) * 100));          // cm
+    // Fix2 covariance layout is not specified by the DSDL. AP_Periph (the dominant peripheral
+    // firmware) packs: [0]=[1]=hacc², [2]=vacc², [3]=[4]=[5]=sacc²  (m² / (m/s)²).
+    // Verified against live data: [0]==[1] and [3]==[4]==[5] as expected from AP_Periph source.
+    if (pgnssFix2->covariance.len >= 3) {
+        gpsSolDRV.eph = gpsConstrainEPE((uint32_t)(sqrtf(pgnssFix2->covariance.data[0]) * 100));
+        gpsSolDRV.epv = gpsConstrainEPE((uint32_t)(sqrtf(pgnssFix2->covariance.data[2]) * 100));
         gpsSolDRV.flags.validEPE = true;
-    } 
+    }
     parseGnssTime(pgnssFix2->gnss_timestamp.usec,
                   pgnssFix2->gnss_time_standard,
                   pgnssFix2->num_leap_seconds);
@@ -253,14 +193,16 @@ static void parseGnssTime(uint64_t usec, uint8_t time_standard, uint8_t num_leap
               gpsSolDRV.flags.validTime = false;
               return;
           }
-          unix_s = (time_t)(usec / 1000000ULL) + 315964800L - num_leap_seconds;
+          // DSDL: GPS epoch is µs since GPS time at UTC 1970-01-01; UTC = GPS - leap_seconds + 9
+          unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds + 9;
           break;
       case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_TAI:
           if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
               gpsSolDRV.flags.validTime = false;
               return;
           }
-          unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds;
+          // DSDL: TAI epoch is µs since TAI time at UTC 1970-01-01; UTC = TAI - leap_seconds - 10
+          unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds - 10;
           break;
       default:
           gpsSolDRV.flags.validTime = false;

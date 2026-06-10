@@ -56,6 +56,7 @@
 #include "io/gps.h"
 #include "io/gps_private.h"
 #include "io/gps_ublox.h"
+#include "io/gps_dronecan.h"
 
 #include "navigation/navigation.h"
 #include "navigation/navigation_private.h"
