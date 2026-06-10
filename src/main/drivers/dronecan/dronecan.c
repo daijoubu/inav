@@ -11,6 +11,7 @@
 #if defined(USE_DRONECAN)
 
 #include "io/gps.h"
+#include "io/gps_dronecan.h"
 #include "sensors/battery_sensor_dronecan.h"
 
 #include "config/parameter_group.h"
@@ -144,21 +145,6 @@ void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
 		return;
 	}
     dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary, transfer->source_node_id);
-}
-
-void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) {
-        return;
-    }
-
-    struct uavcan_equipment_gnss_Fix gnssFix;
-
-	if (uavcan_equipment_gnss_Fix_decode(transfer, &gnssFix)) {
-		LOG_WARNING(CAN, "GNSSFix decode failed");
-		return;
-	}
-    dronecanGPSReceiveGNSSFix(&gnssFix, transfer->source_node_id);
 }
 
 void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
@@ -649,7 +635,12 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
                 break;
 
             case UAVCAN_EQUIPMENT_GNSS_FIX_ID:
-                handle_GNSSFix(ins, transfer);
+                static bool warned = false;
+                if (!warned) {
+                    LOG_WARNING(CAN, "Node %d: Fix (deprecated) ignored, node must send Fix2",
+                                transfer->source_node_id);
+                    warned = true;
+                }
                 break;
 
             case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
