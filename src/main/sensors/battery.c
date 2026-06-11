@@ -326,7 +326,7 @@ static void updateBatteryVoltage(timeUs_t timeDelta, bool justConnected)
 
 #if defined(USE_DRONECAN)
     case VOLTAGE_SENSOR_CAN:
-        vbat = dronecanBattSensorGetVBat();
+        vbat = dronecanBattSensorGetVBat();  // Display last known value if sensor communications is lost
         break;
 #endif
 
@@ -663,7 +663,7 @@ void currentMeterUpdate(timeUs_t timeDelta)
 #endif
 #if defined(USE_DRONECAN)
         case CURRENT_SENSOR_CAN:
-            amperage = dronecanBattSensorGetAmperage();
+            amperage = dronecanBattSensorGetAmperage();  // Display last known value if sensor is lost
             break;
 #endif
 #if defined(USE_FAKE_BATT_SENSOR)

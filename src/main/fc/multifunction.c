@@ -44,6 +44,10 @@
 #include "sensors/diagnostics.h"
 #include "sensors/pitotmeter.h"
 #include "sensors/sensors.h"
+#if defined(USE_DRONECAN)
+#include "sensors/battery_sensor_dronecan.h"
+#endif
+
 
 textAttributes_t osdGetMultiFunctionMessage(char *buff);
 multiFunctionWarning_t multiFunctionWarning;
@@ -320,6 +324,16 @@ textAttributes_t osdGetMultiFunctionMessage(char *buff)
         }
     }
 #endif
+
+#if defined(USE_DRONECAN)
+    // DroneCAN battery sensor timeout
+    if (batteryMetersConfig()->voltage.type == VOLTAGE_SENSOR_CAN || batteryMetersConfig()->current.type == CURRENT_SENSOR_CAN) {
+        if (osdCheckWarning(!dronecanBattSensorIsHealthy(), warningFlagID <<= 1)) {
+            messages[messageCount++] = "BATT SENSR";
+        }
+    }
+#endif
+
 
     // Vibration levels   TODO - needs better vibration measurement to be useful
     // const float vibrationLevel = accGetVibrationLevel();

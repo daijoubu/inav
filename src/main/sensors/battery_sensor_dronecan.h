@@ -27,6 +27,7 @@
 #include <dronecan_msgs.h>
 
 uint16_t dronecanBattSensorGetVBat(void);
-uint16_t dronecanBattSensorGetAmperage(void);
-void dronecanBatterySensorReceiveInfo(struct uavcan_equipment_power_BatteryInfo *pbatteryInfo);
+int16_t dronecanBattSensorGetAmperage(void);
+void dronecanBatterySensorReceiveInfo(struct uavcan_equipment_power_BatteryInfo *pbatteryInfo, uint8_t sourceNodeId);
+bool dronecanBattSensorIsHealthy(void);
 

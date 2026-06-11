@@ -172,12 +172,7 @@ void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 		return;
 	}
 
-    // Filter by battery_id if configured (0 = any battery)
-    if (dronecanConfig()->batteryId != 0 && batteryInfo.battery_id != dronecanConfig()->batteryId) {
-        return;  // Ignore messages from other battery slots
-    }
-
-    dronecanBatterySensorReceiveInfo(&batteryInfo);
+    dronecanBatterySensorReceiveInfo(&batteryInfo, transfer->source_node_id);
 }
 
 /*
