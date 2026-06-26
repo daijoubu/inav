@@ -702,38 +702,5 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
 	}
 }
 
-	// Transmitting
-	for (const CanardCANFrame *tx_frame ; (tx_frame = canardPeekTxQueue(&canard)) != NULL;)
-    {
-        const int16_t tx_res = canardSTM32Transmit(tx_frame);
-
-		if (tx_res < 0) {
-			LOG_DEBUG(CAN, "Transmit error %d", tx_res);
-			canardPopTxQueue(&canard);  // Error - discard frame
-		} else if (tx_res > 0) {
-			canardPopTxQueue(&canard);  // Success - remove from queue
-		} else {
-			// tx_res == 0: TX FIFO full, retry later
-			break;
-		}
-	}
-
-}
-
-/*
-  This function is called at 1 Hz rate from the main loop.
-*/
-void process1HzTasks(timeUs_t timestamp_usec)
-{
-   /*
-      Purge transfers that are no longer transmitted. This can free up some memory
-    */
-    canardCleanupStaleTransfers(&canard, timestamp_usec);
-
-    /*
-      Transmit the node status message
-    */
-    send_NodeStatus();
-}
 
 #endif
