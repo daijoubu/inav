@@ -82,7 +82,8 @@ void dronecanBatterySensorReceiveInfo(struct uavcan_equipment_power_BatteryInfo 
 
 /* STM32 CAN driver stubs */
 int16_t canardSTM32CAN1_Init(uint32_t b) { (void)b; return CANARD_OK; }
-int16_t canardSTM32Recieve(CanardCANFrame *f) { (void)f; return 0; }
+int16_t canardSTM32Receive(CanardCANFrame *f) { (void)f; return 0; }
+uint32_t canardSTM32GetAndClearRxDropCount(void) { return 0; }
 int16_t canardSTM32Transmit(const CanardCANFrame *f) { (void)f; return 1; }
 void    canardSTM32GetProtocolStatus(canardProtocolStatus_t *s) { memset(s, 0, sizeof(*s)); }
 int32_t canardSTM32GetRxFifoFillLevel(void) { return 0; }
