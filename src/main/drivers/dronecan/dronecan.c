@@ -28,7 +28,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-static CanardInstance canard;
+CanardInstance canard;
 static uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
 
@@ -630,28 +630,6 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
             break;
         }
 
-        case DRONECAN_SERVICE_EXECUTE_OPCODE: {
-            struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
-            if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
-                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
-                return;
-            }
-            dronecanAsyncSlot.result.simple.ok = resp.ok;
-            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
-            break;
-        }
-
-        case DRONECAN_SERVICE_RESTART_NODE: {
-            struct uavcan_protocol_RestartNodeResponse resp;
-            if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
-                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
-                return;
-            }
-            dronecanAsyncSlot.result.simple.ok = resp.ok;
-            dronecanAsyncSlot.state = DRONECAN_ASYNC_READY;
-            break;
-        }
-
         default:
             break;
     }
@@ -815,6 +793,9 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
 	uint8_t nodeId = transfer->source_node_id;
     dronecanNodeInfo_t *node = findNodeByID(nodeId);
     if (node) {
+        if (node->health != nodeStatus.health) {
+            logNodeHealth(nodeId, nodeStatus.health);
+        }
         node->health = nodeStatus.health;
         node->mode = nodeStatus.mode;
         node->uptime_sec = nodeStatus.uptime_sec;
@@ -831,6 +812,7 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].uptime_sec = nodeStatus.uptime_sec;
         nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
         nodeTable[activeNodeCount].last_seen_ms = millis();
+        logNodeHealth(nodeId, nodeStatus.health);
         activeNodeCount++;
 
     } else {
@@ -847,20 +829,9 @@ static void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer
 		LOG_DEBUG(CAN, "GNSSAuxiliary decode failed");
 		return;
 	}
-    dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary);
+    dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary, transfer->source_node_id);
 }
 
-static void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-    struct uavcan_equipment_gnss_Fix gnssFix;
-
-	if (uavcan_equipment_gnss_Fix_decode(transfer, &gnssFix)) {
-		LOG_DEBUG(CAN, "GNSSFix decode failed");
-		return;
-	}
-    dronecanGPSReceiveGNSSFix(&gnssFix);
-}
 
 static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
@@ -871,14 +842,9 @@ static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 		LOG_DEBUG(CAN, "GNSSFix2 decode failed");
 		return;
 	}
-    dronecanGPSReceiveGNSSFix2(&gnssFix2);
+    dronecanGPSReceiveGNSSFix2(&gnssFix2, transfer->source_node_id);
 }
 
-static void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-	UNUSED(transfer);
-    /* RTCM forwarding not yet implemented. Accepted in shouldAcceptTransfer for future use. */
-}
 
 static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
