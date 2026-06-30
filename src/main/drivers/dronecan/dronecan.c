@@ -955,7 +955,9 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
 
             case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
                 if (dronecanConfig()->dronecanUseDNAServer) {
-                    dronecanDnaHandleAllocation(ins, transfer);
+                    ATOMIC_BLOCK(NVIC_PRIO_CAN) {
+                        dronecanDnaHandleAllocation(ins, transfer);
+                    }
                 }
                 break;
 
