@@ -444,9 +444,11 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
     }
 
     // buf_ptr remains NULL only for GETNODEINFO (zero-length request); libcanard accepts NULL with len=0
+    dronecanMaskTxISR();
     int16_t res = canardRequestOrRespond(&canard, node_id, signature, service_id,
         &dronecanAsyncSlot.transfer_id, CANARD_TRANSFER_PRIORITY_MEDIUM, CanardRequest,
         buf_ptr, len);
+    dronecanUnmaskTxISR();
 
     if (res < 0) {
         LOG_DEBUG(CAN, "dronecanAsyncRequest: service %u node %u failed: %d", service_id, node_id, res);
