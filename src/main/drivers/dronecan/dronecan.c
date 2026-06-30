@@ -548,9 +548,11 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
     }
 
     // buf_ptr remains NULL only for GETNODEINFO (zero-length request); libcanard accepts NULL with len=0
+    dronecanMaskTxISR();
     int16_t res = canardRequestOrRespond(&canard, node_id, signature, service_id,
         &dronecanAsyncSlot.transfer_id, CANARD_TRANSFER_PRIORITY_MEDIUM, CanardRequest,
         buf_ptr, len);
+    dronecanUnmaskTxISR();
 
     if (res < 0) {
         LOG_WARNING(CAN, "dronecanAsyncRequest: service %u node %u failed: %d", service_id, node_id, res);
@@ -740,6 +742,7 @@ void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 
 	uint16_t total_size = uavcan_protocol_GetNodeInfoResponse_encode(&pkt, buffer);
 
+	dronecanMaskTxISR();
 	canardRequestOrRespond(ins,
 						   transfer->source_node_id,
 						   UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE,
@@ -749,6 +752,7 @@ void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 						   CanardResponse,
 						   &buffer[0],
 						   total_size);
+	dronecanUnmaskTxISR();
 }
 
 // Canard Senders
@@ -781,6 +785,7 @@ void send_NodeStatus(void) {
     // loss
     static uint8_t transfer_id;
 
+    dronecanMaskTxISR();
     canardBroadcast(&canard,
                     UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE,
                     UAVCAN_PROTOCOL_NODESTATUS_ID,
@@ -922,7 +927,9 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
 
             case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
                 if (dronecanConfig()->dronecanUseDNAServer) {
+                    dronecanMaskTxISR();
                     dronecanDnaHandleAllocation(ins, transfer);
+                    dronecanUnmaskTxISR();
                 }
                 break;
 
