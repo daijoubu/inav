@@ -53,6 +53,9 @@ static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
 #endif
 
+// Mask/unmask the CAN TX ISR while the main loop enqueues frames into libcanard's TX queue.
+// The TX ISR calls processCanardTxQueue() which pops from the same queue — without masking,
+// a pop can race with a concurrent push and corrupt the queue.
 #if defined(STM32H7)
 static inline void dronecanMaskTxISR(void)   { NVIC_DisableIRQ(FDCAN1_IT0_IRQn); }
 static inline void dronecanUnmaskTxISR(void) { NVIC_EnableIRQ(FDCAN1_IT0_IRQn); }
