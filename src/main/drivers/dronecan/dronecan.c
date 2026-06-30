@@ -46,9 +46,11 @@ dronecanAsyncSlot_t dronecanAsyncSlot = { .state = DRONECAN_ASYNC_IDLE };
 #ifdef UNIT_TEST
 uint8_t activeNodeCount = 0;
 dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
+static uint32_t busOffCount = 0;
 #else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
+static uint32_t busOffCount = 0;
 #endif
 
 #if defined(STM32H7)
