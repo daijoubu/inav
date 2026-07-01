@@ -4781,6 +4781,8 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                         break;
                 }
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_IDLE;
+            } else if (dronecanAsyncSlot.state == DRONECAN_ASYNC_ERROR) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_IDLE;
             }
             *ret = MSP_RESULT_ACK;
         }

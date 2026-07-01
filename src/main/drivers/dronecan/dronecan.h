@@ -48,8 +48,9 @@ typedef enum {
 #define DRONECAN_SERVICE_EXECUTE_OPCODE  10
 #define DRONECAN_SERVICE_PARAM_GETSET    11
 
-#define DRONECAN_ASYNC_TIMEOUT_MS  2000
-#define DRONECAN_STATE_NOT_READY   0xFF  // MSP sentinel: bus not in STATE_NORMAL; outside dronecanAsyncState_e range
+#define DRONECAN_ASYNC_TIMEOUT_MS      2000
+#define DRONECAN_NODE_STALE_TIMEOUT_MS 10000  // Remove node from table if no NodeStatus received for this long
+#define DRONECAN_STATE_NOT_READY       0xFF   // MSP sentinel: bus not in STATE_NORMAL; outside dronecanAsyncState_e range
 
 #define DRONECAN_PARAM_TYPE_EMPTY   0
 #define DRONECAN_PARAM_TYPE_INT     1
@@ -90,7 +91,7 @@ typedef struct dronecanParamResult_s {
     uint8_t value_str_len;
     char    value_str[128];
     uint8_t name_len;
-    char    name[93];
+    char    name[93]; // 92 bytes max per UAVCAN param.GetSet DSDL + null terminator
     // NumericValue range from the GetSet response; DRONECAN_PARAM_TYPE_EMPTY means not provided.
     // Only INT and FLOAT variants are valid — BOOL and STRING have no numeric range.
     uint8_t min_type;
