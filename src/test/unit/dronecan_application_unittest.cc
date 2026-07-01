@@ -26,6 +26,9 @@ extern "C" {
 /* DSDL types used by dronecan.c handlers */
 #include "uavcan.protocol.NodeStatus.h"
 #include "uavcan.protocol.GetNodeInfo.h"
+#include "uavcan.protocol.param.GetSet_res.h"
+#include "uavcan.protocol.param.ExecuteOpcode_res.h"
+#include "uavcan.protocol.RestartNode_res.h"
 
 /* Canard core and STM32 driver declarations */
 #include "drivers/dronecan/libcanard/canard.h"
@@ -134,6 +137,65 @@ static CanardRxTransfer makeNodeStatusTransfer(
     xfer.transfer_type  = CanardTransferTypeBroadcast;
     xfer.data_type_id   = UAVCAN_PROTOCOL_NODESTATUS_ID;
     xfer.source_node_id = nodeId;
+    xfer.payload_head   = buf;
+    xfer.payload_len    = (uint16_t)len;
+    return xfer;
+}
+
+/* =========================================================================
+ * Helpers: encode response structs and build CanardRxTransfer objects.
+ * ========================================================================= */
+
+static CanardRxTransfer makeParamGetSetTransfer(
+        uint8_t source_node_id, uint8_t transfer_id,
+        struct uavcan_protocol_param_GetSetResponse *resp,
+        uint8_t *buf)
+{
+    uint32_t len = uavcan_protocol_param_GetSetResponse_encode(resp, buf);
+    CanardRxTransfer xfer;
+    memset(&xfer, 0, sizeof(xfer));
+    xfer.transfer_type  = CanardTransferTypeResponse;
+    xfer.data_type_id   = UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID;
+    xfer.source_node_id = source_node_id;
+    xfer.transfer_id    = transfer_id;
+    xfer.payload_head   = buf;
+    xfer.payload_len    = (uint16_t)len;
+    return xfer;
+}
+
+static CanardRxTransfer makeExecuteOpcodeTransfer(
+        uint8_t source_node_id, uint8_t transfer_id,
+        bool ok, uint8_t *buf)
+{
+    struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.ok = ok;
+    uint32_t len = uavcan_protocol_param_ExecuteOpcodeResponse_encode(&resp, buf);
+    CanardRxTransfer xfer;
+    memset(&xfer, 0, sizeof(xfer));
+    xfer.transfer_type  = CanardTransferTypeResponse;
+    xfer.data_type_id   = UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_RESPONSE_ID;
+    xfer.source_node_id = source_node_id;
+    xfer.transfer_id    = transfer_id;
+    xfer.payload_head   = buf;
+    xfer.payload_len    = (uint16_t)len;
+    return xfer;
+}
+
+static CanardRxTransfer makeRestartNodeTransfer(
+        uint8_t source_node_id, uint8_t transfer_id,
+        bool ok, uint8_t *buf)
+{
+    struct uavcan_protocol_RestartNodeResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.ok = ok;
+    uint32_t len = uavcan_protocol_RestartNodeResponse_encode(&resp, buf);
+    CanardRxTransfer xfer;
+    memset(&xfer, 0, sizeof(xfer));
+    xfer.transfer_type  = CanardTransferTypeResponse;
+    xfer.data_type_id   = UAVCAN_PROTOCOL_RESTARTNODE_RESPONSE_ID;
+    xfer.source_node_id = source_node_id;
+    xfer.transfer_id    = transfer_id;
     xfer.payload_head   = buf;
     xfer.payload_len    = (uint16_t)len;
     return xfer;
@@ -458,4 +520,294 @@ TEST_F(DroneCANDispatchTest, GetNodeInfoResponsePopulatesAsyncSlot)
     const dronecanNodeInfo_t *node = dronecanGetNode(0);
     ASSERT_NE(node, nullptr);
     EXPECT_EQ(node->nodeID, 42u);
+}
+
+/* =========================================================================
+ * Async service response guard rejection tests (GAP-S3)
+ *
+ * handle_AsyncServiceResponse has four guards before decoding the payload.
+ * Each test confirms a mismatched guard leaves the slot state unchanged.
+ * ========================================================================= */
+
+/* GAP-S3a: Slot in IDLE state → response silently ignored */
+TEST_F(DroneCANDispatchTest, AsyncSlot_IdleState_IgnoresParamGetSetResponse)
+{
+    /* slot stays IDLE (SetUp default); send a valid PARAM_GETSET response */
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+    resp.value.integer_value = 7;
+
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_IDLE);
+}
+
+/* GAP-S3b: Slot PENDING but response comes from the wrong node ID */
+TEST_F(DroneCANDispatchTest, AsyncSlot_WrongNodeId_IgnoresResponse)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1; /* guard expects in-flight id (1-1)&0x1F = 0 */
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+
+    /* source_node_id = 99, not 42 */
+    CanardRxTransfer xfer = makeParamGetSetTransfer(99, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_PENDING);
+}
+
+/* GAP-S3c: Slot PENDING but transfer_id does not match the in-flight id */
+TEST_F(DroneCANDispatchTest, AsyncSlot_WrongTransferId_IgnoresResponse)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1; /* guard expects xfer.transfer_id == 0 */
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+
+    /* xfer.transfer_id = 5, which != (1-1)&0x1F = 0 */
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 5, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_PENDING);
+}
+
+/* GAP-S3d: Slot PENDING for GETNODEINFO; a PARAM_GETSET response arrives →
+ * data_type_id mismatch rejects it before any decode. */
+TEST_F(DroneCANDispatchTest, AsyncSlot_WrongServiceId_IgnoresResponse)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_GETNODEINFO;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+
+    /* xfer.data_type_id == PARAM_GETSET(11) != slot.service_id(GETNODEINFO=1) */
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_PENDING);
+}
+
+/* =========================================================================
+ * PARAM_GETSET response decode tests (GAP-S4)
+ * ========================================================================= */
+
+/* GAP-S4a: Integer value with integer min/max range */
+TEST_F(DroneCANDispatchTest, ParamGetSetIntResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag    = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+    resp.value.integer_value = 42;
+    resp.min_value.union_tag   = UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_INTEGER_VALUE;
+    resp.min_value.integer_value = 0;
+    resp.max_value.union_tag   = UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_INTEGER_VALUE;
+    resp.max_value.integer_value = 100;
+    const char *name = "MOT_SPIN_MIN";
+    resp.name.len = (uint8_t)strlen(name);
+    memcpy(resp.name.data, name, resp.name.len);
+
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    const dronecanParamResult_t *r = &dronecanAsyncSlot.result.param;
+    EXPECT_EQ(r->type,       (uint8_t)DRONECAN_PARAM_TYPE_INT);
+    EXPECT_EQ(r->value_int,  42);
+    EXPECT_EQ(r->name_len,   (uint8_t)strlen(name));
+    EXPECT_EQ(0, memcmp(r->name, name, r->name_len));
+    EXPECT_EQ(r->min_type,   (uint8_t)DRONECAN_PARAM_TYPE_INT);
+    EXPECT_EQ(r->min_int,    0);
+    EXPECT_EQ(r->max_type,   (uint8_t)DRONECAN_PARAM_TYPE_INT);
+    EXPECT_EQ(r->max_int,    100);
+}
+
+/* GAP-S4b: Float value with float min/max range */
+TEST_F(DroneCANDispatchTest, ParamGetSetFloatResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag   = UAVCAN_PROTOCOL_PARAM_VALUE_REAL_VALUE;
+    resp.value.real_value  = 3.14f;
+    resp.min_value.union_tag  = UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_REAL_VALUE;
+    resp.min_value.real_value = 0.0f;
+    resp.max_value.union_tag  = UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_REAL_VALUE;
+    resp.max_value.real_value = 10.0f;
+
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    const dronecanParamResult_t *r = &dronecanAsyncSlot.result.param;
+    EXPECT_EQ(r->type,       (uint8_t)DRONECAN_PARAM_TYPE_FLOAT);
+    EXPECT_FLOAT_EQ(r->value_float, 3.14f);
+    EXPECT_EQ(r->min_type,   (uint8_t)DRONECAN_PARAM_TYPE_FLOAT);
+    EXPECT_FLOAT_EQ(r->min_float, 0.0f);
+    EXPECT_EQ(r->max_type,   (uint8_t)DRONECAN_PARAM_TYPE_FLOAT);
+    EXPECT_FLOAT_EQ(r->max_float, 10.0f);
+}
+
+/* GAP-S4c: Boolean value (no numeric range) */
+TEST_F(DroneCANDispatchTest, ParamGetSetBoolResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag    = UAVCAN_PROTOCOL_PARAM_VALUE_BOOLEAN_VALUE;
+    resp.value.boolean_value = 1;
+    /* min/max remain EMPTY (memset to 0 = UAVCAN_PROTOCOL_PARAM_NUMERICVALUE_EMPTY) */
+
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    const dronecanParamResult_t *r = &dronecanAsyncSlot.result.param;
+    EXPECT_EQ(r->type,       (uint8_t)DRONECAN_PARAM_TYPE_BOOL);
+    EXPECT_EQ(r->value_bool, 1u);
+    EXPECT_EQ(r->min_type,   (uint8_t)DRONECAN_PARAM_TYPE_EMPTY);
+    EXPECT_EQ(r->max_type,   (uint8_t)DRONECAN_PARAM_TYPE_EMPTY);
+}
+
+/* GAP-S4d: String value */
+TEST_F(DroneCANDispatchTest, ParamGetSetStringResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    resp.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_STRING_VALUE;
+    const char *str = "hello";
+    resp.value.string_value.len = (uint8_t)strlen(str);
+    memcpy(resp.value.string_value.data, str, resp.value.string_value.len);
+
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    const dronecanParamResult_t *r = &dronecanAsyncSlot.result.param;
+    EXPECT_EQ(r->type,          (uint8_t)DRONECAN_PARAM_TYPE_STRING);
+    EXPECT_EQ(r->value_str_len, (uint8_t)strlen(str));
+    EXPECT_EQ(0, memcmp(r->value_str, str, r->value_str_len));
+}
+
+/* GAP-S4e: Empty value (unknown union_tag) → type forced to DRONECAN_PARAM_TYPE_EMPTY */
+TEST_F(DroneCANDispatchTest, ParamGetSetEmptyResponse_SetsEmptyType)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_PARAM_GETSET;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    struct uavcan_protocol_param_GetSetResponse resp;
+    memset(&resp, 0, sizeof(resp));
+    /* union_tag == 0 == UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY */
+    resp.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY;
+
+    CanardRxTransfer xfer = makeParamGetSetTransfer(42, 0, &resp, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    EXPECT_EQ(dronecanAsyncSlot.result.param.type, (uint8_t)DRONECAN_PARAM_TYPE_EMPTY);
+}
+
+/* =========================================================================
+ * EXECUTE_OPCODE response decode tests (GAP-S5)
+ * ========================================================================= */
+
+/* GAP-S5a: ok=true */
+TEST_F(DroneCANDispatchTest, ExecuteOpcodeOkResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_EXECUTE_OPCODE;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    CanardRxTransfer xfer = makeExecuteOpcodeTransfer(42, 0, true, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    EXPECT_TRUE(dronecanAsyncSlot.result.simple.ok);
+}
+
+/* GAP-S5b: ok=false */
+TEST_F(DroneCANDispatchTest, ExecuteOpcodeFailResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_EXECUTE_OPCODE;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    CanardRxTransfer xfer = makeExecuteOpcodeTransfer(42, 0, false, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    EXPECT_FALSE(dronecanAsyncSlot.result.simple.ok);
+}
+
+/* =========================================================================
+ * RESTART_NODE response decode test (GAP-S6)
+ * ========================================================================= */
+
+/* GAP-S6: ok=true */
+TEST_F(DroneCANDispatchTest, RestartNodeOkResponse_PopulatesSlot)
+{
+    dronecanAsyncSlot.state      = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id = DRONECAN_SERVICE_RESTART_NODE;
+    dronecanAsyncSlot.node_id    = 42;
+    dronecanAsyncSlot.transfer_id = 1;
+
+    CanardRxTransfer xfer = makeRestartNodeTransfer(42, 0, true, buf);
+    onTransferReceived(&ins, &xfer);
+
+    ASSERT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+    EXPECT_TRUE(dronecanAsyncSlot.result.simple.ok);
+}
+
+/* =========================================================================
+ * dronecanAsyncRequest re-entry guard test (GAP-S7)
+ * ========================================================================= */
+
+/* GAP-S7: A second async request is rejected while one is already in flight.
+ * Slot PENDING with requested_at_ms=0 and mock_time_ms=0 satisfies the
+ * timeout guard (0 < DRONECAN_ASYNC_TIMEOUT_MS), so the function returns false
+ * without touching the internal CAN driver. */
+TEST_F(DroneCANDispatchTest, AsyncRequest_RejectedWhilePending)
+{
+    dronecanAsyncSlot.state           = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.requested_at_ms = 0;
+    mock_time_ms = 0;
+
+    EXPECT_FALSE(dronecanAsyncRequest(DRONECAN_SERVICE_PARAM_GETSET, 42, nullptr));
+    EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_PENDING);
 }
