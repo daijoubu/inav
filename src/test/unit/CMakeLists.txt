@@ -71,6 +71,7 @@ set_property(SOURCE dronecan_getnodeinfo_unittest.cc PROPERTY definitions USE_DR
 # UNIT_TEST exposes activeNodeCount and nodeTable as non-static for SetUp reset.
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY depends
     "drivers/dronecan/dronecan.c"
+    "drivers/dronecan/dronecan_dna_server.c"
     "drivers/dronecan/libcanard/canard.c")
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY extra_sources
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.NodeStatus.c"
@@ -93,7 +94,8 @@ set_property(SOURCE dronecan_application_unittest.cc PROPERTY extra_sources
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_res.c"
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Value.c"
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.NumericValue.c"
-    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Empty.c")
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Empty.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c")
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY extra_includes
     "../../lib/main/Dronecan/dsdlc_generated/include")
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY definitions
