@@ -9889,10 +9889,10 @@
                         "units": ""                                                         
                     },
                     {
-                        "name": "last_seen_ms",
+                        "name": "elapsed_ms",
                         "ctype": "uint32_t",
                         "desc": "Milliseconds elapsed since this node was last seen (millis() - last_seen_ms at time of request)",
-                        "units": "ms"                                                                             
+                        "units": "ms"
                     },                                                                      
                     {
                         "name": "name_len",

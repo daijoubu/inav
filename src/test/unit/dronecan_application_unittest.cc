@@ -179,8 +179,8 @@ TEST_F(DroneCANNodeTableTest, NewNodeAddedOnFirstStatus)
 TEST_F(DroneCANNodeTableTest, TwoDistinctNodesStoredSeparately)
 {
     CanardRxTransfer x1 = makeNodeStatusTransfer(10, 100, 0, 0, 0, buf);
-    CanardRxTransfer x2 = makeNodeStatusTransfer(20, 200, 0, 0, 0, buf);
     handle_NodeStatus(&ins, &x1);
+    CanardRxTransfer x2 = makeNodeStatusTransfer(20, 200, 0, 0, 0, buf);
     handle_NodeStatus(&ins, &x2);
 
     EXPECT_EQ(dronecanGetNodeCount(), 2u);
