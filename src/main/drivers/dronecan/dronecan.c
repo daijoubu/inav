@@ -156,9 +156,9 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 
             // Check for and expire any pending async requests that have timed out.
             if (dronecanAsyncSlot.state == DRONECAN_ASYNC_PENDING &&
-                millis() - dronecanAsyncSlot.requested_at_ms > 2000) {
-                    dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
-                }
+                millis() - dronecanAsyncSlot.requested_at_ms >= DRONECAN_ASYNC_TIMEOUT_MS) {
+                dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
+            }
 
              for (numMessagesToProcess = canardSTM32GetRxFifoFillLevel(); numMessagesToProcess > 0; numMessagesToProcess--)
              {
@@ -666,7 +666,7 @@ static void process1HzTasks(timeUs_t timestamp_usec)
 
     // Remove nodes that have stopped broadcasting NodeStatus
     for (uint8_t i = 0; i < activeNodeCount; ) {
-        if (millis() - nodeTable[i].last_seen_ms > 10000) {
+        if (millis() - nodeTable[i].last_seen_ms > DRONECAN_NODE_STALE_TIMEOUT_MS) {
             nodeTable[i] = nodeTable[activeNodeCount - 1];
             activeNodeCount--;
         } else {
@@ -715,22 +715,22 @@ static bool shouldAcceptTransfer(const CanardInstance *ins,
         case UAVCAN_PROTOCOL_GETNODEINFO_ID: {
             *out_data_type_signature = UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_SIGNATURE;
             return true;
-            }
+        }
 
         case UAVCAN_PROTOCOL_PARAM_GETSET_ID: {
             *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
             return true;
-            }
+        }
 
         case UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_ID: {
             *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_SIGNATURE;
             return true;
-            }
+        }
 
         case UAVCAN_PROTOCOL_RESTARTNODE_ID: {
             *out_data_type_signature = UAVCAN_PROTOCOL_RESTARTNODE_SIGNATURE;
             return true;
-            }
+        }
 		}
 	}
 	if (transfer_type == CanardTransferTypeBroadcast) {
