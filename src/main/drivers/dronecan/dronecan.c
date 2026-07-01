@@ -368,6 +368,11 @@ static void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *tr
         return;
     }
 
+    if (transfer->transfer_id != ((node->getNodeInfo_transfer_id - 1) & 0x1F)) {
+        LOG_DEBUG(CAN, "GetNodeInfoResponse from node %u: stale tid %u", nodeID, transfer->transfer_id);
+        return;
+    }
+
     uint8_t len = resp.name.len < sizeof(node->name) ? resp.name.len : sizeof(node->name);
     node->name_len = len;
     memcpy(node->name, resp.name.data, len);
@@ -380,9 +385,9 @@ static void handle_GetNodeInfoResponse(CanardInstance *ins, CanardRxTransfer *tr
 
     node->hw_major = resp.hardware_version.major;
     node->hw_minor = resp.hardware_version.minor;
-    memcpy(node->hw_unique_id, resp.hardware_version.unique_id, 16);
+    memcpy(node->hw_unique_id, resp.hardware_version.unique_id, sizeof(node->hw_unique_id));
 }
-// Canard Senders
+// Canard Handlers and Senders
 
 
 /*
@@ -726,6 +731,5 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
         }
 	}
 }
-
 
 #endif
