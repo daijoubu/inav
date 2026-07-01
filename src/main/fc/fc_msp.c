@@ -4619,9 +4619,10 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                     switch (req.value_type) {
                         case DRONECAN_PARAM_TYPE_INT:
                             if (sbufBytesRemaining(src) >= 8) {
-                                uint32_t lo = sbufReadU32(src);
-                                uint32_t hi = sbufReadU32(src);
-                                req.value_int = (int64_t)lo | ((int64_t)hi << 32);
+                                uint64_t tmp;
+                                sbufReadData(src, &tmp, sizeof(tmp));
+                                sbufAdvance(src, sizeof(tmp));
+                                req.value_int = (int64_t)tmp;
                             }
                             break;
                         case DRONECAN_PARAM_TYPE_FLOAT:
@@ -4699,10 +4700,9 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                         sbufWriteU8(dst, r->type);
                         switch (r->type) {
                             case DRONECAN_PARAM_TYPE_INT: {
-                                uint32_t lo = (uint32_t)(r->value_int & 0xFFFFFFFF);
-                                uint32_t hi = (uint32_t)((r->value_int >> 32) & 0xFFFFFFFF);
-                                sbufWriteU32(dst, lo);
-                                sbufWriteU32(dst, hi);
+                                uint64_t tmp;
+                                memcpy(&tmp, &r->value_int, sizeof(tmp));
+                                sbufWriteData(dst, &tmp, sizeof(tmp));
                                 break;
                             }
                             case DRONECAN_PARAM_TYPE_FLOAT: {
@@ -4753,7 +4753,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
             *ret = MSP_RESULT_ACK;
         }
         break;
-#endif  
+#endif
 
 #if defined(USE_FLASHFS)
     case MSP_DATAFLASH_READ:

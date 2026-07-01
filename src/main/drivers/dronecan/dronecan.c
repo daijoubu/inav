@@ -399,17 +399,22 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
                     case DRONECAN_PARAM_TYPE_BOOL:
                         getset.value.boolean_value = req->value_bool;
                         break;
-                    case DRONECAN_PARAM_TYPE_STRING:
-                        getset.value.string_value.len = req->value_str_len;
-                        memcpy(getset.value.string_value.data, req->value_str, req->value_str_len);
+                    case DRONECAN_PARAM_TYPE_STRING: {
+                        uint8_t slen = req->value_str_len < sizeof(getset.value.string_value.data)
+                                       ? req->value_str_len : sizeof(getset.value.string_value.data);
+                        getset.value.string_value.len = slen;
+                        memcpy(getset.value.string_value.data, req->value_str, slen);
                         break;
+                    }
                     default:
                         getset.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY;
                         break;
                 }
             }
-            getset.name.len = req->req_name_len;
-            memcpy(getset.name.data, req->req_name, req->req_name_len);
+            uint8_t nlen = req->req_name_len < sizeof(getset.name.data)
+                           ? req->req_name_len : sizeof(getset.name.data);
+            getset.name.len = nlen;
+            memcpy(getset.name.data, req->req_name, nlen);
             len = uavcan_protocol_param_GetSetRequest_encode(&getset, buffer);
             buf_ptr = buffer;
             signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
@@ -464,8 +469,8 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
 }
 
 /*
-    Handle a response to an asynchronous service request such as
-    a configuration parameter on the node info structure
+    Handle responses for any pending async service request
+    (GETNODEINFO, PARAM_GETSET, EXECUTE_OPCODE, RESTART_NODE).
 */
 static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *transfer)
 {
