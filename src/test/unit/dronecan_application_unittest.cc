@@ -180,8 +180,6 @@ TEST_F(DroneCANNodeTableTest, NewNodeAddedOnFirstStatus)
     EXPECT_EQ(node->mode,               UAVCAN_PROTOCOL_NODESTATUS_MODE_OPERATIONAL);
     EXPECT_EQ(node->uptime_sec,         100u);
     EXPECT_EQ(node->vendor_status_code, 0xABCDu);
-    EXPECT_EQ(node->name_len,           0u);
-    EXPECT_EQ(node->name[0],            '\0');
 }
 
 /* GAP-N1 (second node): Two distinct IDs → two separate entries */
@@ -374,6 +372,8 @@ protected:
     void SetUp() override {
         activeNodeCount = 0;
         memset(nodeTable, 0, sizeof(dronecanNodeInfo_t) * DRONECAN_MAX_NODES);
+        memset(&dronecanAsyncSlot, 0, sizeof(dronecanAsyncSlot));
+        dronecanAsyncSlot.state = DRONECAN_ASYNC_IDLE;
         mock_time_ms = 0;
         canardInit(&ins, memory_pool, sizeof(memory_pool),
                    onTransferReceived, shouldAcceptTransfer, NULL);
@@ -381,14 +381,25 @@ protected:
     }
 };
 
-/* GAP-S2: GetNodeInfo response → handler populates name and version fields */
-TEST_F(DroneCANDispatchTest, GetNodeInfoResponsePopulatesNodeTableEntry)
+/* GAP-S2: GetNodeInfo response → handler populates async slot result.
+ * The node table (dronecanNodeInfo_t) holds only NodeStatus-level fields since
+ * commit 96f8a4bd9 stripped the GetNodeInfo fields to save ~3.5 KB RAM and
+ * replaced auto-fetch with the on-demand async slot pattern. */
+TEST_F(DroneCANDispatchTest, GetNodeInfoResponsePopulatesAsyncSlot)
 {
-    /* Pre-insert node 42 via a NodeStatus so the table has a slot for it */
+    /* Pre-insert node 42 via a NodeStatus (node table is independent of async slot) */
     uint8_t ns_buf[UAVCAN_PROTOCOL_NODESTATUS_MAX_SIZE + 4];
     CanardRxTransfer ns_xfer = makeNodeStatusTransfer(42, 10, 0, 0, 0, ns_buf);
     handle_NodeStatus(&ins, &ns_xfer);
     ASSERT_EQ(dronecanGetNodeCount(), 1u);
+
+    /* Prime the async slot — handle_AsyncServiceResponse guards on state, service_id,
+     * node_id, and transfer_id. The guard checks transfer_id == (slot.transfer_id-1)&0x1F,
+     * so set transfer_id=1 so the expected in-flight id is 0 (matching xfer.transfer_id). */
+    dronecanAsyncSlot.state       = DRONECAN_ASYNC_PENDING;
+    dronecanAsyncSlot.service_id  = DRONECAN_SERVICE_GETNODEINFO;
+    dronecanAsyncSlot.node_id     = 42;
+    dronecanAsyncSlot.transfer_id = 1;
 
     /* Build a GetNodeInfo response from node 42 */
     struct uavcan_protocol_GetNodeInfoResponse resp;
@@ -405,9 +416,8 @@ TEST_F(DroneCANDispatchTest, GetNodeInfoResponsePopulatesNodeTableEntry)
 
     resp.hardware_version.major = 2;
     resp.hardware_version.minor = 0;
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++)
         resp.hardware_version.unique_id[i] = (uint8_t)(0xA0 + i);
-    }
 
     const char *name = "com.example.gps";
     resp.name.len = (uint8_t)strlen(name);
@@ -425,23 +435,27 @@ TEST_F(DroneCANDispatchTest, GetNodeInfoResponsePopulatesNodeTableEntry)
 
     onTransferReceived(&ins, &xfer);
 
-    /* Verify the node table entry was populated */
+    /* Slot must now be READY */
+    EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_READY);
+
+    /* Result fields populated from the GetNodeInfo response */
+    const dronecanGetNodeInfoResult_t *r = &dronecanAsyncSlot.result.node_info;
+    EXPECT_EQ(r->name_len, (uint8_t)strlen(name));
+    EXPECT_EQ(0, memcmp(r->name, name, r->name_len));
+
+    EXPECT_EQ(r->sw_major,                1u);
+    EXPECT_EQ(r->sw_minor,                7u);
+    EXPECT_EQ(r->sw_optional_field_flags,  1u);
+    EXPECT_EQ(r->sw_vcs_commit,           0xDEADBEEFu);
+
+    EXPECT_EQ(r->hw_major, 2u);
+    EXPECT_EQ(r->hw_minor, 0u);
+    for (int i = 0; i < 16; i++)
+        EXPECT_EQ(r->hw_unique_id[i], (uint8_t)(0xA0 + i))
+            << "unique_id mismatch at byte " << i;
+
+    /* Node table entry still exists (populated by the preceding NodeStatus) */
     const dronecanNodeInfo_t *node = dronecanGetNode(0);
     ASSERT_NE(node, nullptr);
     EXPECT_EQ(node->nodeID, 42u);
-
-    EXPECT_EQ(node->name_len, (uint8_t)strlen(name));
-    EXPECT_EQ(0, memcmp(node->name, name, node->name_len));
-
-    EXPECT_EQ(node->sw_major,                1u);
-    EXPECT_EQ(node->sw_minor,                7u);
-    EXPECT_EQ(node->sw_optional_field_flags,  1u);
-    EXPECT_EQ(node->sw_vcs_commit,           0xDEADBEEFu);
-
-    EXPECT_EQ(node->hw_major, 2u);
-    EXPECT_EQ(node->hw_minor, 0u);
-    for (int i = 0; i < 16; i++) {
-        EXPECT_EQ(node->hw_unique_id[i], (uint8_t)(0xA0 + i))
-            << "unique_id mismatch at byte " << i;
-    }
 }
