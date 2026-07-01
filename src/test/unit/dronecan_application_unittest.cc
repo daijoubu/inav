@@ -799,15 +799,16 @@ TEST_F(DroneCANDispatchTest, RestartNodeOkResponse_PopulatesSlot)
  * ========================================================================= */
 
 /* GAP-S7: A second async request is rejected while one is already in flight.
- * Slot PENDING with requested_at_ms=0 and mock_time_ms=0 satisfies the
- * timeout guard (0 < DRONECAN_ASYNC_TIMEOUT_MS), so the function returns false
- * without touching the internal CAN driver. */
+ * Uses RESTART_NODE (no null-payload check) so the re-entry guard is the only
+ * reason dronecanAsyncRequest returns false.  Slot PENDING with
+ * requested_at_ms=0 and mock_time_ms=0 keeps the timeout condition satisfied
+ * (0 < DRONECAN_ASYNC_TIMEOUT_MS), so the guard fires before touching the bus. */
 TEST_F(DroneCANDispatchTest, AsyncRequest_RejectedWhilePending)
 {
     dronecanAsyncSlot.state           = DRONECAN_ASYNC_PENDING;
     dronecanAsyncSlot.requested_at_ms = 0;
     mock_time_ms = 0;
 
-    EXPECT_FALSE(dronecanAsyncRequest(DRONECAN_SERVICE_PARAM_GETSET, 42, nullptr));
+    EXPECT_FALSE(dronecanAsyncRequest(DRONECAN_SERVICE_RESTART_NODE, 42, nullptr));
     EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_PENDING);
 }
