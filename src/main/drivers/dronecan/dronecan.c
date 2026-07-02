@@ -374,7 +374,7 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
     uint16_t len = 0;
     uint64_t signature = 0;
     const uint8_t *buf_ptr = NULL;
-  
+
     switch (service_id) {
         case DRONECAN_SERVICE_GETNODEINFO:
             signature = UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE;
@@ -420,7 +420,7 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
             signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
             break;
         }
-        
+
         case DRONECAN_SERVICE_EXECUTE_OPCODE: {
             if (!payload) return false;
             const uint8_t *opcode = (const uint8_t *)payload;
