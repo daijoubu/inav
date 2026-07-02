@@ -408,6 +408,45 @@ TEST(DroneCANShouldAcceptTransfer, RejectsUnknownResponseId)
     EXPECT_FALSE(accept);
 }
 
+TEST(DroneCANShouldAcceptTransfer, AcceptsParamGetSetResponse)
+{
+    uint64_t signature = 0;
+    bool accept = shouldAcceptTransfer(
+            nullptr, &signature,
+            UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_ID,
+            CanardTransferTypeResponse,
+            42);
+
+    EXPECT_TRUE(accept);
+    EXPECT_EQ(signature, UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_SIGNATURE);
+}
+
+TEST(DroneCANShouldAcceptTransfer, AcceptsExecuteOpcodeResponse)
+{
+    uint64_t signature = 0;
+    bool accept = shouldAcceptTransfer(
+            nullptr, &signature,
+            UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_RESPONSE_ID,
+            CanardTransferTypeResponse,
+            42);
+
+    EXPECT_TRUE(accept);
+    EXPECT_EQ(signature, UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_RESPONSE_SIGNATURE);
+}
+
+TEST(DroneCANShouldAcceptTransfer, AcceptsRestartNodeResponse)
+{
+    uint64_t signature = 0;
+    bool accept = shouldAcceptTransfer(
+            nullptr, &signature,
+            UAVCAN_PROTOCOL_RESTARTNODE_RESPONSE_ID,
+            CanardTransferTypeResponse,
+            42);
+
+    EXPECT_TRUE(accept);
+    EXPECT_EQ(signature, UAVCAN_PROTOCOL_RESTARTNODE_RESPONSE_SIGNATURE);
+}
+
 /* =========================================================================
  * onTransferReceived dispatch test (GAP-S2)
  *

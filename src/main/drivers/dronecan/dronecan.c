@@ -471,6 +471,8 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
 /*
     Handle responses for any pending async service request
     (GETNODEINFO, PARAM_GETSET, EXECUTE_OPCODE, RESTART_NODE).
+    A single handler serialises all on-demand service requests through
+    one shared slot, avoiding the need for per-service response queues.
 */
 static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *transfer)
 {
@@ -704,72 +706,54 @@ static bool shouldAcceptTransfer(const CanardInstance *ins,
                                  CanardTransferType transfer_type,
                                  uint8_t source_node_id)
 {
-	UNUSED(ins);
+    UNUSED(ins);
     UNUSED(source_node_id);
     if (transfer_type == CanardTransferTypeRequest) {
-	// check if we want to handle a specific service request
-		switch (data_type_id) {
-		case UAVCAN_PROTOCOL_GETNODEINFO_ID: {
-			*out_data_type_signature = UAVCAN_PROTOCOL_GETNODEINFO_REQUEST_SIGNATURE;
-			return true;
-		    }
-		}
-	}
-	if (transfer_type == CanardTransferTypeResponse) {
-		switch (data_type_id) {
-        case UAVCAN_PROTOCOL_GETNODEINFO_ID: {
+        switch (data_type_id) {
+        case UAVCAN_PROTOCOL_GETNODEINFO_ID:
+            *out_data_type_signature = UAVCAN_PROTOCOL_GETNODEINFO_REQUEST_SIGNATURE;
+            return true;
+        }
+    }
+    if (transfer_type == CanardTransferTypeResponse) {
+        switch (data_type_id) {
+        case UAVCAN_PROTOCOL_GETNODEINFO_ID:
             *out_data_type_signature = UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_SIGNATURE;
             return true;
-        }
-
-        case UAVCAN_PROTOCOL_PARAM_GETSET_ID: {
+        case UAVCAN_PROTOCOL_PARAM_GETSET_ID:
             *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
             return true;
-        }
-
-        case UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_ID: {
+        case UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_ID:
             *out_data_type_signature = UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_SIGNATURE;
             return true;
-        }
-
-        case UAVCAN_PROTOCOL_RESTARTNODE_ID: {
+        case UAVCAN_PROTOCOL_RESTARTNODE_ID:
             *out_data_type_signature = UAVCAN_PROTOCOL_RESTARTNODE_SIGNATURE;
             return true;
         }
-		}
-	}
-	if (transfer_type == CanardTransferTypeBroadcast) {
-		// see if we want to handle a specific broadcast packet
-		switch (data_type_id) {
-
-		case UAVCAN_PROTOCOL_NODESTATUS_ID: {
-			*out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
-			return true;
-		}
-        case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID: {
+    }
+    if (transfer_type == CanardTransferTypeBroadcast) {
+        switch (data_type_id) {
+        case UAVCAN_PROTOCOL_NODESTATUS_ID:
+            *out_data_type_signature = UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE;
+            return true;
+        case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_AUXILIARY_SIGNATURE;
             return true;
-        }
-        case UAVCAN_EQUIPMENT_GNSS_FIX_ID: {
+        case UAVCAN_EQUIPMENT_GNSS_FIX_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX_SIGNATURE;
             return true;
-        }
-        case UAVCAN_EQUIPMENT_GNSS_FIX2_ID: {
+        case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
             return true;
-        }
-        case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID: {
+        case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_SIGNATURE;
             return true;
-        }
-        case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID: {
+        case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_SIGNATURE;
             return true;
         }
-		}
-	}
-	// we don't want any other messages
-	return false;
+    }
+    return false;
 }
 
 // Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
