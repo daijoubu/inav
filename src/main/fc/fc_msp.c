@@ -4601,7 +4601,7 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                 *ret = MSP_RESULT_ACK;
                 break;
             }
-  
+
             bool accepted = false;
             if (service_id == DRONECAN_SERVICE_GETNODEINFO) {
                 accepted = dronecanAsyncRequest(service_id, nodeID, NULL);
@@ -4640,8 +4640,10 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                                 req.value_str_len = sbufReadU8(src);
                                 if (req.value_str_len > sizeof(req.value_str))
                                     req.value_str_len = sizeof(req.value_str);
-                                if (sbufBytesRemaining(src) >= req.value_str_len)
+                                if (sbufBytesRemaining(src) >= req.value_str_len) {
                                     sbufReadData(src, req.value_str, req.value_str_len);
+                                    sbufAdvance(src, req.value_str_len);
+                                }
                             }
                             break;
                     }
@@ -4650,8 +4652,10 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                     req.req_name_len = sbufReadU8(src);
                     if (req.req_name_len > sizeof(req.req_name))
                         req.req_name_len = sizeof(req.req_name);
-                    if (sbufBytesRemaining(src) >= req.req_name_len)
+                    if (sbufBytesRemaining(src) >= req.req_name_len) {
                         sbufReadData(src, req.req_name, req.req_name_len);
+                        sbufAdvance(src, req.req_name_len);
+                    }
                 }
                 accepted = dronecanAsyncRequest(service_id, nodeID, &req);
             } else if (service_id == DRONECAN_SERVICE_EXECUTE_OPCODE) {
@@ -4723,8 +4727,9 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                         }
                         sbufWriteU8(dst, r->min_type);
                         if (r->min_type == DRONECAN_PARAM_TYPE_INT) {
-                            sbufWriteU32(dst, (uint32_t)(r->min_int & 0xFFFFFFFF));
-                            sbufWriteU32(dst, (uint32_t)((r->min_int >> 32) & 0xFFFFFFFF));
+                            uint64_t utmp;
+                            memcpy(&utmp, &r->min_int, sizeof(utmp));
+                            sbufWriteData(dst, &utmp, sizeof(utmp));
                         } else if (r->min_type == DRONECAN_PARAM_TYPE_FLOAT) {
                             uint32_t raw;
                             memcpy(&raw, &r->min_float, 4);
@@ -4732,8 +4737,9 @@ bool mspFCProcessInOutCommand(uint16_t cmdMSP, sbuf_t *dst, sbuf_t *src, mspResu
                         }
                         sbufWriteU8(dst, r->max_type);
                         if (r->max_type == DRONECAN_PARAM_TYPE_INT) {
-                            sbufWriteU32(dst, (uint32_t)(r->max_int & 0xFFFFFFFF));
-                            sbufWriteU32(dst, (uint32_t)((r->max_int >> 32) & 0xFFFFFFFF));
+                            uint64_t utmp;
+                            memcpy(&utmp, &r->max_int, sizeof(utmp));
+                            sbufWriteData(dst, &utmp, sizeof(utmp));
                         } else if (r->max_type == DRONECAN_PARAM_TYPE_FLOAT) {
                             uint32_t raw;
                             memcpy(&raw, &r->max_float, 4);
