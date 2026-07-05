@@ -29,7 +29,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 CanardInstance canard;
-uint8_t memory_pool[1024];
+static uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
 
 PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 0);
@@ -781,12 +781,12 @@ void send_NodeStatus(void) {
     node_status.sub_mode = 0; // Not currently used in dronecan
 
     // put whatever you like in here for display in GUI
-    node_status.vendor_specific_status_code = armingFlags;
+    node_status.vendor_specific_status_code = (uint16_t)(armingFlags & 0xFFFF);  /* field is 16-bit by UAVCAN spec; bits 16-30 of armingFlags are not transmitted */
 
     uint32_t len = uavcan_protocol_NodeStatus_encode(&node_status, buffer);
 
     // we need a static variable for the transfer ID. This is
-    // incremeneted on each transfer, allowing for detection of packet
+    // incremented on each transfer, allowing for detection of packet
     // loss
     static uint8_t transfer_id;
 

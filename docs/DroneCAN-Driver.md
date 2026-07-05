@@ -566,9 +566,9 @@ After Stage 3 the server has the full 16-byte UID and calls `dnaLookupOrAssignNo
 
 `dnaLookupOrAssignNode()` applies the following priority order:
 
-1. **Existing entry** — if the UID is already in the allocation table, return the previously assigned node ID.
-2. **Preferred ID** — if the peripheral included a preferred node ID in Stage 1 and that ID is in the valid range (1–127) and not already taken, assign it.
-3. **Sequential fallback** — scan from node ID 1 upward and assign the first available ID.
+1. **Existing entry** — if the UID is already in the allocation table and the stored node ID isn't currently claimed by another live node, return the previously assigned node ID. If it *is* claimed by someone else, fall through to reassignment below.
+2. **Preferred ID** — if the peripheral included a preferred node ID in Stage 1 (range 1–125; 126–127 are reserved for network maintenance tools), search upward from that ID first, then downward from `preferred - 1`, assigning the first available ID found either way.
+3. **Top-down fallback** — if there's no preference, or the preferred-ID search found nothing free, scan from node ID 125 downward and assign the first available ID.
 
 The FC's own node ID is never assigned to a peripheral. If all 32 table slots are full and no existing entry matches, the allocation fails silently.
 
@@ -599,7 +599,7 @@ case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
 
 ### Unit tests
 
-Nine tests in `src/test/unit/dronecan_dna_server_unittest.cc` cover the full handshake, UID re-use, table-full rejection, non-broadcast source rejection, stage ordering, timeout reset, FC node ID exclusion, and preferred node ID honouring (DNA-1 through DNA-9).
+Thirteen tests in `src/test/unit/dronecan_dna_server_unittest.cc` cover the full handshake, UID re-use, table-full rejection, non-broadcast source rejection, stage ordering, timeout reset, FC node ID exclusion, preferred node ID honouring, top-down sequential assignment, reserved-range and taken-preferred-ID fallback, and live-network reassignment of a stored ID (DNA-1 through DNA-13).
 
 ---
 

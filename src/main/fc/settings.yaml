@@ -4538,5 +4538,3 @@ groups:
         type: bool
         default_value: ON
         field: dronecanUseDNAServer
-
-        
