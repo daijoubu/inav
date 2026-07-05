@@ -47,10 +47,12 @@ dronecanAsyncSlot_t dronecanAsyncSlot = { .state = DRONECAN_ASYNC_IDLE };
 uint8_t activeNodeCount = 0;
 dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
+static volatile uint32_t txErrCount = 0;
 #else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
+static volatile uint32_t txErrCount = 0;
 #endif
 
 // Mask/unmask the CAN TX ISR while the main loop enqueues frames into libcanard's TX queue.
@@ -789,7 +791,7 @@ void send_NodeStatus(void) {
     static uint8_t transfer_id;
 
     dronecanMaskTxISR();
-    canardBroadcast(&canard,
+    const int16_t bc_res = canardBroadcast(&canard,
                     UAVCAN_PROTOCOL_NODESTATUS_SIGNATURE,
                     UAVCAN_PROTOCOL_NODESTATUS_ID,
                     &transfer_id,
@@ -798,7 +800,7 @@ void send_NodeStatus(void) {
                     len);
     dronecanUnmaskTxISR();
     if (bc_res < 0) {
-        LOG_DEBUG(CAN, "NodeStatus broadcast failed: %d", bc_res);
+        LOG_WARNING(CAN, "NodeStatus broadcast failed: %d", bc_res);
     }
 
 }
