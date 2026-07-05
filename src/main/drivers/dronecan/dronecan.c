@@ -49,10 +49,12 @@ dronecanAsyncSlot_t dronecanAsyncSlot = { .state = DRONECAN_ASYNC_IDLE };
 uint8_t activeNodeCount = 0;
 dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
+static volatile uint32_t txErrCount = 0;
 #else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
+static volatile uint32_t txErrCount = 0;
 #endif
 
 /* Forward declarations ------------------------------------------------------*/
@@ -805,7 +807,7 @@ void send_NodeStatus(void) {
                         len);
     }
     if (bc_res < 0) {
-        LOG_DEBUG(CAN, "NodeStatus broadcast failed: %d", bc_res);
+        LOG_WARNING(CAN, "NodeStatus broadcast failed: %d", bc_res);
     }
 
 }

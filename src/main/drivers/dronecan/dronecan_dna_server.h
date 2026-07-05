@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "config/parameter_group.h"
 #include "libcanard/canard.h"
 
 #ifdef USE_DRONECAN

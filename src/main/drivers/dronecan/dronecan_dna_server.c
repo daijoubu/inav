@@ -131,7 +131,10 @@ static void dnaSendResponse(uint8_t nodeId, const uint8_t *uid, uint8_t uidLen)
     outboundTransfer.payload             = buffer;
     outboundTransfer.payload_len         = (uint16_t)len;
 
-    canardBroadcastObj(&canard, &outboundTransfer);
+    const int16_t res = canardBroadcastObj(&canard, &outboundTransfer);
+    if (res < 0) {
+        LOG_WARNING(CAN, "DNA: response broadcast failed: %d", res);
+    }
 }
 
 static bool isNodeAvailable(uint8_t assignedNodeId)
