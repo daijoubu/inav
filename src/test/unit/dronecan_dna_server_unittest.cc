@@ -19,6 +19,8 @@
  *   DNA-11 Preferred ID in reserved range (126-127) → falls back to sequential
  *   DNA-12 Preferred ID already taken → falls back to sequential
  *   DNA-13 Stored ID in use on live network → reassigned, table entry updated
+ *   DNA-14 Full 16-byte UID in a single stage-1 message → completes immediately
+ *   DNA-15 Full-length message without the stage-1 flag → rejected
  */
 
 #include "gtest/gtest.h"
@@ -536,4 +538,65 @@ TEST_F(DroneCANDnaServerTest, ConflictingLiveNodeCausesReassignment)
     }
     EXPECT_EQ(count, 1)      << "Must be exactly one table entry for this UID";
     EXPECT_EQ(tableId, second) << "Table entry must reflect the newly assigned ID";
+}
+
+/* =========================================================================
+ * DNA-14: Full 16-byte UID delivered in a single stage-1 message
+ *
+ * A transport capable of a larger single frame (e.g. CAN-FD) can carry the
+ * entire 16-byte unique ID in one message instead of the classic 6+6+4
+ * split. detectRequestStage() must accept first_part_of_unique_id=true with
+ * unique_id.len=16 as a valid Stage 1, and the handler must complete the
+ * allocation immediately without waiting for Stage 2/3 messages.
+ * ========================================================================= */
+TEST_F(DroneCANDnaServerTest, SingleFrameFullUidCompletesImmediately)
+{
+    const uint8_t uid[16] = {
+        0xE0,0xE0,0xE0,0xE0,0xE0,0xE0,
+        0xE0,0xE0,0xE0,0xE0,0xE0,0xE0,
+        0xE0,0xE0,0xE0,0xE0
+    };
+    uint8_t buf[UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_SIZE + 4];
+
+    CanardRxTransfer xfer = makeAllocationTransfer(0, true, uid, 16, buf);
+    dronecanDnaHandleAllocation(NULL, &xfer);
+
+    uint8_t assigned = 0;
+    for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
+        if (dnaServerData()->entries[i].nodeId != 0 &&
+            memcmp(dnaServerData()->entries[i].uniqueId, uid, 16) == 0) {
+            assigned = dnaServerData()->entries[i].nodeId;
+        }
+    }
+
+    EXPECT_NE(assigned, 0u)
+        << "A single-frame 16-byte stage-1 message must complete allocation "
+        << "without needing follow-up Stage 2/3 messages";
+}
+
+/* =========================================================================
+ * DNA-15: Full-length message not marked as stage 1 is rejected
+ *
+ * A 16-byte unique_id.len is only a valid length when paired with
+ * first_part_of_unique_id=true (DNA-14). The same length with the flag
+ * false must be rejected as DNA_INVALID_STAGE rather than silently
+ * accepted as some other stage.
+ * ========================================================================= */
+TEST_F(DroneCANDnaServerTest, NonFirstPartFullLengthRejected)
+{
+    const uint8_t uid[16] = {
+        0xE1,0xE1,0xE1,0xE1,0xE1,0xE1,
+        0xE1,0xE1,0xE1,0xE1,0xE1,0xE1,
+        0xE1,0xE1,0xE1,0xE1
+    };
+    uint8_t buf[UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_MAX_SIZE + 4];
+
+    CanardRxTransfer xfer = makeAllocationTransfer(0, false, uid, 16, buf);
+    dronecanDnaHandleAllocation(NULL, &xfer);
+
+    for (int i = 0; i < DRONECAN_MAX_NODES; i++) {
+        EXPECT_NE(0, memcmp(dnaServerData()->entries[i].uniqueId, uid, 16))
+            << "A rejected (non-first-part, full-length) message must not "
+            << "create a table entry at slot " << i;
+    }
 }
