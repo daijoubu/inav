@@ -355,25 +355,34 @@ TEST_F(DroneCANDnaServerTest, FollowupTimeoutResetsAccumulator)
 
 /* =========================================================================
  * DNA-8: FC's own node ID is never assigned to a peripheral
+ *
+ * Top-down sequential assignment starts at 125 and DRONECAN_MAX_NODES (32)
+ * caps how many allocation-table + live-node-table entries can ever be
+ * occupied at once (64 combined at most) — nowhere near enough to force the
+ * top-down scan down to FC_NODE_ID (5) by filling slots. Requesting
+ * FC_NODE_ID as the *preferred* ID instead exercises the exact
+ * isNodeAvailable(canard.node_id) guard directly and deterministically:
+ * the preferred-ID search starts at the requested value and scans upward,
+ * so if 5 (FC's own ID) is correctly skipped, the peripheral must land on
+ * 6, the next available ID above it.
  * ========================================================================= */
 TEST_F(DroneCANDnaServerTest, FcNodeIdNeverAssigned)
 {
-    /* Run several handshakes and verify none receives FC_NODE_ID. With
-       top-down assignment starting at 125, FC_NODE_ID (5) is far from the
-       initial assignments — but the skip must hold regardless of position. */
-    for (uint8_t n = 0; n < FC_NODE_ID; n++) {
-        uint8_t uid[16];
-        memset(uid, n + 1, 16);
+    const uint8_t uid[16] = {
+        0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,
+        0xFC,0xFC,0xFC,0xFC,0xFC,0xFC,
+        0xFC,0xFC,0xFC,0xFC
+    };
 
-        uint8_t assigned = runHandshake(uid);
-        ASSERT_NE(assigned, 0u) << "Handshake " << (int)n << " produced no allocation";
-        EXPECT_NE(assigned, FC_NODE_ID)
-            << "FC node ID " << (int)FC_NODE_ID
-            << " was incorrectly assigned at handshake " << (int)n;
+    uint8_t assigned = runHandshake(uid, FC_NODE_ID);
 
-        s_base_ms   += 10000;
-        mock_time_ms = s_base_ms;
-    }
+    ASSERT_NE(assigned, 0u) << "Requesting the FC's own node ID must not block allocation";
+    EXPECT_NE(assigned, FC_NODE_ID)
+        << "FC node ID " << (int)FC_NODE_ID << " was incorrectly assigned to a peripheral";
+    EXPECT_EQ(assigned, FC_NODE_ID + 1)
+        << "Preferred-ID search starts at the requested value and scans upward; "
+        << "skipping " << (int)FC_NODE_ID << " (FC's own ID) on a clean table "
+        << "must land on " << (int)(FC_NODE_ID + 1);
 }
 
 /* =========================================================================
