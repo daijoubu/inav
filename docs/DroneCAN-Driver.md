@@ -601,7 +601,7 @@ case UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID:
 
 ### Unit tests
 
-Fifteen tests in `src/test/unit/dronecan_dna_server_unittest.cc` cover the full handshake, UID re-use, table-full rejection, non-broadcast source rejection, stage ordering, timeout reset, FC node ID exclusion, preferred node ID honouring, top-down sequential assignment, reserved-range and taken-preferred-ID fallback, live-network reassignment of a stored ID, and single-frame (e.g. CAN-FD) full-UID delivery (DNA-1 through DNA-15).
+Sixteen tests in `src/test/unit/dronecan_dna_server_unittest.cc` cover the full handshake, UID re-use, table-full rejection, non-broadcast source rejection, stage ordering, timeout reset, FC node ID exclusion, preferred node ID honouring, top-down sequential assignment, reserved-range and taken-preferred-ID fallback, live-network reassignment of a stored ID, single-frame (e.g. CAN-FD) full-UID delivery, and rejection of a malformed 4-byte stage-1 message without poisoning a legitimate follow-up handshake (DNA-1 through DNA-16).
 
 ---
 
