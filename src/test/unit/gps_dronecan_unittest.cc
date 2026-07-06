@@ -60,6 +60,8 @@ extern "C" {
 extern uint8_t activeNodeCount;
 extern dronecanNodeInfo_t nodeTable[];
 extern uint8_t activeGpsNodeId;
+extern dronecanState_e dronecanState;
+extern timeUs_t next_1hz_service_at;
 
 /* Private functions not exposed in dronecan.h, needed to populate node health */
 void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer);
@@ -164,6 +166,8 @@ protected:
         memset(&gpsSolDRV, 0, sizeof(gpsSolDRV));
         dronecanConfigMutable()->gpsNodeId = 0;
         mock_time_ms = 0;
+        dronecanState = STATE_DRONECAN_INIT;
+        next_1hz_service_at = 0;
     }
 
     /* CanardInstance is unused by handle_NodeStatus; pass NULL like the
@@ -385,10 +389,10 @@ TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUnknownTimestampRejected)
  * path: a node goes stale in the node table, dronecanUpdate() runs its 1Hz
  * task, and *that* eviction is what must release the GPS lock.
  *
- * dronecanState and the 1Hz scheduler's next_1hz_service_at are static
- * storage inside dronecan.c with no UNIT_TEST reset hook, so this must be
- * the only test in the binary driving dronecanUpdate() - the sequencing
- * below assumes it starts from STATE_DRONECAN_INIT / next_1hz_service_at=0.
+ * dronecanState and the 1Hz scheduler's next_1hz_service_at are reset in
+ * SetUp() (exposed non-static under UNIT_TEST), so this test's sequencing
+ * from STATE_DRONECAN_INIT / next_1hz_service_at=0 holds regardless of test
+ * order, shuffling, or repetition.
  */
 TEST_F(DroneCANGpsHealthGuardTest, StaleNodeEvictionThroughOneHzTaskReleasesGpsLock)
 {

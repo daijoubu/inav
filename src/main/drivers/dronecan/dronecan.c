@@ -41,7 +41,6 @@ PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .gpsNodeId = SETTING_DRONECAN_GPS_NODE_ID_DEFAULT
 );
 
-static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
 dronecanAsyncSlot_t dronecanAsyncSlot = { .state = DRONECAN_ASYNC_IDLE };
 
 #ifdef UNIT_TEST
@@ -49,11 +48,15 @@ uint8_t activeNodeCount = 0;
 dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static volatile uint32_t txErrCount = 0;
 static uint32_t busOffCount = 0;
+dronecanState_e dronecanState = STATE_DRONECAN_INIT;
+timeUs_t next_1hz_service_at = 0;
 #else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static volatile uint32_t txErrCount = 0;
 static uint32_t busOffCount = 0;
+static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
+static timeUs_t next_1hz_service_at = 0;
 #endif
 
 #if defined(STM32H7)
@@ -140,7 +143,6 @@ void dronecanInit(void)
 
 void dronecanUpdate(timeUs_t currentTimeUs)
 {
-    static timeUs_t next_1hz_service_at = 0;
     static timeUs_t busoffTimeUs = 0;
     CanardCANFrame rx_frame;
     int numMessagesToProcess = 0;
