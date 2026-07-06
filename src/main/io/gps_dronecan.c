@@ -93,6 +93,13 @@ static uint8_t gpsMapFixType(uint8_t dronecanFixType)
 static bool dronecanGpsAcceptSource(uint8_t sourceNodeId)
 {
     const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
+    // node == NULL means no NodeStatus has been received yet for this ID - deliberately
+    // NOT rejected here, unlike dronecanGpsIsHealthy() below, which returns false in that
+    // same case. This function decides whether to use incoming GPS data right now, so it
+    // fails open on unknown health (don't block real position updates just because
+    // NodeStatus, which may broadcast on a different cadence than Fix2, hasn't arrived
+    // yet). dronecanGpsIsHealthy() feeds arming/OSD/telemetry status, so it fails closed
+    // instead (don't report healthy without evidence). The asymmetry is intentional.
     if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
         return false;
     }
