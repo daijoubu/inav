@@ -59,7 +59,11 @@ static void parseGnssTime(uint64_t usec, uint8_t time_standard, uint8_t num_leap
 
 static bool newDataReady;
 static uint16_t lastHDOP = 9999;
+#ifdef UNIT_TEST
+uint8_t activeGpsNodeId = 0;
+#else
 static uint8_t activeGpsNodeId = 0;
+#endif
 
 void gpsRestartDronecan(void)
 {
