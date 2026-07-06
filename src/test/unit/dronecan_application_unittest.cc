@@ -77,10 +77,13 @@ gpsConfig_t gpsConfig_Copy;
 /* Hardware health — dronecan.c reads this in send_NodeStatus */
 bool isHardwareHealthy(void) { return true; }
 
-/* GPS and battery DroneCAN receive stubs */
-void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix *p) { (void)p; }
-void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 *p) { (void)p; }
-void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary *p) { (void)p; }
+/* GPS and battery DroneCAN receive stubs. gpsConfig_System.provider stays
+ * != GPS_DRONECAN (zero-initialized default), so dronecan.c's GNSS handlers
+ * return before ever reaching these - they only need to exist to satisfy
+ * the linker. Real GPS receive-path behavior is exercised for real in
+ * gps_dronecan_unittest.cc, which compiles the actual gps_dronecan.c. */
+void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 *p, uint8_t sourceNodeId) { (void)p; (void)sourceNodeId; }
+void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary *p, uint8_t sourceNodeId) { (void)p; (void)sourceNodeId; }
 void dronecanGpsOnNodeEvicted(uint8_t nodeID) { (void)nodeID; }
 
 /* Recording stub — tests assert on call count / last-received battery_id to

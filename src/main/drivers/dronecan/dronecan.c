@@ -28,7 +28,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-CanardInstance canard;
+static CanardInstance canard;
 static uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
 
