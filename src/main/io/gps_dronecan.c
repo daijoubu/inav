@@ -87,18 +87,29 @@ static uint8_t gpsMapFixType(uint8_t dronecanFixType)
     return GPS_NO_FIX;
 }
 
-void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2, uint8_t sourceNodeId)
+/* Shared acceptance gate for GNSS Fix2/Auxiliary messages: rejects
+ * unhealthy nodes and non-matching gpsNodeId, then applies the
+ * first-over-fence lock so two GPS nodes can't race to write gpsSolDRV. */
+static bool dronecanGpsAcceptSource(uint8_t sourceNodeId)
 {
     const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
     if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
-        return;
+        return false;
     }
     if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
-        return;
+        return false;
     }
     if (activeGpsNodeId == 0) {
-        activeGpsNodeId = sourceNodeId;  // first-over-fence: lock onto whichever node reports first, to avoid two GPS nodes racing to write gpsSolDRV
+        activeGpsNodeId = sourceNodeId;
     } else if (sourceNodeId != activeGpsNodeId) {
+        return false;
+    }
+    return true;
+}
+
+void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssFix2, uint8_t sourceNodeId)
+{
+    if (!dronecanGpsAcceptSource(sourceNodeId)) {
         return;
     }
     gpsSolDRV.fixType   = gpsMapFixType(pgnssFix2->status);
@@ -142,16 +153,7 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
 
 void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary * pgnssAux, uint8_t sourceNodeId)
 {
-    const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
-    if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
-        return;
-    }
-    if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
-        return;
-    }
-    if (activeGpsNodeId == 0) {
-        activeGpsNodeId = sourceNodeId;  // first-over-fence: lock onto whichever node reports first, to avoid two GPS nodes racing to write gpsSolDRV
-    } else if (sourceNodeId != activeGpsNodeId) {
+    if (!dronecanGpsAcceptSource(sourceNodeId)) {
         return;
     }
     // DroneCAN float16 optional fields encode NaN when unpopulated; guard before use.

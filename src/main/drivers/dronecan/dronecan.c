@@ -941,7 +941,7 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
                 handle_GNSSAuxiliary(ins, transfer);
                 break;
 
-            case UAVCAN_EQUIPMENT_GNSS_FIX_ID:
+            case UAVCAN_EQUIPMENT_GNSS_FIX_ID: {
                 static bool warned = false;
                 if (!warned) {
                     LOG_WARNING(CAN, "Node %d: Fix (deprecated) ignored, node must send Fix2",
@@ -949,6 +949,7 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
                     warned = true;
                 }
                 break;
+            }
 
             case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
                 handle_GNSSFix2(ins, transfer);
