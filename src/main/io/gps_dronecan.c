@@ -157,7 +157,7 @@ void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliar
     }
 }
 
-void dronecanGpsNodeEvicted(uint8_t nodeID)
+void dronecanGpsOnNodeEvicted(uint8_t nodeID)
 {
     if (activeGpsNodeId == nodeID) {
         activeGpsNodeId = 0;

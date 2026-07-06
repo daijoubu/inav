@@ -35,6 +35,6 @@
 void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 *pgnssFix2, uint8_t sourceNodeId);
 void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary *pgnssAux, uint8_t sourceNodeId);
 bool dronecanGpsIsHealthy(void);
-void dronecanGpsNodeEvicted(uint8_t nodeID);
+void dronecanGpsOnNodeEvicted(uint8_t nodeID);
 
 #endif
