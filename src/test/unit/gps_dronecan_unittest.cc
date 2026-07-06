@@ -26,6 +26,7 @@ extern "C" {
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "platform.h"
 
@@ -277,6 +278,105 @@ TEST_F(DroneCANGpsHealthGuardTest, ReconfiguringNodeIdWhileLockedToOtherNode)
     EXPECT_EQ(gpsSolDRV.llh.lat, 50000000)
         << "node 20 matches the newly configured gpsNodeId but is stuck rejected "
            "because activeGpsNodeId was never released";
+}
+
+/* =========================================================================
+ * parseGnssTime coverage (GPS-10 … GPS-14)
+ *
+ * makeFix2() defaults gnss_timestamp.usec to UAVCAN_TIMESTAMP_UNKNOWN, so
+ * none of the tests above ever exercise the UTC/GPS/TAI conversion branches
+ * or the leap-second guards. These call dronecanGPSReceiveGNSSFix2()
+ * directly with a real timestamp and independently derive the expected
+ * calendar fields via gmtime() on the same epoch-conversion formula
+ * documented in the Fix2 DSDL, rather than hand-transcribing dates.
+ * ========================================================================= */
+
+static void expectGpsSolTimeMatches(time_t expected_unix_s)
+{
+    struct tm *t = gmtime(&expected_unix_s);
+    ASSERT_NE(t, nullptr);
+    EXPECT_TRUE(gpsSolDRV.flags.validTime);
+    EXPECT_EQ(gpsSolDRV.time.year,    (uint16_t)(t->tm_year + 1900));
+    EXPECT_EQ(gpsSolDRV.time.month,   (uint8_t)(t->tm_mon + 1));
+    EXPECT_EQ(gpsSolDRV.time.day,     (uint8_t)t->tm_mday);
+    EXPECT_EQ(gpsSolDRV.time.hours,   (uint8_t)t->tm_hour);
+    EXPECT_EQ(gpsSolDRV.time.minutes, (uint8_t)t->tm_min);
+    EXPECT_EQ(gpsSolDRV.time.seconds, (uint8_t)t->tm_sec);
+}
+
+/* GPS-10: UTC standard converts usec directly to unix seconds, no leap-second offset */
+TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUtcStandardPopulatesDate)
+{
+    const uint64_t epoch_s = 1700000000ULL;
+    struct uavcan_equipment_gnss_Fix2 fix;
+    makeFix2(400000000, &fix);
+    fix.gnss_timestamp.usec = epoch_s * 1000000ULL;
+    fix.gnss_time_standard  = UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_UTC;
+    fix.num_leap_seconds    = UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN; /* UTC ignores this field */
+
+    dronecanGPSReceiveGNSSFix2(&fix, 10);
+
+    expectGpsSolTimeMatches((time_t)epoch_s);
+}
+
+/* GPS-11: GPS standard applies UTC = GPS - leap_seconds + 9 per the DSDL comment */
+TEST_F(DroneCANGpsHealthGuardTest, GnssTimeGpsStandardAppliesLeapSecondOffset)
+{
+    const uint64_t gps_epoch_s = 1700000000ULL;
+    const uint8_t  leap_seconds = 18;
+    struct uavcan_equipment_gnss_Fix2 fix;
+    makeFix2(400000000, &fix);
+    fix.gnss_timestamp.usec = gps_epoch_s * 1000000ULL;
+    fix.gnss_time_standard  = UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_GPS;
+    fix.num_leap_seconds    = leap_seconds;
+
+    dronecanGPSReceiveGNSSFix2(&fix, 10);
+
+    expectGpsSolTimeMatches((time_t)(gps_epoch_s - leap_seconds + 9));
+}
+
+/* GPS-12: TAI standard applies UTC = TAI - leap_seconds - 10 per the DSDL comment */
+TEST_F(DroneCANGpsHealthGuardTest, GnssTimeTaiStandardAppliesLeapSecondOffset)
+{
+    const uint64_t tai_epoch_s = 1700000000ULL;
+    const uint8_t  leap_seconds = 18;
+    struct uavcan_equipment_gnss_Fix2 fix;
+    makeFix2(400000000, &fix);
+    fix.gnss_timestamp.usec = tai_epoch_s * 1000000ULL;
+    fix.gnss_time_standard  = UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_TAI;
+    fix.num_leap_seconds    = leap_seconds;
+
+    dronecanGPSReceiveGNSSFix2(&fix, 10);
+
+    expectGpsSolTimeMatches((time_t)(tai_epoch_s - leap_seconds - 10));
+}
+
+/* GPS-13: GPS/TAI standards require num_leap_seconds; UNKNOWN must reject rather
+ * than silently compute a wrong offset. */
+TEST_F(DroneCANGpsHealthGuardTest, GnssTimeGpsStandardWithUnknownLeapSecondsRejected)
+{
+    struct uavcan_equipment_gnss_Fix2 fix;
+    makeFix2(400000000, &fix);
+    fix.gnss_timestamp.usec = 1700000000ULL * 1000000ULL;
+    fix.gnss_time_standard  = UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_GPS;
+    fix.num_leap_seconds    = UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN;
+
+    dronecanGPSReceiveGNSSFix2(&fix, 10);
+
+    EXPECT_FALSE(gpsSolDRV.flags.validTime);
+}
+
+/* GPS-14: usec == UAVCAN_TIMESTAMP_UNKNOWN rejects immediately, regardless of
+ * time_standard - this is the default makeFix2() takes in every other test,
+ * so pin it explicitly here rather than leaving it only implicit. */
+TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUnknownTimestampRejected)
+{
+    struct uavcan_equipment_gnss_Fix2 fix;
+    makeFix2(400000000, &fix); /* gnss_timestamp.usec defaults to UAVCAN_TIMESTAMP_UNKNOWN */
+
+    dronecanGPSReceiveGNSSFix2(&fix, 10);
+
+    EXPECT_FALSE(gpsSolDRV.flags.validTime);
 }
 
 /* GPS-8: End-to-end wiring check. GPS-3 above calls dronecanGpsOnNodeEvicted()
