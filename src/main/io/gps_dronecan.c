@@ -96,8 +96,16 @@ static bool dronecanGpsAcceptSource(uint8_t sourceNodeId)
     if (node && node->health >= UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR) {
         return false;
     }
-    if (dronecanConfig()->gpsNodeId != 0 && sourceNodeId != dronecanConfig()->gpsNodeId) {
-        return false;
+    if (dronecanConfig()->gpsNodeId != 0) {
+        // A configured static filter already uniquely selects the source,
+        // so skip the first-over-fence lock entirely - otherwise
+        // reconfiguring gpsNodeId at runtime to a node other than the one
+        // currently locked in would leave GPS stuck rejecting it forever.
+        if (sourceNodeId != dronecanConfig()->gpsNodeId) {
+            return false;
+        }
+        activeGpsNodeId = sourceNodeId;
+        return true;
     }
     if (activeGpsNodeId == 0) {
         activeGpsNodeId = sourceNodeId;

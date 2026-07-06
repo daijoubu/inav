@@ -260,6 +260,25 @@ TEST_F(DroneCANGpsHealthGuardTest, StaticNodeIdFilterAcceptsMatchingSource)
     EXPECT_EQ(gpsSolDRV.llh.lat, 40000000);
 }
 
+/* GPS-9: Reconfiguring dronecan_gps_node_id at runtime to a node other than
+ * the one currently locked in by first-over-fence must take effect
+ * immediately, not get stuck rejecting the newly configured node forever.
+ * This is the scenario the second review pass caught: node 10 locks in
+ * under accept-any (gpsNodeId=0), then the user reconfigures to node 20
+ * without rebooting. */
+TEST_F(DroneCANGpsHealthGuardTest, ReconfiguringNodeIdWhileLockedToOtherNode)
+{
+    sendFix2(10, 400000000); /* locks in under accept-any (gpsNodeId=0) */
+    ASSERT_EQ(gpsSolDRV.llh.lat, 40000000);
+
+    dronecanConfigMutable()->gpsNodeId = 20; /* reconfigure without reboot */
+    sendFix2(20, 500000000);
+
+    EXPECT_EQ(gpsSolDRV.llh.lat, 50000000)
+        << "node 20 matches the newly configured gpsNodeId but is stuck rejected "
+           "because activeGpsNodeId was never released";
+}
+
 /* GPS-8: End-to-end wiring check. GPS-3 above calls dronecanGpsOnNodeEvicted()
  * directly and only proves that function works in isolation - it would still
  * pass even if process1HzTasks() never called it. This test drives the real
