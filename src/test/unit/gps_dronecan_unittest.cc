@@ -415,3 +415,82 @@ TEST_F(DroneCANGpsHealthGuardTest, StaleNodeEvictionThroughOneHzTaskReleasesGpsL
         << "process1HzTasks() evicted node 10 but never told the GPS layer, "
            "so the lock was never released";
 }
+
+/* =========================================================================
+ * dronecanGpsIsHealthy() coverage (GPS-15 … GPS-20)
+ *
+ * None of the tests above ever call dronecanGpsIsHealthy() directly - the
+ * function the "health guard" is named for had no direct coverage at all.
+ * These pin its behavior across every filter-on/off x node
+ * present/absent/unhealthy/evicted combination the third review pass asked
+ * to double check.
+ * ========================================================================= */
+
+/* GPS-15: no filter, no node has ever locked in -> unhealthy */
+TEST_F(DroneCANGpsHealthGuardTest, IsHealthy_NoFilterNoActiveNode_ReturnsFalse)
+{
+    EXPECT_FALSE(dronecanGpsIsHealthy());
+}
+
+/* GPS-16: no filter, active node is healthy -> healthy */
+TEST_F(DroneCANGpsHealthGuardTest, IsHealthy_NoFilterHealthyActiveNode_ReturnsTrue)
+{
+    setNodeHealth(10, UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK);
+    sendFix2(10, 400000000); /* locks activeGpsNodeId = 10 */
+
+    EXPECT_TRUE(dronecanGpsIsHealthy());
+}
+
+/* GPS-17: no filter, active node evicted -> unhealthy again */
+TEST_F(DroneCANGpsHealthGuardTest, IsHealthy_NoFilterActiveNodeEvicted_ReturnsFalse)
+{
+    setNodeHealth(10, UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK);
+    sendFix2(10, 400000000);
+    ASSERT_TRUE(dronecanGpsIsHealthy());
+
+    dronecanGpsOnNodeEvicted(10);
+
+    EXPECT_FALSE(dronecanGpsIsHealthy());
+}
+
+/* GPS-18: static filter configured, configured node is healthy in the table
+ * -> healthy, regardless of whether any Fix2/Auxiliary message has been
+ * processed yet (dronecanGpsIsHealthy() checks the configured gpsNodeId
+ * directly, not activeGpsNodeId, when a filter is set). */
+TEST_F(DroneCANGpsHealthGuardTest, IsHealthy_FilterConfiguredHealthyNode_ReturnsTrue)
+{
+    dronecanConfigMutable()->gpsNodeId = 15;
+    setNodeHealth(15, UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK);
+
+    EXPECT_TRUE(dronecanGpsIsHealthy());
+}
+
+/* GPS-19: static filter configured, configured node reports ERROR health -> unhealthy.
+ * A different, healthy node (20) is planted as activeGpsNodeId first so this
+ * only passes if the configured gpsNodeId (15) is actually being consulted -
+ * if the code incorrectly fell back to activeGpsNodeId, it would see node 20
+ * (healthy) and wrongly return true instead of false. */
+TEST_F(DroneCANGpsHealthGuardTest, IsHealthy_FilterConfiguredErrorHealthNode_ReturnsFalse)
+{
+    setNodeHealth(20, UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK);
+    sendFix2(20, 100000000); /* locks activeGpsNodeId = 20, a healthy decoy */
+
+    dronecanConfigMutable()->gpsNodeId = 15;
+    setNodeHealth(15, UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR);
+
+    EXPECT_FALSE(dronecanGpsIsHealthy());
+}
+
+/* GPS-20: static filter configured, configured node has never sent NodeStatus
+ * -> unhealthy (fails conservative: no info means "can't confirm healthy",
+ * not "assume healthy"). Same healthy-decoy-on-activeGpsNodeId setup as
+ * GPS-19, so this can't pass merely because activeGpsNodeId defaults to 0. */
+TEST_F(DroneCANGpsHealthGuardTest, IsHealthy_FilterConfiguredNodeNeverSeen_ReturnsFalse)
+{
+    setNodeHealth(20, UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK);
+    sendFix2(20, 100000000); /* locks activeGpsNodeId = 20, a healthy decoy */
+
+    dronecanConfigMutable()->gpsNodeId = 15; /* node 15 never added to nodeTable */
+
+    EXPECT_FALSE(dronecanGpsIsHealthy());
+}

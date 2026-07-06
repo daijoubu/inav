@@ -134,7 +134,7 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
         groundCourse += 2 * M_PIf;
     }
     gpsSolDRV.groundCourse = RADIANS_TO_DECIDEGREES(groundCourse);
-   
+
     if (pgnssFix2->pdop > 0){
         gpsSolDRV.hdop = gpsConstrainHDOP(pgnssFix2->pdop * 100); // Only update if valid.
     } else if((9999 > lastHDOP) && (lastHDOP > 0)) {
