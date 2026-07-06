@@ -8,16 +8,32 @@
  * Auxiliary as no-ops instead of linking the real gps_dronecan.c.
  *
  * Coverage:
- *   GPS-1  First node to report Fix2 data locks in as the active node
- *   GPS-2  A second node's Fix2 data is ignored while the first is active
- *   GPS-3  dronecanGpsOnNodeEvicted() on the active node releases the lock,
- *          allowing a different node's data through afterward
- *   GPS-4  dronecanGpsOnNodeEvicted() on an unrelated node ID is a no-op —
- *          the active lock is untouched
- *   GPS-5  Data from a node whose NodeStatus health is ERROR is rejected
- *          even before any node has locked in
- *   GPS-6  dronecan_gps_node_id static filter rejects non-matching sources
- *   GPS-7  dronecan_gps_node_id static filter accepts the configured source
+ *   GPS-1   First node to report Fix2 data locks in as the active node
+ *   GPS-2   A second node's Fix2 data is ignored while the first is active
+ *   GPS-3   dronecanGpsOnNodeEvicted() on the active node releases the lock,
+ *           allowing a different node's data through afterward
+ *   GPS-4   dronecanGpsOnNodeEvicted() on an unrelated node ID is a no-op —
+ *           the active lock is untouched
+ *   GPS-5   Data from a node whose NodeStatus health is ERROR is rejected
+ *           even before any node has locked in
+ *   GPS-6   dronecan_gps_node_id static filter rejects non-matching sources
+ *   GPS-7   dronecan_gps_node_id static filter accepts the configured source
+ *   GPS-8   Reconfiguring dronecan_gps_node_id at runtime to a different node
+ *           than the one currently locked in takes effect immediately
+ *   GPS-9   parseGnssTime(): UTC standard conversion
+ *   GPS-10  parseGnssTime(): GPS standard leap-second offset
+ *   GPS-11  parseGnssTime(): TAI standard leap-second offset
+ *   GPS-12  parseGnssTime(): GPS/TAI standards reject NUM_LEAP_SECONDS_UNKNOWN
+ *   GPS-13  parseGnssTime(): UAVCAN_TIMESTAMP_UNKNOWN rejects immediately
+ *   GPS-14  End-to-end: a stale node purged by process1HzTasks()'s real 1Hz
+ *           task releases the GPS lock, not just dronecanGpsOnNodeEvicted()
+ *           called directly
+ *   GPS-15  dronecanGpsIsHealthy(): no filter, no active node -> false
+ *   GPS-16  dronecanGpsIsHealthy(): no filter, healthy active node -> true
+ *   GPS-17  dronecanGpsIsHealthy(): no filter, active node evicted -> false
+ *   GPS-18  dronecanGpsIsHealthy(): filter configured, healthy node -> true
+ *   GPS-19  dronecanGpsIsHealthy(): filter configured, ERROR-health node -> false
+ *   GPS-20  dronecanGpsIsHealthy(): filter configured, node never seen -> false
  */
 
 #include "gtest/gtest.h"
@@ -265,7 +281,7 @@ TEST_F(DroneCANGpsHealthGuardTest, StaticNodeIdFilterAcceptsMatchingSource)
     EXPECT_EQ(gpsSolDRV.llh.lat, 40000000);
 }
 
-/* GPS-9: Reconfiguring dronecan_gps_node_id at runtime to a node other than
+/* GPS-8: Reconfiguring dronecan_gps_node_id at runtime to a node other than
  * the one currently locked in by first-over-fence must take effect
  * immediately, not get stuck rejecting the newly configured node forever.
  * This is the scenario the second review pass caught: node 10 locks in
@@ -285,7 +301,7 @@ TEST_F(DroneCANGpsHealthGuardTest, ReconfiguringNodeIdWhileLockedToOtherNode)
 }
 
 /* =========================================================================
- * parseGnssTime coverage (GPS-10 … GPS-14)
+ * parseGnssTime coverage (GPS-9 … GPS-13)
  *
  * makeFix2() defaults gnss_timestamp.usec to UAVCAN_TIMESTAMP_UNKNOWN, so
  * none of the tests above ever exercise the UTC/GPS/TAI conversion branches
@@ -308,7 +324,7 @@ static void expectGpsSolTimeMatches(time_t expected_unix_s)
     EXPECT_EQ(gpsSolDRV.time.seconds, (uint8_t)t->tm_sec);
 }
 
-/* GPS-10: UTC standard converts usec directly to unix seconds, no leap-second offset */
+/* GPS-9: UTC standard converts usec directly to unix seconds, no leap-second offset */
 TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUtcStandardPopulatesDate)
 {
     const uint64_t epoch_s = 1700000000ULL;
@@ -323,7 +339,7 @@ TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUtcStandardPopulatesDate)
     expectGpsSolTimeMatches((time_t)epoch_s);
 }
 
-/* GPS-11: GPS standard applies UTC = GPS - leap_seconds + 9 per the DSDL comment */
+/* GPS-10: GPS standard applies UTC = GPS - leap_seconds + 9 per the DSDL comment */
 TEST_F(DroneCANGpsHealthGuardTest, GnssTimeGpsStandardAppliesLeapSecondOffset)
 {
     const uint64_t gps_epoch_s = 1700000000ULL;
@@ -339,7 +355,7 @@ TEST_F(DroneCANGpsHealthGuardTest, GnssTimeGpsStandardAppliesLeapSecondOffset)
     expectGpsSolTimeMatches((time_t)(gps_epoch_s - leap_seconds + 9));
 }
 
-/* GPS-12: TAI standard applies UTC = TAI - leap_seconds - 10 per the DSDL comment */
+/* GPS-11: TAI standard applies UTC = TAI - leap_seconds - 10 per the DSDL comment */
 TEST_F(DroneCANGpsHealthGuardTest, GnssTimeTaiStandardAppliesLeapSecondOffset)
 {
     const uint64_t tai_epoch_s = 1700000000ULL;
@@ -355,7 +371,7 @@ TEST_F(DroneCANGpsHealthGuardTest, GnssTimeTaiStandardAppliesLeapSecondOffset)
     expectGpsSolTimeMatches((time_t)(tai_epoch_s - leap_seconds - 10));
 }
 
-/* GPS-13: GPS/TAI standards require num_leap_seconds; UNKNOWN must reject rather
+/* GPS-12: GPS/TAI standards require num_leap_seconds; UNKNOWN must reject rather
  * than silently compute a wrong offset. */
 TEST_F(DroneCANGpsHealthGuardTest, GnssTimeGpsStandardWithUnknownLeapSecondsRejected)
 {
@@ -370,7 +386,7 @@ TEST_F(DroneCANGpsHealthGuardTest, GnssTimeGpsStandardWithUnknownLeapSecondsReje
     EXPECT_FALSE(gpsSolDRV.flags.validTime);
 }
 
-/* GPS-14: usec == UAVCAN_TIMESTAMP_UNKNOWN rejects immediately, regardless of
+/* GPS-13: usec == UAVCAN_TIMESTAMP_UNKNOWN rejects immediately, regardless of
  * time_standard - this is the default makeFix2() takes in every other test,
  * so pin it explicitly here rather than leaving it only implicit. */
 TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUnknownTimestampRejected)
@@ -383,7 +399,7 @@ TEST_F(DroneCANGpsHealthGuardTest, GnssTimeUnknownTimestampRejected)
     EXPECT_FALSE(gpsSolDRV.flags.validTime);
 }
 
-/* GPS-8: End-to-end wiring check. GPS-3 above calls dronecanGpsOnNodeEvicted()
+/* GPS-14: End-to-end wiring check. GPS-3 above calls dronecanGpsOnNodeEvicted()
  * directly and only proves that function works in isolation - it would still
  * pass even if process1HzTasks() never called it. This test drives the real
  * path: a node goes stale in the node table, dronecanUpdate() runs its 1Hz
