@@ -81,7 +81,17 @@ bool isHardwareHealthy(void) { return true; }
 void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix *p) { (void)p; }
 void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 *p) { (void)p; }
 void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliary *p) { (void)p; }
-void dronecanBatterySensorReceiveInfo(struct uavcan_equipment_power_BatteryInfo *p) { (void)p; }
+void dronecanGpsOnNodeEvicted(uint8_t nodeID) { (void)nodeID; }
+
+/* Recording stub — tests assert on call count / last-received battery_id to
+   verify handle_BatteryInfo()'s dronecan_battery_id filter without needing
+   the real battery sensor subsystem linked in. */
+static int  batteryInfoReceivedCount = 0;
+static uint8_t batteryInfoLastId = 0;
+void dronecanBatterySensorReceiveInfo(struct uavcan_equipment_power_BatteryInfo *p) {
+    batteryInfoReceivedCount++;
+    batteryInfoLastId = p->battery_id;
+}
 
 /* STM32 CAN driver stubs */
 int16_t canardSTM32CAN1_Init(uint32_t b) { (void)b; return CANARD_OK; }
@@ -168,6 +178,25 @@ static CanardRxTransfer makeExecuteOpcodeTransfer(
     xfer.data_type_id   = UAVCAN_PROTOCOL_PARAM_EXECUTEOPCODE_RESPONSE_ID;
     xfer.source_node_id = source_node_id;
     xfer.transfer_id    = transfer_id;
+    xfer.payload_head   = buf;
+    xfer.payload_len    = (uint16_t)len;
+    return xfer;
+}
+
+static CanardRxTransfer makeBatteryInfoTransfer(
+        uint8_t source_node_id, uint8_t battery_id, uint8_t *buf)
+{
+    struct uavcan_equipment_power_BatteryInfo info;
+    memset(&info, 0, sizeof(info));
+    info.battery_id = battery_id;
+
+    uint32_t len = uavcan_equipment_power_BatteryInfo_encode(&info, buf);
+
+    CanardRxTransfer xfer;
+    memset(&xfer, 0, sizeof(xfer));
+    xfer.transfer_type  = CanardTransferTypeBroadcast;
+    xfer.data_type_id   = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID;
+    xfer.source_node_id = source_node_id;
     xfer.payload_head   = buf;
     xfer.payload_len    = (uint16_t)len;
     return xfer;
@@ -467,6 +496,9 @@ protected:
         memset(&dronecanAsyncSlot, 0, sizeof(dronecanAsyncSlot));
         dronecanAsyncSlot.state = DRONECAN_ASYNC_IDLE;
         mock_time_ms = 0;
+        batteryInfoReceivedCount = 0;
+        batteryInfoLastId = 0;
+        dronecanConfigMutable()->batteryId = 0;
         canardInit(&ins, memory_pool, sizeof(memory_pool),
                    onTransferReceived, shouldAcceptTransfer, NULL);
         canardSetLocalNodeID(&ins, 1);
@@ -841,4 +873,41 @@ TEST_F(DroneCANDispatchTest, AsyncRequest_RejectedWhilePending)
 
     EXPECT_FALSE(dronecanAsyncRequest(DRONECAN_SERVICE_RESTART_NODE, 42, nullptr));
     EXPECT_EQ(dronecanAsyncSlot.state, DRONECAN_ASYNC_PENDING);
+}
+
+/* =========================================================================
+ * dronecan_battery_id filter tests (GAP-B1 … GAP-B3)
+ * ========================================================================= */
+
+/* GAP-B1: batteryId == 0 (default) accepts messages from any battery_id */
+TEST_F(DroneCANDispatchTest, BatteryInfo_NoFilter_AcceptsAnyBatteryId)
+{
+    CanardRxTransfer xfer = makeBatteryInfoTransfer(5, 7, buf);
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(batteryInfoReceivedCount, 1);
+    EXPECT_EQ(batteryInfoLastId, 7u);
+}
+
+/* GAP-B2: non-matching battery_id is rejected before reaching the sensor */
+TEST_F(DroneCANDispatchTest, BatteryInfo_FilterRejectsNonMatchingId)
+{
+    dronecanConfigMutable()->batteryId = 3;
+
+    CanardRxTransfer xfer = makeBatteryInfoTransfer(5, 7, buf); /* battery_id=7 != configured 3 */
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(batteryInfoReceivedCount, 0) << "message with mismatched battery_id must not reach dronecanBatterySensorReceiveInfo";
+}
+
+/* GAP-B3: matching battery_id is accepted */
+TEST_F(DroneCANDispatchTest, BatteryInfo_FilterAcceptsMatchingId)
+{
+    dronecanConfigMutable()->batteryId = 3;
+
+    CanardRxTransfer xfer = makeBatteryInfoTransfer(5, 3, buf);
+    onTransferReceived(&ins, &xfer);
+
+    EXPECT_EQ(batteryInfoReceivedCount, 1);
+    EXPECT_EQ(batteryInfoLastId, 3u);
 }

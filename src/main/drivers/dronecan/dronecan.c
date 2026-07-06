@@ -855,6 +855,9 @@ static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) 
 		LOG_DEBUG(CAN, "BatteryInfo decode failed");
 		return;
 	}
+    if (dronecanConfig()->batteryId != 0 && batteryInfo.battery_id != dronecanConfig()->batteryId) {
+        return;
+    }
     dronecanBatterySensorReceiveInfo(&batteryInfo);
 }
 
