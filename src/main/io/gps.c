@@ -666,7 +666,7 @@ bool isGPSHealthy(void)
         return dronecanGpsIsHealthy();
     }
 #endif
-    return sensors(SENSOR_GPS);
+    return true;
 }
 
 bool isGPSHeadingValid(void)

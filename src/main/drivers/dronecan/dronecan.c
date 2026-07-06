@@ -350,6 +350,7 @@ static void processCanardTxQueueSafe(void) {
 }
 
 static void logNodeHealth(uint8_t nodeID, uint8_t health) {
+    UNUSED(nodeID); // only referenced inside LOG_* macros, which expand to nothing when USE_LOG is undefined
     switch (health) {
     case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK:
         LOG_INFO(CAN, "Node %d health: OK", nodeID);
