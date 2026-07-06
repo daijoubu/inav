@@ -12,6 +12,9 @@
  *   GAP-N4  33rd unique node → table overflow rejected, count stays at 32
  *   GAP-S1  shouldAcceptTransfer: NodeStatus ✓, GetNodeInfo request ✓,
  *           GetNodeInfo response ✓, unknown ID ✗
+ *   GAP-B1  dronecan_battery_id == 0 (default) accepts any battery_id
+ *   GAP-B2  Non-matching battery_id is rejected before reaching the sensor
+ *   GAP-B3  Matching battery_id is accepted
  */
 
 #include "gtest/gtest.h"
