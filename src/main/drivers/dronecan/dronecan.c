@@ -637,7 +637,6 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
 
 // Canard Handlers and Senders
 
-
 /*
   send the 1Hz NodeStatus message. This is what allows a node to show
   up in the DroneCAN GUI tool and in the flight controller logs
@@ -833,7 +832,6 @@ static void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer
     dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary, transfer->source_node_id);
 }
 
-
 static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
     if (gpsConfig()->provider != GPS_DRONECAN) return;
@@ -845,7 +843,6 @@ static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
 	}
     dronecanGPSReceiveGNSSFix2(&gnssFix2, transfer->source_node_id);
 }
-
 
 static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
 	UNUSED(ins);
@@ -940,7 +937,6 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
                 handle_NodeStatus(ins, transfer);
                 break;
 
-
             case UAVCAN_EQUIPMENT_GNSS_AUXILIARY_ID:
                 handle_GNSSAuxiliary(ins, transfer);
                 break;
@@ -957,7 +953,6 @@ static void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) 
             case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
                 handle_GNSSFix2(ins, transfer);
                 break;
-
 
             case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
                 handle_BatteryInfo(ins, transfer);

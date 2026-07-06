@@ -97,7 +97,7 @@ void dronecanGPSReceiveGNSSFix2(const struct uavcan_equipment_gnss_Fix2 * pgnssF
         return;
     }
     if (activeGpsNodeId == 0) {
-        activeGpsNodeId = sourceNodeId;  // first-over-fence; see dronecanGPSReceiveGNSSFix
+        activeGpsNodeId = sourceNodeId;  // first-over-fence: lock onto whichever node reports first, to avoid two GPS nodes racing to write gpsSolDRV
     } else if (sourceNodeId != activeGpsNodeId) {
         return;
     }
@@ -150,7 +150,7 @@ void dronecanGPSReceiveGNSSAuxiliary(const struct uavcan_equipment_gnss_Auxiliar
         return;
     }
     if (activeGpsNodeId == 0) {
-        activeGpsNodeId = sourceNodeId;  // first-over-fence; see dronecanGPSReceiveGNSSFix
+        activeGpsNodeId = sourceNodeId;  // first-over-fence: lock onto whichever node reports first, to avoid two GPS nodes racing to write gpsSolDRV
     } else if (sourceNodeId != activeGpsNodeId) {
         return;
     }
@@ -182,50 +182,49 @@ bool dronecanGpsIsHealthy(void)
 }
 
 static void parseGnssTime(uint64_t usec, uint8_t time_standard, uint8_t num_leap_seconds)
-  {
-      if (usec == UAVCAN_TIMESTAMP_UNKNOWN) {
-          gpsSolDRV.flags.validTime = false;
-          return;
-      }
-      time_t unix_s;
-      switch (time_standard) {
-      case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_UTC:
-          unix_s = (time_t)(usec / 1000000ULL);
-          break;
-      case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_GPS:
-          if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
-              gpsSolDRV.flags.validTime = false;
-              return;
-          }
-          // DSDL: GPS epoch is µs since GPS time at UTC 1970-01-01; UTC = GPS - leap_seconds + 9
-          unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds + 9;
-          break;
-      case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_TAI:
-          if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
-              gpsSolDRV.flags.validTime = false;
-              return;
-          }
-          // DSDL: TAI epoch is µs since TAI time at UTC 1970-01-01; UTC = TAI - leap_seconds - 10
-          unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds - 10;
-          break;
-      default:
-          gpsSolDRV.flags.validTime = false;
-          return;
-      }
-      struct tm *t = gmtime(&unix_s);
-      if (!t) {
-          gpsSolDRV.flags.validTime = false;
-          return;
-      }
-      gpsSolDRV.time.year    = (uint16_t)(t->tm_year + 1900);
-      gpsSolDRV.time.month   = (uint8_t)(t->tm_mon + 1);
-      gpsSolDRV.time.day     = (uint8_t)t->tm_mday;
-      gpsSolDRV.time.hours   = (uint8_t)t->tm_hour;
-      gpsSolDRV.time.minutes = (uint8_t)t->tm_min;
-      gpsSolDRV.time.seconds = (uint8_t)t->tm_sec;
-      gpsSolDRV.time.millis  = (uint16_t)((usec % 1000000ULL) / 1000ULL);
-      gpsSolDRV.flags.validTime = true;
-  }
-
+{
+    if (usec == UAVCAN_TIMESTAMP_UNKNOWN) {
+        gpsSolDRV.flags.validTime = false;
+        return;
+    }
+    time_t unix_s;
+    switch (time_standard) {
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_UTC:
+        unix_s = (time_t)(usec / 1000000ULL);
+        break;
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_GPS:
+        if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
+            gpsSolDRV.flags.validTime = false;
+            return;
+        }
+        // DSDL: GPS epoch is µs since GPS time at UTC 1970-01-01; UTC = GPS - leap_seconds + 9
+        unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds + 9;
+        break;
+    case UAVCAN_EQUIPMENT_GNSS_FIX2_GNSS_TIME_STANDARD_TAI:
+        if (num_leap_seconds == UAVCAN_EQUIPMENT_GNSS_FIX2_NUM_LEAP_SECONDS_UNKNOWN) {
+            gpsSolDRV.flags.validTime = false;
+            return;
+        }
+        // DSDL: TAI epoch is µs since TAI time at UTC 1970-01-01; UTC = TAI - leap_seconds - 10
+        unix_s = (time_t)(usec / 1000000ULL) - num_leap_seconds - 10;
+        break;
+    default:
+        gpsSolDRV.flags.validTime = false;
+        return;
+    }
+    struct tm *t = gmtime(&unix_s);
+    if (!t) {
+        gpsSolDRV.flags.validTime = false;
+        return;
+    }
+    gpsSolDRV.time.year    = (uint16_t)(t->tm_year + 1900);
+    gpsSolDRV.time.month   = (uint8_t)(t->tm_mon + 1);
+    gpsSolDRV.time.day     = (uint8_t)t->tm_mday;
+    gpsSolDRV.time.hours   = (uint8_t)t->tm_hour;
+    gpsSolDRV.time.minutes = (uint8_t)t->tm_min;
+    gpsSolDRV.time.seconds = (uint8_t)t->tm_sec;
+    gpsSolDRV.time.millis  = (uint16_t)((usec % 1000000ULL) / 1000ULL);
+    gpsSolDRV.flags.validTime = true;
+}
 
 #endif

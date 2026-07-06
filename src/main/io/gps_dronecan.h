@@ -26,8 +26,6 @@
 
 #ifdef USE_DRONECAN
 
-#define USE_GPS_PROTO_DRONECAN
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <dronecan_msgs.h>
