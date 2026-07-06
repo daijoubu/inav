@@ -481,7 +481,7 @@ bool dronecanAsyncRequest(uint8_t service_id, uint8_t node_id, const void *paylo
     dronecanUnmaskTxISR();
 
     if (res < 0) {
-        LOG_DEBUG(CAN, "dronecanAsyncRequest: service %u node %u failed: %d", service_id, node_id, res);
+        LOG_WARNING(CAN, "dronecanAsyncRequest: service %u node %u failed: %d", service_id, node_id, res);
         return false;
     }
 
@@ -518,7 +518,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_GETNODEINFO: {
             struct uavcan_protocol_GetNodeInfoResponse resp;
             if (uavcan_protocol_GetNodeInfoResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "GetNodeInfoResponse decode failed");
+                LOG_WARNING(CAN, "GetNodeInfoResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
@@ -543,7 +543,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_PARAM_GETSET: {
             struct uavcan_protocol_param_GetSetResponse resp;
             if (uavcan_protocol_param_GetSetResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "ParamGetSetResponse decode failed");
+                LOG_WARNING(CAN, "ParamGetSetResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
@@ -612,7 +612,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_EXECUTE_OPCODE: {
             struct uavcan_protocol_param_ExecuteOpcodeResponse resp;
             if (uavcan_protocol_param_ExecuteOpcodeResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "ExecuteOpcodeResponse decode failed");
+                LOG_WARNING(CAN, "ExecuteOpcodeResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
@@ -624,7 +624,7 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
         case DRONECAN_SERVICE_RESTART_NODE: {
             struct uavcan_protocol_RestartNodeResponse resp;
             if (uavcan_protocol_RestartNodeResponse_decode(transfer, &resp)) {
-                LOG_DEBUG(CAN, "RestartNodeResponse decode failed");
+                LOG_WARNING(CAN, "RestartNodeResponse decode failed");
                 dronecanAsyncSlot.state = DRONECAN_ASYNC_ERROR;
                 return;
             }
