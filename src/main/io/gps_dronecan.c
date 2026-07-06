@@ -89,7 +89,19 @@ static uint8_t gpsMapFixType(uint8_t dronecanFixType)
 
 /* Shared acceptance gate for GNSS Fix2/Auxiliary messages: rejects
  * unhealthy nodes and non-matching gpsNodeId, then applies the
- * first-over-fence lock so two GPS nodes can't race to write gpsSolDRV. */
+ * first-over-fence lock so two GPS nodes can't race to write gpsSolDRV.
+ *
+ * No automatic failover to a second GPS node: if the locked-in node degrades
+ * to ERROR/CRITICAL health but keeps broadcasting NodeStatus (so it's never
+ * evicted by process1HzTasks()'s stale-node purge), its data - and any other
+ * node's data - stays rejected until it recovers or eventually goes silent
+ * long enough to be evicted. dronecanGpsIsHealthy() correctly reports
+ * unhealthy in this state, so arming/OSD reflect it, but there's no
+ * redundant-sensor handoff. INAV doesn't have a general redundant-sensor
+ * story, and picking one node over another when both are transmitting isn't
+ * something to improvise here - it needs its own design (how to detect which
+ * is actually reliable, how it's configured, etc). Deliberately out of scope
+ * for this health guard. */
 static bool dronecanGpsAcceptSource(uint8_t sourceNodeId)
 {
     const dronecanNodeInfo_t *node = dronecanGetNodeByID(sourceNodeId);
