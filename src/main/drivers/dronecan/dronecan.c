@@ -11,6 +11,7 @@
 #if defined(USE_DRONECAN)
 
 #include "io/gps.h"
+#include "io/gps_dronecan.h"
 #include "sensors/battery_sensor_dronecan.h"
 
 #include "config/parameter_group.h"
@@ -32,15 +33,16 @@ CanardInstance canard;
 static uint8_t memory_pool[1024];
 static struct uavcan_protocol_NodeStatus node_status;
 
-PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 1);
 
 PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .nodeID = SETTING_DRONECAN_NODE_ID_DEFAULT,
     .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT,
-    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT
+    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT,
+    .batteryId = SETTING_DRONECAN_BATTERY_ID_DEFAULT,
+    .gpsNodeId = SETTING_DRONECAN_GPS_NODE_ID_DEFAULT
 );
 
-static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
 dronecanAsyncSlot_t dronecanAsyncSlot = { .state = DRONECAN_ASYNC_IDLE };
 
 #ifdef UNIT_TEST
@@ -48,11 +50,15 @@ uint8_t activeNodeCount = 0;
 dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
 static volatile uint32_t txErrCount = 0;
+dronecanState_e dronecanState = STATE_DRONECAN_INIT;
+timeUs_t next_1hz_service_at = 0;
 #else
 static uint8_t activeNodeCount = 0;
 static dronecanNodeInfo_t nodeTable[DRONECAN_MAX_NODES];
 static uint32_t busOffCount = 0;
 static volatile uint32_t txErrCount = 0;
+static dronecanState_e dronecanState = STATE_DRONECAN_INIT;
+static timeUs_t next_1hz_service_at = 0;
 #endif
 
 // Mask/unmask the CAN TX ISR while the main loop enqueues frames into libcanard's TX queue.
@@ -142,7 +148,6 @@ void dronecanInit(void)
 
 void dronecanUpdate(timeUs_t currentTimeUs)
 {
-    static timeUs_t next_1hz_service_at = 0;
     static timeUs_t busoffTimeUs = 0;
     CanardCANFrame rx_frame;
     int numMessagesToProcess = 0;
@@ -349,6 +354,26 @@ static void processCanardTxQueueSafe(void) {
     }
 }
 
+static void logNodeHealth(uint8_t nodeID, uint8_t health) {
+    UNUSED(nodeID); // only referenced inside LOG_* macros, which expand to nothing when USE_LOG is undefined
+    switch (health) {
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_OK:
+        LOG_INFO(CAN, "Node %d health: OK", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_WARNING:
+        LOG_WARNING(CAN, "Node %d health: WARNING", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_ERROR:
+        LOG_ERROR(CAN, "Node %d health: ERROR", nodeID);
+        break;
+    case UAVCAN_PROTOCOL_NODESTATUS_HEALTH_CRITICAL:
+        LOG_ERROR(CAN, "Node %d health: CRITICAL", nodeID);
+        break;
+    default:
+        break;
+    }
+}
+
 // NOTE: All canard handlers and senders are based on this reference: https://dronecan.github.io/Specification/7._List_of_standard_data_types/
 // Alternatively, you can look at the corresponding generated header file in the dsdlc_generated folder
 
@@ -367,99 +392,6 @@ const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID) {
     return findNodeByID(nodeID);
 }
 
-void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
-    UNUSED(ins);
-    
-    struct uavcan_protocol_NodeStatus nodeStatus;
-
-	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
-		LOG_WARNING(CAN, "NodeStatus decode failed");
-		return;
-	}
-
-	uint8_t nodeID = transfer->source_node_id;
-    dronecanNodeInfo_t *node = findNodeByID(nodeID);
-    if (node) {
-        node->health = nodeStatus.health;
-        node->mode = nodeStatus.mode;
-        node->uptime_sec = nodeStatus.uptime_sec;
-        node->vendor_status_code = nodeStatus.vendor_specific_status_code;
-        node->last_seen_ms = millis();
-        return;
-    }
-    // new node
-    if (activeNodeCount < DRONECAN_MAX_NODES) {
-        memset(&nodeTable[activeNodeCount], 0, sizeof(dronecanNodeInfo_t));
-        nodeTable[activeNodeCount].nodeID = nodeID;
-        nodeTable[activeNodeCount].health = nodeStatus.health;
-        nodeTable[activeNodeCount].mode = nodeStatus.mode;
-        nodeTable[activeNodeCount].uptime_sec = nodeStatus.uptime_sec;
-        nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
-        nodeTable[activeNodeCount].last_seen_ms = millis();
-        activeNodeCount++;
-
-    } else {
-        LOG_WARNING(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeID);
-    }
-
-}
-void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-    struct uavcan_equipment_gnss_Auxiliary gnssAuxiliary;
-
-	if (uavcan_equipment_gnss_Auxiliary_decode(transfer, &gnssAuxiliary)) {
-		LOG_WARNING(CAN, "GNSSAuxiliary decode failed");
-		return;
-	}
-    dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary);
-}
-
-void handle_GNSSFix(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-    struct uavcan_equipment_gnss_Fix gnssFix;
-
-	if (uavcan_equipment_gnss_Fix_decode(transfer, &gnssFix)) {
-		LOG_WARNING(CAN, "GNSSFix decode failed");
-		return;
-	}
-    dronecanGPSReceiveGNSSFix(&gnssFix);
-}
-
-void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-    struct uavcan_equipment_gnss_Fix2 gnssFix2;
-
-	if (uavcan_equipment_gnss_Fix2_decode(transfer, &gnssFix2)) {
-		LOG_WARNING(CAN, "GNSSFix2 decode failed");
-		return;
-	}
-    dronecanGPSReceiveGNSSFix2(&gnssFix2);
-}
-
-void handle_GNSSRCTMStream(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    if (gpsConfig()->provider != GPS_DRONECAN) return;
-    struct uavcan_equipment_gnss_RTCMStream gnssRTCMStream;
-
-	if (uavcan_equipment_gnss_RTCMStream_decode(transfer, &gnssRTCMStream)) {
-		LOG_WARNING(CAN, "RTCMStream decode failed");
-		return;
-	}
-}
-
-void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
-	UNUSED(ins);
-    struct uavcan_equipment_power_BatteryInfo batteryInfo;
-
-	if (uavcan_equipment_power_BatteryInfo_decode(transfer, &batteryInfo)) {
-		LOG_WARNING(CAN, "BatteryInfo decode failed");
-		return;
-	}
-    dronecanBatterySensorReceiveInfo(&batteryInfo);
-}
 
 /*
     Send an asynchronous request for data from a dronecan node such as
@@ -719,49 +651,6 @@ static void handle_AsyncServiceResponse(CanardInstance *ins, CanardRxTransfer *t
 
 // Canard Handlers and Senders
 
-// TODO: All the data in here is temporary for testing. If actually need to send valid data, edit accordingly.
-void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
-	uint8_t buffer[UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_MAX_SIZE];
-	struct uavcan_protocol_GetNodeInfoResponse pkt;
-
-	memset(&pkt, 0, sizeof(pkt));
-
-	node_status.uptime_sec = millis() / 1000ULL;
-	pkt.status = node_status;
-
-	// fill in your major and minor firmware version
-	pkt.software_version.major = FC_VERSION_MAJOR;
-	pkt.software_version.minor = FC_VERSION_MINOR;
-	pkt.software_version.optional_field_flags = FC_VERSION_PATCH_LEVEL;
-	pkt.software_version.vcs_commit = strtoul(shortGitRevision, NULL, 16); // need to convert string to integer put git hash in here
-
-	// should fill in hardware version
-	pkt.hardware_version.major = 1;
-	pkt.hardware_version.minor = 0;
-
-	// just setting all 16 bytes to 1 for testing
-	canardSTM32GetUniqueID(pkt.hardware_version.unique_id);
-
-	strncpy((char*)pkt.name.data, FC_FIRMWARE_NAME, sizeof(pkt.name.data));
-	pkt.name.len = strnlen((char*)pkt.name.data, sizeof(pkt.name.data));
-
-	uint16_t total_size = uavcan_protocol_GetNodeInfoResponse_encode(&pkt, buffer);
-
-	dronecanMaskTxISR();
-	canardRequestOrRespond(ins,
-						   transfer->source_node_id,
-						   UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE,
-						   UAVCAN_PROTOCOL_GETNODEINFO_ID,
-						   &transfer->transfer_id,
-						   transfer->priority,
-						   CanardResponse,
-						   &buffer[0],
-						   total_size);
-	dronecanUnmaskTxISR();
-}
-
-// Canard Senders
-
 /*
   send the 1Hz NodeStatus message. This is what allows a node to show
   up in the DroneCAN GUI tool and in the flight controller logs
@@ -820,6 +709,7 @@ static void process1HzTasks(timeUs_t timestamp_usec)
     // Remove nodes that have stopped broadcasting NodeStatus
     for (uint8_t i = 0; i < activeNodeCount; ) {
         if (millis() - nodeTable[i].last_seen_ms > DRONECAN_NODE_STALE_TIMEOUT_MS) {
+            dronecanGpsOnNodeEvicted(nodeTable[i].nodeID);
             nodeTable[i] = nodeTable[activeNodeCount - 1];
             activeNodeCount--;
         } else {
@@ -892,15 +782,143 @@ bool shouldAcceptTransfer(const CanardInstance *ins,
         case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_FIX2_SIGNATURE;
             return true;
-        case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
-            *out_data_type_signature = UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_SIGNATURE;
-            return true;
         case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
             *out_data_type_signature = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_SIGNATURE;
             return true;
         }
     }
     return false;
+}
+
+// Canard Handlers ( Many have code copied from libcanard esc_node example: https://github.com/dronecan/libcanard/blob/master/examples/ESCNode/esc_node.c )
+
+#ifdef UNIT_TEST
+void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
+#else
+static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
+#endif
+    UNUSED(ins);
+    struct uavcan_protocol_NodeStatus nodeStatus;
+
+	if (uavcan_protocol_NodeStatus_decode(transfer, &nodeStatus)) {
+		LOG_DEBUG(CAN, "NodeStatus decode failed");
+		return;
+	}
+
+	uint8_t nodeId = transfer->source_node_id;
+    dronecanNodeInfo_t *node = findNodeByID(nodeId);
+    if (node) {
+        if (node->health != nodeStatus.health) {
+            logNodeHealth(nodeId, nodeStatus.health);
+        }
+        node->health = nodeStatus.health;
+        node->mode = nodeStatus.mode;
+        node->uptime_sec = nodeStatus.uptime_sec;
+        node->vendor_status_code = nodeStatus.vendor_specific_status_code;
+        node->last_seen_ms = millis();
+        return;
+    }
+    // new node
+    if (activeNodeCount < DRONECAN_MAX_NODES) {
+        memset(&nodeTable[activeNodeCount], 0, sizeof(dronecanNodeInfo_t));
+        nodeTable[activeNodeCount].nodeID = nodeId;
+        nodeTable[activeNodeCount].health = nodeStatus.health;
+        nodeTable[activeNodeCount].mode = nodeStatus.mode;
+        nodeTable[activeNodeCount].uptime_sec = nodeStatus.uptime_sec;
+        nodeTable[activeNodeCount].vendor_status_code = nodeStatus.vendor_specific_status_code;
+        nodeTable[activeNodeCount].last_seen_ms = millis();
+        logNodeHealth(nodeId, nodeStatus.health);
+        activeNodeCount++;
+
+    } else {
+        LOG_DEBUG(CAN, "DroneCAN: node table full (%u nodes), ignoring node %u", DRONECAN_MAX_NODES, nodeId);
+    }
+}
+
+static void handle_GNSSAuxiliary(CanardInstance *ins, CanardRxTransfer *transfer) {
+	UNUSED(ins);
+    if (gpsConfig()->provider != GPS_DRONECAN) return;
+    struct uavcan_equipment_gnss_Auxiliary gnssAuxiliary;
+
+	if (uavcan_equipment_gnss_Auxiliary_decode(transfer, &gnssAuxiliary)) {
+		LOG_DEBUG(CAN, "GNSSAuxiliary decode failed");
+		return;
+	}
+    dronecanGPSReceiveGNSSAuxiliary(&gnssAuxiliary, transfer->source_node_id);
+}
+
+static void handle_GNSSFix2(CanardInstance *ins, CanardRxTransfer *transfer) {
+	UNUSED(ins);
+    if (gpsConfig()->provider != GPS_DRONECAN) return;
+    struct uavcan_equipment_gnss_Fix2 gnssFix2;
+
+	if (uavcan_equipment_gnss_Fix2_decode(transfer, &gnssFix2)) {
+		LOG_DEBUG(CAN, "GNSSFix2 decode failed");
+		return;
+	}
+    dronecanGPSReceiveGNSSFix2(&gnssFix2, transfer->source_node_id);
+}
+
+static void handle_BatteryInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
+	UNUSED(ins);
+    struct uavcan_equipment_power_BatteryInfo batteryInfo;
+
+	if (uavcan_equipment_power_BatteryInfo_decode(transfer, &batteryInfo)) {
+		LOG_DEBUG(CAN, "BatteryInfo decode failed");
+		return;
+	}
+    if (dronecanConfig()->batteryId != 0 && batteryInfo.battery_id != dronecanConfig()->batteryId) {
+        return;
+    }
+    dronecanBatterySensorReceiveInfo(&batteryInfo);
+}
+
+/*
+  handle a GetNodeInfo request
+*/
+
+// TODO: All the data in here is temporary for testing. If actually need to send valid data, edit accordingly.
+static void handle_GetNodeInfo(CanardInstance *ins, CanardRxTransfer *transfer) {
+	uint8_t buffer[UAVCAN_PROTOCOL_GETNODEINFO_RESPONSE_MAX_SIZE];
+	struct uavcan_protocol_GetNodeInfoResponse pkt;
+
+	memset(&pkt, 0, sizeof(pkt));
+
+	node_status.uptime_sec = millis() / 1000ULL;
+	pkt.status = node_status;
+
+	// fill in your major and minor firmware version
+	pkt.software_version.major = FC_VERSION_MAJOR;
+	pkt.software_version.minor = FC_VERSION_MINOR;
+	pkt.software_version.optional_field_flags = FC_VERSION_PATCH_LEVEL;
+	pkt.software_version.vcs_commit = strtoul(shortGitRevision, NULL, 16); // need to convert string to integer put git hash in here
+
+	// should fill in hardware version
+	pkt.hardware_version.major = 1;
+	pkt.hardware_version.minor = 0;
+
+	// just setting all 16 bytes to 1 for testing
+	canardSTM32GetUniqueID(pkt.hardware_version.unique_id);
+
+	strncpy((char*)pkt.name.data, FC_FIRMWARE_NAME, sizeof(pkt.name.data));
+	pkt.name.len = strnlen((char*)pkt.name.data, sizeof(pkt.name.data));
+
+	uint16_t total_size = uavcan_protocol_GetNodeInfoResponse_encode(&pkt, buffer);
+
+    dronecanMaskTxISR();
+    const int16_t rr_res = canardRequestOrRespond(ins,
+						   transfer->source_node_id,
+						   UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE,
+						   UAVCAN_PROTOCOL_GETNODEINFO_ID,
+						   &transfer->transfer_id,
+						   transfer->priority,
+						   CanardResponse,
+						   &buffer[0],
+						   total_size);
+    dronecanUnmaskTxISR();
+    if (rr_res < 0) {
+        LOG_DEBUG(CAN, "GetNodeInfo response failed: %d", rr_res);
+    }
 }
 
 /*
@@ -942,16 +960,18 @@ void onTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer) {
                 handle_GNSSAuxiliary(ins, transfer);
                 break;
 
-            case UAVCAN_EQUIPMENT_GNSS_FIX_ID:
-                handle_GNSSFix(ins, transfer);
+            case UAVCAN_EQUIPMENT_GNSS_FIX_ID: {
+                static bool warned = false;
+                if (!warned) {
+                    LOG_WARNING(CAN, "Node %d: Fix (deprecated) ignored, node must send Fix2",
+                                transfer->source_node_id);
+                    warned = true;
+                }
                 break;
+            }
 
             case UAVCAN_EQUIPMENT_GNSS_FIX2_ID:
                 handle_GNSSFix2(ins, transfer);
-                break;
-
-            case UAVCAN_EQUIPMENT_GNSS_RTCMSTREAM_ID:
-                handle_GNSSRCTMStream(ins, transfer);
                 break;
 
             case UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID:
