@@ -559,12 +559,13 @@ static void handle_NodeStatus(CanardInstance *ins, CanardRxTransfer *transfer) {
         nodeTable[activeNodeCount].last_seen_ms = millis();
         activeNodeCount++;
 
-        dronecanMaskTxISR();
-        const int16_t res = canardRequestOrRespond(ins, nodeId,
-            UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
-            &nodeTable[activeNodeCount - 1].getNodeInfo_transfer_id,
-            CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
-        dronecanUnmaskTxISR();
+        int16_t res;
+        ATOMIC_BLOCK(NVIC_PRIO_CAN) {
+            res = canardRequestOrRespond(ins, nodeId,
+                UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE, UAVCAN_PROTOCOL_GETNODEINFO_ID,
+                &nodeTable[activeNodeCount - 1].getNodeInfo_transfer_id,
+                CANARD_TRANSFER_PRIORITY_LOW, CanardRequest, NULL, 0);
+        }
         if (res < 0) {
             LOG_DEBUG(CAN, "GetNodeInfo request failed for node %u: %d", nodeId, res);
         }
