@@ -38,6 +38,7 @@ extern "C" {
 #include "fc/runtime_config.h"
 #include "sensors/diagnostics.h"
 #include "build/version.h"
+#include "common/log.h"
 
 /* Public API we test against */
 #include "drivers/dronecan/dronecan.h"
@@ -73,6 +74,14 @@ gpsConfig_t gpsConfig_Copy;
 
 /* Hardware health — dronecan.c reads this in send_NodeStatus */
 bool isHardwareHealthy(void) { return true; }
+
+/* Logging — USE_LOG is unconditionally defined by target/common.h (pulled in
+   via platform.h), so LOG_ERROR/LOG_DEBUG in dronecan.c expand to real _logf()
+   calls. Stubbed as a no-op rather than linking common/log.c, which would pull
+   in drivers/serial.h, msp/msp.h, msp/msp_serial.h, fc/config.h and
+   config/feature.h — unrelated production dependencies this test has no need
+   for. Tests don't assert on logging output. */
+void _logf(logTopic_e topic, unsigned level, const char *fmt, ...) { (void)topic; (void)level; (void)fmt; }
 
 /* GPS and battery DroneCAN receive stubs */
 void dronecanGPSReceiveGNSSFix(const struct uavcan_equipment_gnss_Fix *p) { (void)p; }
