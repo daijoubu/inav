@@ -39,6 +39,7 @@ extern "C" {
 #include "drivers/dronecan/dronecan_dna_server.h"
 #include "config/parameter_group.h"
 #include "config/parameter_group_ids.h"
+#include "common/log.h"
 
 /* Global canard instance — extern-declared in dronecan_dna_server.h.
    PG_REGISTER in dronecan_dna_server.c already emits dnaServerData_System
@@ -51,6 +52,13 @@ uint32_t millis(void) { return mock_time_ms; }
 
 /* saveConfig — called when a new allocation is persisted */
 void saveConfig(void) {}
+
+/* Logging — USE_LOG is unconditionally defined by target/common.h (pulled in
+   via platform.h), so LOG_ERROR/LOG_WARNING/LOG_DEBUG in dronecan_dna_server.c
+   expand to real _logf() calls. Stubbed as a no-op rather than linking
+   common/log.c, which would pull in unrelated production dependencies
+   (serial.h, msp.h, msp_serial.h, fc/config.h, config/feature.h). */
+void _logf(logTopic_e topic, unsigned level, const char *fmt, ...) { (void)topic; (void)level; (void)fmt; }
 
 /* Controllable live node table — populated by tests that need it (DNA-13).
    All other tests leave mock_node_count = 0 so the allocator sees no live nodes. */
