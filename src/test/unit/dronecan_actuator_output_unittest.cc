@@ -32,6 +32,19 @@
  *          mapping), command_type=PWM, command_value=raw microsecond value.
  *   ACT-2  Servo value held constant -> ArrayCommand keeps being broadcast
  *          at the 25 Hz keepalive floor (watchdog liveness heartbeat).
+ *   ACT-3  More than 15 (the DSDL per-message limit) simultaneously dirty
+ *          channels split correctly across two ArrayCommand messages, with
+ *          every channel's actuator_id/value intact. Regression coverage
+ *          for a real bug where the DSDL's fixed 15-element array was
+ *          indexed by raw channel number instead of pack position,
+ *          corrupting memory whenever more than 15 of 18 channels were
+ *          dirty at once.
+ *   ACT-4  A servo commanded to exactly 0, and a channel dronecanWriteServo()
+ *          is never called for at all, are both excluded from broadcasts -
+ *          regression coverage for two related bugs: sending a literal 0
+ *          command (INAV's local-PWM no-signal sentinel, not a real
+ *          DroneCAN value) on disarm, and the floor check force-broadcasting
+ *          channels outside the mixer's configured range.
  */
 
 #include "gtest/gtest.h"
@@ -131,6 +144,21 @@ static CanardInstance rxIns;
 static int receivedArrayCommandCount = 0;
 static struct uavcan_equipment_actuator_ArrayCommand lastArrayCommand;
 
+/* Cumulative per-actuator_id tracking across every message received during
+   a test, not just the last one - needed to verify a batched send (multiple
+   ArrayCommand messages in the same cycle) covers every channel correctly. */
+#define MAX_TRACKED_ACTUATOR_ID 32
+static bool seenActuatorId[MAX_TRACKED_ACTUATOR_ID];
+static float seenActuatorValue[MAX_TRACKED_ACTUATOR_ID];
+static uint8_t seenActuatorCommandType[MAX_TRACKED_ACTUATOR_ID];
+
+static void resetActuatorTracking(void)
+{
+    memset(seenActuatorId, 0, sizeof(seenActuatorId));
+    memset(seenActuatorValue, 0, sizeof(seenActuatorValue));
+    memset(seenActuatorCommandType, 0, sizeof(seenActuatorCommandType));
+}
+
 static bool rxShouldAccept(const CanardInstance *ins,
                             uint64_t *out_data_type_signature,
                             uint16_t data_type_id,
@@ -157,6 +185,14 @@ static void rxOnTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer
     if (!uavcan_equipment_actuator_ArrayCommand_decode(transfer, &msg)) {
         lastArrayCommand = msg;
         receivedArrayCommandCount++;
+        for (uint8_t i = 0; i < msg.commands.len; i++) {
+            const struct uavcan_equipment_actuator_Command *cmd = &msg.commands.data[i];
+            if (cmd->actuator_id < MAX_TRACKED_ACTUATOR_ID) {
+                seenActuatorId[cmd->actuator_id] = true;
+                seenActuatorValue[cmd->actuator_id] = cmd->command_value;
+                seenActuatorCommandType[cmd->actuator_id] = cmd->command_type;
+            }
+        }
     }
 }
 
@@ -203,6 +239,7 @@ protected:
 
         receivedArrayCommandCount = 0;
         memset(&lastArrayCommand, 0, sizeof(lastArrayCommand));
+        resetActuatorTracking();
     }
 
     /* Advance the DroneCAN task by `totalMs`, in `stepMs` increments, keeping
@@ -344,4 +381,96 @@ TEST_F(DroneCANActuatorOutputTest, UnchangedServoStillBroadcastsAtFloorRate)
         << "expected >=4 ArrayCommand keepalive broadcasts (25Hz floor) "
            "over 200ms of an unchanged servo value; got "
         << receivedArrayCommandCount;
+}
+
+/* =========================================================================
+ * ACT-3: More than one message's worth of dirty channels (the DSDL limit is
+ * ACTUATOR_COMMANDS_PER_MESSAGE=15 per ArrayCommand) must be split across
+ * two broadcasts in the same cycle, covering every channel correctly - not
+ * truncated, corrupted, or silently dropped.
+ *
+ * Regression coverage: an earlier version of sendActuatorCommandBatch()
+ * indexed the DSDL's fixed 15-element commands.data[] array by the raw
+ * (0-17) channel/bit-scan index instead of a separate pack-position
+ * counter, so any channel found at position >=15 wrote past the end of the
+ * array - a stack buffer overflow that only 16+ simultaneously dirty
+ * channels could trigger.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, MoreThanFifteenDirtyChannelsSplitAcrossTwoBatches)
+{
+    /* Distinct, later time base than every prior test - see the comment on
+       UnchangedServoStillBroadcastsAtFloorRate for why this matters. */
+    simTimeUs = 300000000ULL; /* 300s */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    /* Let any stale forced-dirty state left over from a prior test's
+       statics drain out before measuring. */
+    runTaskFor(30, 2);
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    /* All 18 channels become dirty in the same instant - more than fits in
+       one ArrayCommand message. */
+    for (uint8_t servo = 0; servo < 18; servo++) {
+        dronecanWriteServo(servo, (uint16_t)(1000 + servo));
+    }
+
+    /* One actuatorUpdateInterval (20ms) tick is enough - both batches are
+       sent back-to-back within the same dronecanUpdate() call once due. */
+    runTaskFor(30, 2);
+
+    EXPECT_EQ(receivedArrayCommandCount, 2)
+        << "expected exactly 2 ArrayCommand messages (15 + 3) for 18 "
+           "simultaneously-dirty channels, got " << receivedArrayCommandCount;
+
+    for (uint8_t servo = 0; servo < 18; servo++) {
+        uint8_t actuatorId = servo + 1;
+        ASSERT_TRUE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
+            << ") never appeared in any broadcast ArrayCommand";
+        EXPECT_FLOAT_EQ(seenActuatorValue[actuatorId], (float)(1000 + servo))
+            << "actuator_id " << (int)actuatorId << " had the wrong command_value";
+        EXPECT_EQ(seenActuatorCommandType[actuatorId], UAVCAN_EQUIPMENT_ACTUATOR_COMMAND_COMMAND_TYPE_PWM);
+    }
+}
+
+/* =========================================================================
+ * ACT-4: A servo commanded to exactly 0 must never appear in a broadcast -
+ * 0 is INAV's local-PWM "no pulse" sentinel (e.g. the tricopter-unarmed-
+ * servo case), not a real command value a DroneCAN node should receive. A
+ * channel dronecanWriteServo() is never called for at all (simulating a
+ * servo outside the mixer's compacted range) must be excluded the same
+ * way, since both cases collapse to the same value==0 condition by design.
+ *
+ * Regression coverage for two related bugs: broadcasting a literal
+ * command_value=0 on disarm, and the floor check force-broadcasting
+ * channels the mixer never actually configured (actuatorFloorWindowReset()
+ * used to mark all 18 slots due regardless of whether dronecanWriteServo()
+ * had ever touched them).
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, ZeroValueAndNeverWrittenChannelsAreExcluded)
+{
+    simTimeUs = 400000000ULL; /* 400s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    dronecanWriteServo(0, 1234); /* a real, nonzero command - should broadcast */
+    dronecanWriteServo(1, 0);    /* explicit zero - must be excluded */
+    /* servo index 2 (actuator_id 3) is never touched at all - must also be excluded */
+
+    runTaskFor(30, 2);
+
+    EXPECT_TRUE(seenActuatorId[1]) << "actuator_id 1 (a real nonzero command) never appeared";
+    EXPECT_FLOAT_EQ(seenActuatorValue[1], 1234.0f);
+
+    EXPECT_FALSE(seenActuatorId[2])
+        << "actuator_id 2 (servo 1, explicitly commanded to 0) appeared in a "
+           "broadcast - 0 should be treated as no-signal, not a real command";
+
+    EXPECT_FALSE(seenActuatorId[3])
+        << "actuator_id 3 (servo 2, never written at all) appeared in a "
+           "broadcast - unused channels must stay silent";
 }
