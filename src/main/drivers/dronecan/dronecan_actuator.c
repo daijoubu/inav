@@ -47,6 +47,12 @@ void dronecanWriteServo(uint8_t servo, uint16_t value)
     }
 }
 
+void dronecanServoInit(uint16_t updateRate)
+{
+    if((updateRate >= 25) && (updateRate <= 498))
+        actuatorUpdateInterval = 1000000UL / updateRate;
+}
+
 void dronecanActuatorUpdate(timeUs_t currentTimeUs)
 {
     static timeUs_t next_safety_broadcast_at = 0;

@@ -186,6 +186,11 @@ void servosInit(void)
      */
     computeServoCount();
     loadCustomServoMixer();
+    
+    //Tell dronecan how often to send updates.
+    #ifdef USE_DRONECAN
+    dronecanServoInit(servoConfig()->servoPwmRate);
+    #endif
 
     // If there are servo rules after all, update variables
     if (mixerUsesServos) {
