@@ -34,7 +34,7 @@ typedef struct actuatorCommand_s {
 static actuatorCommand_t actuatorCommands[ACTUATOR_CHANNEL_COUNT];
 
 static void sendActuatorCommandArray(const actuatorCommand_t *data, uint8_t len);
-static void sendActuatorCommandBatch(const actuatorCommand_t *data, uint8_t len, int8_t *next);
+static bool sendActuatorCommandBatch(const actuatorCommand_t *data, uint8_t len, int8_t *next);
 static void actuatorFloorWindowReset(void);
 
 void dronecanWriteServo(uint8_t servo, uint16_t value)
@@ -121,10 +121,11 @@ static void actuatorFloorWindowReset(void)
 /*
   Pack up to ACTUATOR_COMMANDS_PER_MESSAGE dirty channels (resuming the
   bitarray scan from *next) into one ArrayCommand message and broadcast it.
-  *next is left at -1 once the scan runs out of dirty channels, or at the
-  last channel packed if the batch filled up and more may remain.
+  Returns true if the batch filled up to the per-message cap (more dirty
+  channels may remain), false if the scan ran out of dirty channels first
+  (nothing left to send).
 */
-static void sendActuatorCommandBatch(const actuatorCommand_t *data, uint8_t len, int8_t *next)
+static bool sendActuatorCommandBatch(const actuatorCommand_t *data, uint8_t len, int8_t *next)
 {
     struct uavcan_equipment_actuator_ArrayCommand commandArray;
     uint8_t buffer[UAVCAN_EQUIPMENT_ACTUATOR_ARRAYCOMMAND_MAX_SIZE];
@@ -169,6 +170,8 @@ static void sendActuatorCommandBatch(const actuatorCommand_t *data, uint8_t len,
             LOG_WARNING(CAN, "ActuatorCommandArray broadcast failed: %d", bc_res);
         }
     }
+
+    return i == ACTUATOR_COMMANDS_PER_MESSAGE;
 }
 
 /*
@@ -180,10 +183,9 @@ static void sendActuatorCommandArray(const actuatorCommand_t *data, uint8_t len)
 {
     int8_t next = 0;
 
-    sendActuatorCommandBatch(data, len, &next);
-    if (next >= 0) {
-        // First batch filled up (didn't stop because it ran out of dirty
-        // channels) - there may be more left to send.
+    if (sendActuatorCommandBatch(data, len, &next)) {
+        // First batch hit the per-message cap - more dirty channels may
+        // remain (as opposed to running out of dirty channels mid-scan).
         sendActuatorCommandBatch(data, len, &next);
     }
 }
