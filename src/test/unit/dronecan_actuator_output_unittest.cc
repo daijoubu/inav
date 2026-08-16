@@ -45,6 +45,21 @@
  *          command (INAV's local-PWM no-signal sentinel, not a real
  *          DroneCAN value) on disarm, and the floor check force-broadcasting
  *          channels outside the mixer's configured range.
+ *   ACT-5  A realistic middle count (6 of 18 possible channels dirty,
+ *          interspersed with untouched channels) fits in a single
+ *          ArrayCommand broadcast, and only the dirty channels appear.
+ *          Fills the gap between the ACT-1 (single channel) and ACT-3
+ *          (all 18 channels) extremes with the common real-world case of a
+ *          handful of CAN servos on a partially-populated channel set.
+ *   ACT-6  Exactly 15 simultaneously-dirty channels (the DSDL per-message
+ *          cap, ACTUATOR_COMMANDS_PER_MESSAGE) fit in exactly ONE
+ *          ArrayCommand broadcast - boundary coverage one below the split
+ *          threshold exercised by ACT-3/ACT-7.
+ *   ACT-7  Exactly 16 simultaneously-dirty channels - the minimal case that
+ *          actually requires a split - produces exactly two ArrayCommand
+ *          broadcasts, the first carrying the full 15-command cap and the
+ *          second carrying exactly the 1 remaining channel (not truncated,
+ *          not silently dropped, not reordered).
  */
 
 #include "gtest/gtest.h"
@@ -152,11 +167,19 @@ static bool seenActuatorId[MAX_TRACKED_ACTUATOR_ID];
 static float seenActuatorValue[MAX_TRACKED_ACTUATOR_ID];
 static uint8_t seenActuatorCommandType[MAX_TRACKED_ACTUATOR_ID];
 
+/* commands.len of each ArrayCommand message received during a test, in
+   arrival order - needed to verify a split lands the expected way (e.g.
+   "15 then 1", not some other split or an extra empty message) rather than
+   just checking every channel eventually shows up somewhere. */
+#define MAX_TRACKED_BATCHES 8
+static uint8_t receivedBatchLengths[MAX_TRACKED_BATCHES];
+
 static void resetActuatorTracking(void)
 {
     memset(seenActuatorId, 0, sizeof(seenActuatorId));
     memset(seenActuatorValue, 0, sizeof(seenActuatorValue));
     memset(seenActuatorCommandType, 0, sizeof(seenActuatorCommandType));
+    memset(receivedBatchLengths, 0, sizeof(receivedBatchLengths));
 }
 
 static bool rxShouldAccept(const CanardInstance *ins,
@@ -184,6 +207,9 @@ static void rxOnTransferReceived(CanardInstance *ins, CanardRxTransfer *transfer
     memset(&msg, 0, sizeof(msg));
     if (!uavcan_equipment_actuator_ArrayCommand_decode(transfer, &msg)) {
         lastArrayCommand = msg;
+        if (receivedArrayCommandCount < MAX_TRACKED_BATCHES) {
+            receivedBatchLengths[receivedArrayCommandCount] = (uint8_t)msg.commands.len;
+        }
         receivedArrayCommandCount++;
         for (uint8_t i = 0; i < msg.commands.len; i++) {
             const struct uavcan_equipment_actuator_Command *cmd = &msg.commands.data[i];
@@ -473,4 +499,212 @@ TEST_F(DroneCANActuatorOutputTest, ZeroValueAndNeverWrittenChannelsAreExcluded)
     EXPECT_FALSE(seenActuatorId[3])
         << "actuator_id 3 (servo 2, never written at all) appeared in a "
            "broadcast - unused channels must stay silent";
+}
+
+/* =========================================================================
+ * Helper for ACT-5/6/7: force every one of the 18 channels to a known,
+ * deterministic value (0) before a boundary test sets up its own exact
+ * dirty-channel count.
+ *
+ * Why this is needed: actuatorCommands[] and the actuatorDirty/
+ * actuatorUpdateAtCheck bitarrays are private statics in
+ * dronecan_actuator.c that persist for the lifetime of this whole test
+ * binary, not just one TEST_F. Worse, the 25Hz floor mechanism
+ * (actuatorFloorWindowReset()) unconditionally re-marks *every* one of the
+ * 18 channels dirty on every ~20ms floor-check tick, regardless of whether
+ * this test ever touched them - so any channel a *previous* TEST_F left at
+ * a nonzero value keeps getting swept into every subsequent batch forever
+ * (harmlessly, since floor re-dirtying of an untouched channel is by
+ * design - see ACT-2). A boundary test that needs an *exact* simultaneously
+ * -dirty count (15, 16) cannot tolerate that leftover contamination: it
+ * would silently inflate the real count above what the test intends.
+ * Driving every channel through dronecanWriteServo(servo, 0) first makes
+ * every channel's real value 0 again, so leftover/floor-driven dirty bits
+ * for channels outside this test's target set are skipped without
+ * consuming an output slot (see the `data[*next].value != 0` guard in
+ * sendActuatorCommandBatch) - exactly like ACT-4's "never written" case.
+ * ========================================================================= */
+static void zeroAllActuatorChannels(void)
+{
+    for (uint8_t servo = 0; servo < 18; servo++) {
+        dronecanWriteServo(servo, 0);
+    }
+}
+
+/* =========================================================================
+ * ACT-5: A realistic middle count - 6 of the 18 possible channels dirty at
+ * once, interspersed with channels that are never touched - fits in a
+ * single ArrayCommand broadcast, and only the dirty channels appear.
+ *
+ * ACT-1 covers a single dirty channel and ACT-3 covers all 18 (split into
+ * two messages); this fills the gap with the common real-world shape - a
+ * handful of CAN servos on a board that doesn't populate every slot -
+ * where "does it fit in one message, and are unused channels correctly
+ * silent among the dirty ones" hadn't been exercised together.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, SixOfEighteenChannelsDirtyFitsInSingleBatch)
+{
+    simTimeUs = 500000000ULL; /* 500s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    zeroAllActuatorChannels(); /* guarantee a known, deterministic baseline */
+
+    const uint8_t dirtyServos[] = {0, 3, 6, 9, 12, 17};
+    const uint16_t dirtyValues[] = {1100, 1200, 1300, 1400, 1500, 1600};
+    for (size_t i = 0; i < sizeof(dirtyServos); i++) {
+        dronecanWriteServo(dirtyServos[i], dirtyValues[i]);
+    }
+
+    runTaskFor(30, 2);
+
+    EXPECT_EQ(receivedArrayCommandCount, 1)
+        << "6 simultaneously-dirty channels out of 18 should fit in exactly "
+           "1 ArrayCommand message, got " << receivedArrayCommandCount;
+
+    for (size_t i = 0; i < sizeof(dirtyServos); i++) {
+        uint8_t actuatorId = dirtyServos[i] + 1;
+        ASSERT_TRUE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)dirtyServos[i]
+            << ") never appeared in the broadcast ArrayCommand";
+        EXPECT_FLOAT_EQ(seenActuatorValue[actuatorId], (float)dirtyValues[i])
+            << "actuator_id " << (int)actuatorId << " had the wrong command_value";
+    }
+
+    /* Every channel NOT in dirtyServos must stay silent, including channels
+       sitting between the dirty ones (e.g. servo 1, 2, 4, 5...). */
+    bool isDirty[18] = {false};
+    for (size_t i = 0; i < sizeof(dirtyServos); i++) {
+        isDirty[dirtyServos[i]] = true;
+    }
+    for (uint8_t servo = 0; servo < 18; servo++) {
+        if (isDirty[servo]) {
+            continue;
+        }
+        uint8_t actuatorId = servo + 1;
+        EXPECT_FALSE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
+            << ") was never written in this test but appeared in the broadcast";
+    }
+}
+
+/* =========================================================================
+ * ACT-6: Exactly 15 simultaneously-dirty channels (ACTUATOR_COMMANDS_PER_
+ * MESSAGE, the DSDL per-message cap) must fit in exactly ONE ArrayCommand
+ * broadcast - not two, and not an extra (even empty) wire message.
+ *
+ * Boundary coverage one channel below the split threshold exercised by
+ * ACT-3/ACT-7. sendActuatorCommandBatch()'s pack loop exits this case
+ * because the pack count reached the per-message cap (15), not because the
+ * dirty-bit scan ran dry - the same code path sendActuatorCommandArray()
+ * uses to decide "maybe more to send, try a second batch". This test
+ * confirms that even though a second, internal sendActuatorCommandBatch()
+ * call is triggered (a genuinely ambiguous case: filling the cap exactly
+ * looks identical to filling the cap with more still queued, until the
+ * second batch actually scans), the "only send if there is data to send"
+ * guard means it produces zero wire traffic - so receivedArrayCommandCount
+ * must stay at 1.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, ExactlyFifteenDirtyChannelsFitInOneMessage)
+{
+    simTimeUs = 600000000ULL; /* 600s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    zeroAllActuatorChannels(); /* guarantee a known, deterministic baseline */
+
+    for (uint8_t servo = 0; servo < 15; servo++) {
+        dronecanWriteServo(servo, (uint16_t)(1900 + servo));
+    }
+
+    runTaskFor(30, 2);
+
+    EXPECT_EQ(receivedArrayCommandCount, 1)
+        << "exactly 15 simultaneously-dirty channels (the per-message cap) "
+           "must produce exactly 1 ArrayCommand message on the wire, got "
+        << receivedArrayCommandCount;
+
+    if (receivedArrayCommandCount >= 1) {
+        EXPECT_EQ(receivedBatchLengths[0], 15)
+            << "the single ArrayCommand message should carry all 15 commands";
+    }
+
+    for (uint8_t servo = 0; servo < 15; servo++) {
+        uint8_t actuatorId = servo + 1;
+        ASSERT_TRUE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
+            << ") never appeared in the broadcast ArrayCommand";
+        EXPECT_FLOAT_EQ(seenActuatorValue[actuatorId], (float)(1900 + servo))
+            << "actuator_id " << (int)actuatorId << " had the wrong command_value";
+    }
+
+    for (uint8_t servo = 15; servo < 18; servo++) {
+        uint8_t actuatorId = servo + 1;
+        EXPECT_FALSE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
+            << ") was never written in this test but appeared in the broadcast";
+    }
+}
+
+/* =========================================================================
+ * ACT-7: Exactly 16 simultaneously-dirty channels - one more than the
+ * per-message cap, the minimal case that actually requires a split - must
+ * produce exactly two ArrayCommand messages: the first carrying the full
+ * 15-command cap, the second carrying exactly the 1 remaining channel.
+ *
+ * Complements ACT-3 (18 dirty, split 15+3) by pinning down the smallest
+ * possible split (15+1) and, via receivedBatchLengths[], verifying the
+ * split lands exactly "15 then 1" rather than just checking that both
+ * channels eventually show up somewhere across however many messages were
+ * sent - which would not catch e.g. a message-count regression that still
+ * happened to preserve every actuator_id/value.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, ExactlySixteenDirtyChannelsSplitFifteenThenOne)
+{
+    simTimeUs = 700000000ULL; /* 700s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    zeroAllActuatorChannels(); /* guarantee a known, deterministic baseline */
+
+    for (uint8_t servo = 0; servo < 16; servo++) {
+        dronecanWriteServo(servo, (uint16_t)(1500 + servo));
+    }
+
+    runTaskFor(30, 2);
+
+    ASSERT_EQ(receivedArrayCommandCount, 2)
+        << "exactly 16 simultaneously-dirty channels must produce exactly 2 "
+           "ArrayCommand messages (15 + 1), got " << receivedArrayCommandCount;
+
+    EXPECT_EQ(receivedBatchLengths[0], 15)
+        << "the first ArrayCommand message should carry the full 15-command cap";
+    EXPECT_EQ(receivedBatchLengths[1], 1)
+        << "the second ArrayCommand message should carry exactly the 1 "
+           "remaining channel, not be dropped or padded";
+
+    for (uint8_t servo = 0; servo < 16; servo++) {
+        uint8_t actuatorId = servo + 1;
+        ASSERT_TRUE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
+            << ") never appeared in any broadcast ArrayCommand";
+        EXPECT_FLOAT_EQ(seenActuatorValue[actuatorId], (float)(1500 + servo))
+            << "actuator_id " << (int)actuatorId << " had the wrong command_value";
+    }
+
+    for (uint8_t servo = 16; servo < 18; servo++) {
+        uint8_t actuatorId = servo + 1;
+        EXPECT_FALSE(seenActuatorId[actuatorId])
+            << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
+            << ") was never written in this test but appeared in a broadcast";
+    }
 }
