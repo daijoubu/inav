@@ -40,6 +40,9 @@
 #include "drivers/time.h"
 #include "drivers/gimbal_common.h"
 #include "drivers/headtracker_common.h"
+#ifdef USE_DRONECAN
+#include "drivers/dronecan/dronecan.h"
+#endif
 
 #include "fc/config.h"
 #include "fc/fc_core.h"
@@ -297,10 +300,17 @@ void writeServos(void)
 
     for (int i = minServoIndex; i <= maxServoIndex; i++) {
         if (zeroServoValue) {
-            pwmWriteServo(servoIndex++, 0);
+            pwmWriteServo(servoIndex, 0);
+            #ifdef USE_DRONECAN
+            dronecanWriteServo(servoIndex, 0);
+            #endif
         } else {
-            pwmWriteServo(servoIndex++, servo[i]);
+            pwmWriteServo(servoIndex, servo[i]);
+            #ifdef USE_DRONECAN
+            dronecanWriteServo(servoIndex, servo[i]);
+            #endif
         }
+        servoIndex++;
     }
 #endif
 }

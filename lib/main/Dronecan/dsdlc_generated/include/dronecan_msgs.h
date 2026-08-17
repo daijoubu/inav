@@ -1,4 +1,5 @@
 #pragma once
+#include "ardupilot.indication.SafetyState.h"
 #include "dronecan.protocol.CanStats.h"
 #include "dronecan.protocol.FlexDebug.h"
 #include "dronecan.protocol.GlobalTime.h"

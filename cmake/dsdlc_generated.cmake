@@ -2,7 +2,8 @@
 set(DSDLC_GENERATED_DIR "${MAIN_LIB_DIR}/main/Dronecan/dsdlc_generated")
 
 set(DSDLC_GENERATED_SRC
-    dronecan.protocol.CanStats.c                                
+    ardupilot.indication.SafetyState.c
+    dronecan.protocol.CanStats.c
     dronecan.protocol.FlexDebug.c                               
     dronecan.protocol.GlobalTime.c                              
     dronecan.protocol.Stats.c                                   

@@ -71,10 +71,12 @@ set_property(SOURCE dronecan_getnodeinfo_unittest.cc PROPERTY definitions USE_DR
 # UNIT_TEST exposes activeNodeCount and nodeTable as non-static for SetUp reset.
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY depends
     "drivers/dronecan/dronecan.c"
+    "drivers/dronecan/dronecan_actuator.c"
     "drivers/dronecan/dronecan_async.c"
     "drivers/dronecan/dronecan_node_status.c"
     "drivers/dronecan/dronecan_dna_server.c"
-    "drivers/dronecan/libcanard/canard.c")
+    "drivers/dronecan/libcanard/canard.c"
+    "common/bitarray.c")
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY extra_sources
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.NodeStatus.c"
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_res.c"
@@ -97,10 +99,55 @@ set_property(SOURCE dronecan_application_unittest.cc PROPERTY extra_sources
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Value.c"
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.NumericValue.c"
     "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Empty.c"
-    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c")
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.ArrayCommand.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.Command.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/ardupilot.indication.SafetyState.c")
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY extra_includes
     "../../lib/main/Dronecan/dsdlc_generated/include")
 set_property(SOURCE dronecan_application_unittest.cc PROPERTY definitions
+    USE_DRONECAN CANARD_ENABLE_TAO_OPTION=0
+    FC_VERSION_MAJOR=10 FC_VERSION_MINOR=0 FC_VERSION_PATCH_LEVEL=0)
+
+# DroneCAN actuator output - compiles dronecan.c/dronecan_actuator.c with
+# INAV stubs; see claude/projects/active/feature-dronecan-actuator-control/docs.md
+set_property(SOURCE dronecan_actuator_output_unittest.cc PROPERTY depends
+    "drivers/dronecan/dronecan.c"
+    "drivers/dronecan/dronecan_actuator.c"
+    "drivers/dronecan/dronecan_async.c"
+    "drivers/dronecan/dronecan_node_status.c"
+    "drivers/dronecan/dronecan_dna_server.c"
+    "drivers/dronecan/libcanard/canard.c"
+    "common/bitarray.c")
+set_property(SOURCE dronecan_actuator_output_unittest.cc PROPERTY extra_sources
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.NodeStatus.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_res.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.GetNodeInfo_req.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.SoftwareVersion.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.HardwareVersion.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Fix2.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Fix.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.Auxiliary.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.power.BatteryInfo.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.RTCMStream.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.Timestamp.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.gnss.ECEFPositionVelocity.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.GetSet_req.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.GetSet_res.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.ExecuteOpcode_req.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.ExecuteOpcode_res.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_req.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.RestartNode_res.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Value.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.NumericValue.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.param.Empty.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.protocol.dynamic_node_id.Allocation.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.ArrayCommand.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/uavcan.equipment.actuator.Command.c"
+    "../../lib/main/Dronecan/dsdlc_generated/src/ardupilot.indication.SafetyState.c")
+set_property(SOURCE dronecan_actuator_output_unittest.cc PROPERTY extra_includes
+    "../../lib/main/Dronecan/dsdlc_generated/include")
+set_property(SOURCE dronecan_actuator_output_unittest.cc PROPERTY definitions
     USE_DRONECAN CANARD_ENABLE_TAO_OPTION=0
     FC_VERSION_MAJOR=10 FC_VERSION_MINOR=0 FC_VERSION_PATCH_LEVEL=0)
 

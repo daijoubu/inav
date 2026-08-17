@@ -133,5 +133,6 @@ const dronecanNodeInfo_t *dronecanGetNode(uint8_t index);
 uint32_t dronecanGetBusOffCount(void);
 CanardPoolAllocatorStatistics dronecanGetPoolStats(void);
 const dronecanNodeInfo_t *dronecanGetNodeByID(uint8_t nodeID);
+void dronecanWriteServo(uint8_t servo, uint16_t value);
 
 PG_DECLARE(dronecanConfig_t, dronecanConfig);

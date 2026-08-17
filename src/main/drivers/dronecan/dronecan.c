@@ -26,6 +26,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <dronecan_msgs.h>
+#include "dronecan_actuator.h"
 #include "dronecan_async.h"
 #include "dronecan_dna_server.h"
 #include "dronecan_node_status.h"
@@ -159,13 +160,16 @@ void dronecanUpdate(timeUs_t currentTimeUs)
 		             }
 	             }
              }
+
+            dronecanActuatorUpdate(currentTimeUs);
+
             // Drain any TX frames queued by RX handlers (e.g. GetNodeInfo responses)
             // in the same task cycle so multi-frame transfers complete before timeout.
             processCanardTxQueueSafe();
 
             if (currentTimeUs >= next_1hz_service_at)
             {
-		        next_1hz_service_at += 1000000ULL;
+		        next_1hz_service_at = currentTimeUs + 1000000ULL;
 		        process1HzTasks(currentTimeUs);
                 processCanardTxQueueSafe();
 
