@@ -68,6 +68,20 @@
  *          the enabled channels - disabled channels stay silent even while
  *          interspersed with enabled ones getting real traffic, and enabling
  *          a previously-disabled channel takes effect on its next write.
+ *   ACT-10 Tricopter unarmed-zero case: writeServos() zeroes the tail servo
+ *          while disarmed with tri_unarmed_servo OFF, calling
+ *          dronecanWriteServo(servoIndex, 0) at the same call site as
+ *          pwmWriteServo(servoIndex, 0) (servos.c:302-317). Simulated here
+ *          as a transition from a real, actively-broadcasting value to 0
+ *          (not just a fresh write of 0, which ACT-4 already covers) -
+ *          confirms the channel goes silent and does NOT keep getting
+ *          re-broadcast at its last real value via the 25Hz floor once
+ *          zeroed. Per docs.md's corrected "On arm/disarm" exception: this
+ *          only proves INAV's own side (channel excluded from ArrayCommand)
+ *          - the real-world "actuator reaches its physical neutral" outcome
+ *          additionally depends on the actuator node's own command-timeout
+ *          watchdog and the servo/linkage having a return mechanism,
+ *          neither of which this test (or INAV) controls or can verify.
  */
 
 #include "gtest/gtest.h"
@@ -793,4 +807,63 @@ TEST_F(DroneCANActuatorOutputTest, MixedBitmaskOnlyBroadcastsEnabledChannels)
         << "actuator_id 2 (servo 1) never appeared after enabling its "
            "dronecan_servo_bm bit and writing a new value";
     EXPECT_FLOAT_EQ(seenActuatorValue[2], 1450.0f);
+}
+
+/* =========================================================================
+ * ACT-10: Tricopter unarmed-zero case. writeServos() zeroes the tail servo
+ * while disarmed with tri_unarmed_servo OFF, calling
+ * dronecanWriteServo(servoIndex, 0) at the same call site as
+ * pwmWriteServo(servoIndex, 0) (servos.c:302-317) - this test simulates
+ * that call directly (servos.c/ARMING_FLAG aren't linked into this binary,
+ * per the file header note), driving the transition from a real,
+ * actively-broadcasting value to 0, as arming actually would - not just a
+ * fresh write of 0 from a quiescent state, which ACT-4 already covers.
+ *
+ * This confirms only INAV's own side: the channel is excluded from
+ * ArrayCommand going forward, and critically does NOT keep getting
+ * re-broadcast at its last real (pre-disarm) value via the 25Hz floor once
+ * zeroed - that would repeat the write-vs-send gating gap ACT-9 caught,
+ * just triggered by a value transition instead of a bitmask transition.
+ * The real-world "actuator reaches its physical neutral" outcome per
+ * docs.md's corrected "On arm/disarm" exception additionally depends on
+ * the actuator node's own command-timeout watchdog and the servo/linkage
+ * having a return mechanism - neither of which INAV controls, and neither
+ * of which a unit test can verify.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, TricopterUnarmedZeroExcludesChannelAndStopsFloorRebroadcast)
+{
+    simTimeUs = 1000000000ULL; /* 1000s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    dronecanConfigMutable()->servoOutputBitmask = (1U << 0); /* only the tail servo, servo 0 */
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    /* Armed: tail servo actively reflecting yaw mixer output. */
+    dronecanWriteServo(0, 1650);
+    runTaskFor(30, 2);
+
+    ASSERT_TRUE(seenActuatorId[1]) << "actuator_id 1 (tail servo, armed) never appeared";
+    EXPECT_FLOAT_EQ(seenActuatorValue[1], 1650.0f);
+
+    /* Disarm with tri_unarmed_servo OFF: writeServos() calls
+       dronecanWriteServo(0, 0), same as it calls pwmWriteServo(0, 0). */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+    dronecanWriteServo(0, 0);
+
+    /* 200ms: several floor cycles (40ms period), long enough that a
+       leftover-value re-broadcast bug (like ACT-9's) would surface. */
+    runTaskFor(200, 2);
+
+    EXPECT_EQ(receivedArrayCommandCount, 0)
+        << "no ArrayCommand should be broadcast for the tail servo once "
+           "zeroed by the tricopter unarmed-zero case, but "
+        << receivedArrayCommandCount << " were sent";
+    EXPECT_FALSE(seenActuatorId[1])
+        << "actuator_id 1 (tail servo) appeared in a broadcast after being "
+           "zeroed - either the stale 1650 value leaked out via the floor, "
+           "or a literal command_value=0 was sent (neither is correct: 0 "
+           "means nothing to send, not a real commanded position)";
 }
