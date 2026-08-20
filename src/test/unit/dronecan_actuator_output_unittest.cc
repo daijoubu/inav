@@ -60,6 +60,14 @@
  *          broadcasts, the first carrying the full 15-command cap and the
  *          second carrying exactly the 1 remaining channel (not truncated,
  *          not silently dropped, not reordered).
+ *   ACT-8  A channel whose bit is not set in dronecan_servo_bm never
+ *          broadcasts, even when written a real nonzero value - the
+ *          per-channel enable gate itself. Default is 0 (no channels
+ *          enabled), matching the opt-in-per-servo design in docs.md.
+ *   ACT-9  A mixed bitmask (some channels enabled, some not) broadcasts only
+ *          the enabled channels - disabled channels stay silent even while
+ *          interspersed with enabled ones getting real traffic, and enabling
+ *          a previously-disabled channel takes effect on its next write.
  */
 
 #include "gtest/gtest.h"
@@ -262,6 +270,13 @@ protected:
         memset(&rxIns, 0, sizeof(rxIns));
         canardInit(&rxIns, rxMemPool, sizeof(rxMemPool),
                    rxOnTransferReceived, rxShouldAccept, NULL);
+
+        /* dronecan_servo_bm defaults to 0 (no channels enabled) so DroneCAN
+           actuator output is opt-in per servo - see docs.md. ACT-1..ACT-7
+           test broadcast mechanics (batching, floor/ceiling, zero-exclusion)
+           and assume every channel they touch is enabled; only ACT-8/ACT-9
+           below exercise the gate itself, so they set this per-test instead. */
+        dronecanConfigMutable()->servoOutputBitmask = 0x3FFFFU; /* all 18 channels */
 
         receivedArrayCommandCount = 0;
         memset(&lastArrayCommand, 0, sizeof(lastArrayCommand));
@@ -707,4 +722,75 @@ TEST_F(DroneCANActuatorOutputTest, ExactlySixteenDirtyChannelsSplitFifteenThenOn
             << "actuator_id " << (int)actuatorId << " (servo " << (int)servo
             << ") was never written in this test but appeared in a broadcast";
     }
+}
+
+/* =========================================================================
+ * ACT-8: A channel whose bit is not set in dronecan_servo_bm must never
+ * broadcast, even when commanded a real nonzero value - this is the
+ * per-channel enable gate itself, distinct from ACT-4's value==0 exclusion.
+ * Default is 0 (no channels enabled): DroneCAN actuator output is opt-in
+ * per servo, not broadcast-everything-by-default - see docs.md.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, DisabledChannelNeverBroadcastsEvenWithNonzeroValue)
+{
+    simTimeUs = 800000000ULL; /* 800s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    dronecanConfigMutable()->servoOutputBitmask = 0; /* nothing enabled */
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    dronecanWriteServo(0, 1700); /* a real, nonzero command - but channel disabled */
+
+    runTaskFor(30, 2);
+
+    EXPECT_EQ(receivedArrayCommandCount, 0)
+        << "no ArrayCommand should be broadcast when dronecan_servo_bm has no "
+           "bits set, regardless of servo value";
+    EXPECT_FALSE(seenActuatorId[1])
+        << "actuator_id 1 (servo 0) appeared in a broadcast despite its "
+           "dronecan_servo_bm bit being unset";
+}
+
+/* =========================================================================
+ * ACT-9: A mixed bitmask - some channels enabled, some not - broadcasts only
+ * the enabled channels. Disabled channels stay silent even while enabled
+ * ones carry real, changing traffic in the same cycle, and enabling a
+ * previously-disabled channel takes effect on its next write.
+ * ========================================================================= */
+TEST_F(DroneCANActuatorOutputTest, MixedBitmaskOnlyBroadcastsEnabledChannels)
+{
+    simTimeUs = 900000000ULL; /* 900s: later than every prior test's time base */
+    mock_time_ms = (uint32_t)(simTimeUs / 1000ULL);
+
+    /* Enable servos 0 and 2 (actuator_id 1, 3) only - bits 0 and 2. */
+    dronecanConfigMutable()->servoOutputBitmask = (1U << 0) | (1U << 2);
+    runTaskFor(30, 2); /* let stale state from prior tests drain */
+    receivedArrayCommandCount = 0;
+    resetActuatorTracking();
+
+    dronecanWriteServo(0, 1300); /* enabled */
+    dronecanWriteServo(1, 1400); /* disabled - must stay silent */
+    dronecanWriteServo(2, 1500); /* enabled */
+
+    runTaskFor(30, 2);
+
+    EXPECT_TRUE(seenActuatorId[1]) << "actuator_id 1 (servo 0, enabled) never appeared";
+    EXPECT_FLOAT_EQ(seenActuatorValue[1], 1300.0f);
+    EXPECT_FALSE(seenActuatorId[2])
+        << "actuator_id 2 (servo 1, disabled) appeared in a broadcast";
+    EXPECT_TRUE(seenActuatorId[3]) << "actuator_id 3 (servo 2, enabled) never appeared";
+    EXPECT_FLOAT_EQ(seenActuatorValue[3], 1500.0f);
+
+    /* Enabling servo 1 now must let its next write through. */
+    dronecanConfigMutable()->servoOutputBitmask |= (1U << 1);
+    dronecanWriteServo(1, 1450);
+
+    runTaskFor(30, 2);
+
+    EXPECT_TRUE(seenActuatorId[2])
+        << "actuator_id 2 (servo 1) never appeared after enabling its "
+           "dronecan_servo_bm bit and writing a new value";
+    EXPECT_FLOAT_EQ(seenActuatorValue[2], 1450.0f);
 }
