@@ -1,6 +1,7 @@
 #include "platform.h"
 #if defined(USE_DRONECAN)
 
+#include <dronecan_msgs.h>
 #include <stdint.h>
 
 #include "build/atomic.h"
@@ -11,12 +12,10 @@
 
 #include "drivers/nvic.h"
 
-#include "libcanard/canard.h"
-
-#include <dronecan_msgs.h>
-
-#include "dronecan_actuator.h"
 #include "dronecan.h"
+#include "dronecan_actuator.h"
+
+#include "libcanard/canard.h"
 
 #define ACTUATOR_FLOOR_INTERVAL 20000ULL // 50 Hz check for 25 Hz updates
 #define ACTUATOR_COMMANDS_PER_MESSAGE 15 // uavcan.equipment.actuator.ArrayCommand DSDL limit
