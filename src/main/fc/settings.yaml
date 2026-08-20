@@ -4648,3 +4648,11 @@ groups:
         type: bool
         default_value: ON
         field: dronecanUseDNAServer
+      - name: dronecan_servo_bm
+        description: "Bitmask of servo outputs to broadcast over DroneCAN as actuator.ArrayCommand, in addition to any local PWM output already configured for that channel. Bit 0 = servo 1, bit 1 = servo 2, etc."
+        default_value: 0
+        field: servoOutputBitmask
+        min: 0
+        max: 0x3FFFF  # 18 bits, matches MAX_SUPPORTED_SERVOS
+        type: uint32_t
+

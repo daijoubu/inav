@@ -905,6 +905,16 @@ Unique identifier for this device. Valid values are 1 to 127. 126 and 127 are re
 
 ---
 
+### dronecan_servo_bm
+
+Bitmask of servo outputs to broadcast over DroneCAN as actuator.ArrayCommand, in addition to any local PWM output already configured for that channel. Bit 0 = servo 1, bit 1 = servo 2, etc.
+
+| Default | Min | Max |
+| --- | --- | --- |
+| 0 | 0 | 262143 |
+
+---
+
 ### dronecan_use_dna_server
 
 Enable the DNA server to manage plug and play dronecan devices

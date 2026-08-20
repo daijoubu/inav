@@ -42,12 +42,13 @@
 CanardInstance canard; /* non-static: dronecan_async.c needs extern access */
 static uint8_t memory_pool[1024];
 
-PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig, PG_DRONECAN_CONFIG, 2);
 
 PG_RESET_TEMPLATE(dronecanConfig_t, dronecanConfig,
     .nodeID = SETTING_DRONECAN_NODE_ID_DEFAULT,
     .bitRateKbps = SETTING_DRONECAN_BITRATE_KBPS_DEFAULT,
-    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT
+    .dronecanUseDNAServer = SETTING_DRONECAN_USE_DNA_SERVER_DEFAULT,
+    .servoOutputBitmask = SETTING_DRONECAN_SERVO_BM_DEFAULT
 );
 
 static dronecanState_e dronecanState = STATE_DRONECAN_INIT;

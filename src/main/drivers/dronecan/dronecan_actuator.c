@@ -16,6 +16,7 @@
 #include <dronecan_msgs.h>
 
 #include "dronecan_actuator.h"
+#include "dronecan.h"
 
 #define ACTUATOR_FLOOR_INTERVAL 20000ULL // 50 Hz check for 25 Hz updates
 #define ACTUATOR_COMMANDS_PER_MESSAGE 15 // uavcan.equipment.actuator.ArrayCommand DSDL limit
@@ -39,6 +40,10 @@ static void actuatorFloorWindowReset(void);
 
 void dronecanWriteServo(uint8_t servo, uint16_t value)
 {
+    if (!bitArrayGet(&dronecanConfig()->servoOutputBitmask, servo)) {
+        return;
+    }
+
     actuatorCommands[servo].actuatorId = servo+1;
     if(actuatorCommands[servo].value != value)  // only update on change
     {
@@ -143,7 +148,7 @@ static bool sendActuatorCommandBatch(const actuatorCommand_t *data, uint8_t len,
         }
         bitArrayClr(actuatorDirty, *next);
         bitArrayClr(actuatorUpdateAtCheck, *next);
-        if (data[*next].value != 0)
+        if (data[*next].value != 0 && bitArrayGet(&dronecanConfig()->servoOutputBitmask, *next))
         {
             commandArray.commands.data[i].actuator_id = data[*next].actuatorId;
             commandArray.commands.data[i].command_type = UAVCAN_EQUIPMENT_ACTUATOR_COMMAND_COMMAND_TYPE_PWM;
